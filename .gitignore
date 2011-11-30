@@ -7,3 +7,4 @@ syntax: glob
 *.off
 *.old
 .DS_Store
+_site/

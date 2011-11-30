@@ -1,0 +1,51 @@
+---
+layout: post
+title: Jekyll - Le site web des développeurs
+category: Blog
+tags:
+  - Github
+  - Jekyll
+  - French
+published: true
+---
+
+"Jekyll":https://github.com/mojombo/jekyll est un générateur de pages statiques particulièrement adapté aux développeurs. Il permet de générer un site complet à partir de pages statiques ou de post, et de le publier. Développé par un des cofondateurs de Github, il est même directement intégré à Github. Il est donc possible de stocker, versionner, travailler ses articles ou ses pages statiques, et de les publier automatiquement sur un simple commit.
+ 
+Envie de travailler sur un article: hop une branche dédiée et l'article n'apparaitra pas tant qu'il ne sera pas transféré sur le master. Pas besoin d'une connection internet pour travailler sur son article, pas d'interface utilisateur scabreuse (ou de pseudo éditeur html) pour éditer le contenu: vous utilisez l'éditeur de texte que vous voulez. Envie de rajouter une feuille de style ou une image, plus besoin d'aller dans les entrailles des templates et de trouver une enième façon de les herberger (bon ok ça à bien changé depuis ;)), tout est au même endroit: dans **votre** repository Github.
+
+Une vraie infrastructure de développeur et de déploiement continu simplement: pas de base de données, pas de paramètres compliqués, une écriture simplifiée par des syntaxes adaptées: markdown, textile ou même html... De plus, moyennant quelques options, l'intégration d'extrait de code dans les articles se fait naturellement et la coloration syntaxique automatiquement. Stocké par Github, généré par Github et publié par Github! Et vous n'êtes pas encore inscrit au fan club Github !?!
+
+Du Ruby:
+
+{% highlight ruby %}
+# Public: Duplicate some text an abitrary number of times.
+#
+# text  - The String to be duplicated.
+# count - The Integer number of times to duplicate the text.
+#
+# Returns the duplicated String.
+def multiplex(text, count)
+  text * count
+end
+{% endhighlight %}
+
+Du scala:
+
+{% highlight scala %}
+  abstract class Tree
+  case class Branch(left: Tree, right: Tree) extends Tree
+  case class Leaf(x: Int) extends Tree
+
+  def sumLeaves(t: Tree): Int = t match {
+    case Branch(l, r) => sumLeaves(l) + sumLeaves(r)
+    case Leaf(x) => x
+  }
+}
+{% endhighlight %}
+
+Voila, c'est tout ça qui m'aura définitivement fait basculer. Au revoir tumblr, bonjour github et merci "Tom Preston-Werner":https://github.com/mojombo
+
+PS.: Premiers pas, premiers déboires! voir "Issue#422":https://github.com/mojombo/jekyll/issues/422 pour des problèmes de traitements lors de la coloration syntaxique (@Liquid error: undefined method `join’ for #@).
+
+Voir aussi:
+Passer de wordpress jekyll "premiere-partie":http://jeremy.tagada.hu/passer-de-wordpress-jekyll-premiere-partie/ et "deuxième partie":http://jeremy.tagada.hu/passer-de-wordpress-jekyll-deuxieme-partie/ , et aussi "Jekyll Github Page":http://developmentseed.org/blog/2011/09/09/jekyll-github-pages/
