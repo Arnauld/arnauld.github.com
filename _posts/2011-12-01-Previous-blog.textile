@@ -1,0 +1,12 @@
+---
+layout: post
+title: Previous blog
+category: Blog
+tags:
+  - Github
+  - Tumblr
+  - French
+published: true
+---
+
+Le nouvel hébergement de ce blog s'accompagnera d'une migration de certains seulement de mes anciens messages. Pour les autres je vous invite à retourner sur: "Previous messages // Previous blog // Ancien blog":http://technbolts.tumblr.com/

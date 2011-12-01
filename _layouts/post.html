@@ -5,7 +5,12 @@ layout: default
 
 <article id="post">
   <header>
-    <time datetime='{{ page.date | date_to_utc | date:"%Y-%m-%dT%H:%M:00Z" }}' class='meta entry-time'>{{ page.date | date:"%B %d, %Y" }}</time>
+    <time datetime='{{ page.date | date_to_utc | date:"%Y-%m-%dT%H:%M:00Z" }}' class='meta entry-time'>{{ page.date | date:"%b %d, %Y" }}</time>
+    <p class="meta entry-tags">
+	{% if page.tags != empty %}
+		{% for tag in page.tags %}<span class="tag">#{{ tag }}&nbsp;</span>{% endfor %}
+	{% endif %}
+	</p>
     <h1 class='entry-title'>
       <a href='{{ page.url }}'>{{ page.title }}</a>
     </h1>
@@ -16,12 +21,6 @@ layout: default
   </section>
 
   <footer>
-	<p id="tags" class="meta">
-	{% if page.tags != empty %}
-		{% for tag in page.tags %}<span class="tag">#{{ tag }}&nbsp;</span>{% endfor %}
-	{% endif %}
-	</p>
-
 	<div id="related">
 	  <h2>Related Posts</h2>
 	  <ul class="posts">

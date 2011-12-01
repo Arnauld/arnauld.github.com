@@ -51,6 +51,15 @@ table {
   font: 100%;
 }
 
+blockquote {
+  background: url("/images/oquote.png") left -6px no-repeat;
+  min-height: 32px;
+  text-indent: 32px;
+  margin-left: 30px;
+  font-style: italic;
+  font-weight: lighter;
+}
+
 /*****************************************************************************/
 /*
 /* Home
@@ -82,7 +91,7 @@ ul.posts {
   font-size: 110%;
   text-align: justify;
   width: 40em;
-  margin: 3em auto 2em auto;
+  margin: 1em auto 2em auto;
   line-height: 1.5em;
 }
 
@@ -97,6 +106,10 @@ ul.posts {
   font-weight:normal;
   margin-bottom: 2em;
 }
+
+  .site .title .sitename {
+    font-size: 140%;
+  }
 
   .site .title a {
     color: #a00;
@@ -164,8 +177,26 @@ ul.posts {
 
 }
 
+  #post h1.entry-title {
+    font-size:120%;
+  }
+
   #post .entry-time {
     float:right;
+  }
+
+  #post .entry-tags {
+    float: right;
+    margin: 0 0;
+    clear: both;
+    font-weight: lighter;
+    font-style: italic;
+  }
+
+  #post .body {
+    margin-top:2em;
+    font-size:100%;
+    line-height:1.25em;
   }
 
   /* standard */
