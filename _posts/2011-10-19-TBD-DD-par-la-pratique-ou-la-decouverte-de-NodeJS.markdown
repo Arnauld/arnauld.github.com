@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[T|B|D]DD par la pratique ou la decouverte de NodeJS"
-category: TBD
+category: tbd-in-practice
 tags:
   - tdd
   - bdd
@@ -10,6 +10,7 @@ tags:
   - event-sourcing
   - nodejs
 published: true
+comments: true
 ---
 
 Après reflexion, la série aurait tout aussi bien pu s'appeller:

@@ -22,12 +22,22 @@ body {
   text-align: center;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-size: 100%;
+h1,
+h1 a {
+  font-size: 120%;
+  line-height: 1.5em;
 }
 
-h1 {
-  margin-bottom: 1em;
+h2 {
+  font-size: 110%;
+}
+
+h3 {
+  font-size: 105%;
+}
+
+h4, h5, h6 {
+  font-size: 100%;
 }
 
 p {
@@ -35,15 +45,16 @@ p {
 }
 
 a {
-  color: #00a;
+  color: #a00;
 }
 
-a:hover {
+a:hover,
+a:hover:visited {
   color: black;
 }
 
 a:visited {
-  color: #a0a;
+  color: #a00; /*a0a;*/
 }
 
 table {
@@ -58,6 +69,41 @@ blockquote {
   margin-left: 30px;
   font-style: italic;
   font-weight: lighter;
+  border-left: none;
+  padding-left: 0px;
+}
+
+blockquote p {
+  font-style: italic;
+  font-weight: lighter;
+}
+
+pre {
+  white-space: pre;
+  word-wrap: normal;
+}
+
+pre,
+code {
+  font-size: 14px;
+  font-family:  Courier New, Monaco, Andale Mono, monospace;
+}
+
+article header {
+  position: relative; /*  position:relative + position:absolute */
+}
+
+article header h1 {
+  margin-bottom: 0.1em;
+}
+
+.previous-posts .more {
+    text-align: right;
+}
+
+.tweet,
+.plusone {
+  display: inline;
 }
 
 /*****************************************************************************/
@@ -88,7 +134,7 @@ ul.posts {
 /*****************************************************************************/
 
 .site {
-  font-size: 110%;
+  font-size: 100%;
   text-align: justify;
   width: 40em;
   margin: 1em auto 2em auto;
@@ -98,6 +144,8 @@ ul.posts {
 .title {
   color: #a00;
   font-weight: bold;
+  border-bottom: 4px solid #eee;
+  margin-bottom: 2em;
 }
 
 .subtitle {
@@ -173,65 +221,72 @@ ul.posts {
 /*
 /*****************************************************************************/
 
-#post {
+.post {
 
 }
 
-  #post h1.entry-title {
+  .post h1.entry-title {
     font-size:120%;
   }
 
-  #post .entry-time {
-    float:right;
+  .post .entry-time {
+    margin-top: 7px;
+    position:absolute;
+    left:-100px;
   }
 
-  #post .entry-tags {
-    float: right;
+  .post .entry-tags {
     margin: 0 0;
     clear: both;
     font-weight: lighter;
     font-style: italic;
   }
 
-  #post .body {
+  .post .body {
     margin-top:2em;
     font-size:100%;
     line-height:1.25em;
   }
 
+    .post .body .more {
+      text-align: right;
+      font-weight: lighter;
+      font-style: italic;
+    }
+
   /* standard */
 
-  #post pre {
+  .post pre {
     border: 1px solid #ddd;
     background-color: #eef;
     padding: 0 .4em;
   }
 
-  #post ul,
-  #post ol {
+  .post ul,
+  .post ol {
     margin-left: 1.35em;
   }
 
-  #post code {
+  .post code {
     border: 1px solid #ddd;
     background-color: #eef;
     font-size: 85%;
     padding: 0 .2em;
   }
 
-    #post pre code {
+    .post pre code {
       border: none;
     }
 
   /* terminal */
 
-  #post pre.terminal {
+  .post pre.terminal {
     border: 1px solid black;
     background-color: #333;
     color: white;
   }
 
-  #post pre.terminal code {
+  .post pre.terminal code {
     background-color: #333;
   }
 

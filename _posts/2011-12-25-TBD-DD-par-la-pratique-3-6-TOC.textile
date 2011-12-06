@@ -1,0 +1,53 @@
+---
+layout: post
+title: "[T|B|D]DD par la pratique 3.6 - Chronologie des articles"
+category: tbd-in-practice
+tags:
+  - tdd
+  - bdd
+  - ddd
+  - cqrs
+  - event-sourcing
+  - nodejs
+  - graphviz
+published: false
+comments: true
+---
+
+!/images/Blog/TBD-chronologie.png(alt text)!
+
+<!--more-->
+
+Pour information, le fichier "Graphviz":http://www.graphviz.org/ pour la génération de l'image.
+
+{% highlight bash %}
+digraph chronology {
+    rankdir=TB;
+    size=10;
+    edge [fontname="Handwriting - Dakota", fontsize=22];
+    node [fontname="Handwriting - Dakota", fontcolor=white, fontsize=22];
+    node [shape = doublecircle, color=firebrick3,  style=filled]; TBD_3_5 TBD_3_6;
+    node [shape = circle, color=firebrick4, style=filled];
+    TBD_1   [label = "1"];
+    TBD_2   [label = "2"];
+    TBD_3   [label = "3"];
+    TBD_3_5 [label = "3.5"];
+    TBD_3_6 [label = "3.6"];
+    TBD_4   [label = "4"];
+    TBD_5   [label = "5"];
+    TBD_6   [label = "6"];
+    TBD_7   [label = "7", shape = doublecircle];
+
+    TBD_1   -> TBD_2    [ label = "Mise en place"];
+    TBD_2   -> TBD_3    [ label = "Aggregate Root"];
+    TBD_3   -> TBD_3    [ label = "ou la decouverte de NodeJS"]
+    TBD_3   -> TBD_3_5  [ label = "Notre domaine" style=dashed];
+    TBD_3_5 -> TBD_3_6  [ label = "Chronologie" style=dotted];
+    TBD_3   -> TBD_4    [ label = "Backlog & Story" labeljust=r];
+    TBD_4   -> TBD_5    [ label = "Persistence & Migration" ];
+    TBD_5   -> TBD_6    [ label = "Event Store" ];
+    TBD_6   -> TBD_3_5  [ label = "Remise en cause" style=dotted];
+    TBD_3_5 -> TBD_7    [ label = "Code génération"];
+    TBD_6   -> TBD_7    [ label = "Généralisation"];
+}
+{% endhighlight %}

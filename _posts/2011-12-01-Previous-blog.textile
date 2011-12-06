@@ -1,12 +1,13 @@
 ---
 layout: post
-title: Previous blog
+title: Ancien blob et anciens messages
 category: Blog
 tags:
   - Github
   - Tumblr
   - French
 published: true
+comments: false
 ---
 
-Le nouvel hébergement de ce blog s'accompagnera d'une migration de certains seulement de mes anciens messages. Pour les autres je vous invite à retourner sur: "Previous messages // Previous blog // Ancien blog":http://technbolts.tumblr.com/
+Le nouvel hébergement de ce blog s'accompagnera d'une migration de certains seulement de mes anciens messages. Pour les autres je vous invite à retourner là: "Ancien blog":http://technbolts.tumblr.com/

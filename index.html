@@ -4,13 +4,26 @@ title: Technbolt's - Arnauld's Ramblings
 ---
 
 <div id="home">
-  <h1>Blog Posts</h1>
-  <ul class="posts">
-    {% for post in site.posts %}
-      {% if post.published %}
-      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
-      {% endif %}
-    {% endfor %}
-  </ul>
+
+  {% for post in site.posts limit:5 %}
+	{% include excerpt-post.html %}
+	{% if forloop.last == false %}
+		{% include separator.html %}
+	{% endif %}
+  {% endfor %}
+
+  {% include separator.html %}
+
+  <section class="previous-posts">
+    <h1>Previous Posts</h1>
+    <ul class="posts">
+      {% for post in site.posts offset:0 limit:10 %}
+        {% if post.published %}
+        <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+    <p class='more'><a href="/archive/"><span class="label important">Archive &raquo;</span></a></p>
+  </section>
 
 </div>

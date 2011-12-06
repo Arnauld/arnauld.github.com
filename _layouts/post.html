@@ -3,32 +3,53 @@ layout: default
 ---
 
 
-<article id="post">
+<article id="post" class="post">
   <header>
     <time datetime='{{ page.date | date_to_utc | date:"%Y-%m-%dT%H:%M:00Z" }}' class='meta entry-time'>{{ page.date | date:"%b %d, %Y" }}</time>
-    <p class="meta entry-tags">
-	{% if page.tags != empty %}
-		{% for tag in page.tags %}<span class="tag">#{{ tag }}&nbsp;</span>{% endfor %}
-	{% endif %}
-	</p>
     <h1 class='entry-title'>
       <a href='{{ page.url }}'>{{ page.title }}</a>
     </h1>
+    <p class="meta entry-tags">
+  {% if page.tags != empty %}
+    {% for tag in page.tags %}<span class="tag">#{{ tag }}&nbsp;</span>{% endfor %}
+  {% endif %}
+  </p>
   </header>
 
   <section class='body'>
-  	{{ content }}
+    {{ content }}
   </section>
 
   <footer>
-	<div id="related">
-	  <h2>Related Posts</h2>
-	  <ul class="posts">
-	    {% for post in site.related_posts limit:3 %}
-	      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
-	    {% endfor %}
-	  </ul>
-	</div>
+    <div class="tweet">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-url="{{site.base_url}}{{ page.url }}" data-text="Technbolt's - {{page.title}}" data-via="aloyer">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+    </div>
+    <div class="plusone">
+        <g:plusone size="small" href="{{site.base_url}}{{ page.url }}"></g:plusone>
+    </div>
+
+    {% if page.comments %}
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'arnauld-github';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+    {% endif %}
+
+    <div id="related">
+      <h2>Related Posts</h2>
+      <ul class="posts">
+        {% for post in site.related_posts limit:3 %}
+          <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
   </footer>
 </article>
 

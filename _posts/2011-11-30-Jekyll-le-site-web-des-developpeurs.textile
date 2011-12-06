@@ -11,6 +11,8 @@ published: true
 
 "Jekyll":https://github.com/mojombo/jekyll est un générateur de pages statiques particulièrement adapté aux développeurs. Il permet de générer un site complet à partir de pages statiques ou de post, et de le publier. Développé par un des cofondateurs de Github, il est même directement intégré à Github. Il est donc possible de stocker, versionner, travailler ses articles ou ses pages statiques, et de les publier automatiquement sur un simple commit.
  
+ <!--more-->
+
 Envie de travailler sur un article: hop une branche dédiée et l'article n'apparaitra pas tant qu'il ne sera pas transféré sur le master. Pas besoin d'une connection internet pour travailler sur son article, pas d'interface utilisateur scabreuse (ou de pseudo éditeur html) pour éditer le contenu: vous utilisez l'éditeur de texte que vous voulez. Envie de rajouter une feuille de style ou une image, plus besoin d'aller dans les entrailles des templates et de trouver une enième façon de les herberger (bon ok ça à bien changé depuis ;)), tout est au même endroit: dans **votre** repository Github.
 
 Une vraie infrastructure de développeur et de déploiement continu simplement: pas de base de données, pas de paramètres compliqués, une écriture simplifiée par des syntaxes adaptées: markdown, textile ou même html... De plus, moyennant quelques options, l'intégration d'extrait de code dans les articles se fait naturellement et la coloration syntaxique automatiquement. Stocké par Github, généré par Github et publié par Github! Et vous n'êtes pas encore inscrit au fan club Github !?!
@@ -48,4 +50,8 @@ Voila, c'est tout ça qui m'aura définitivement fait basculer. Au revoir tumblr
 PS.: Premiers pas, premiers déboires! voir "Issue#422":https://github.com/mojombo/jekyll/issues/422 pour des problèmes de traitements lors de la coloration syntaxique (@Liquid error: undefined method `join’ for #@).
 
 Voir aussi:
-Passer de wordpress jekyll "premiere-partie":http://jeremy.tagada.hu/passer-de-wordpress-jekyll-premiere-partie/ et "deuxième partie":http://jeremy.tagada.hu/passer-de-wordpress-jekyll-deuxieme-partie/ , et aussi "Jekyll Github Page":http://developmentseed.org/blog/2011/09/09/jekyll-github-pages/
+
+* Passer de wordpress jekyll "premiere-partie":http://jeremy.tagada.hu/passer-de-wordpress-jekyll-premiere-partie/ et "deuxième partie":http://jeremy.tagada.hu/passer-de-wordpress-jekyll-deuxieme-partie/ 
+* "Jekyll Github Page":http://developmentseed.org/blog/2011/09/09/jekyll-github-pages/
+* "Jekyll a static site generator":http://klepas.org/jekyll-a-static-site-generator/
+* "Creating Excerpts in Jekyll with Wordpress-style <!--more--> HTML Comments":http://www.jacquesf.com/2011/03/creating-excerpts-in-jekyll-with-wordpress-style-more-html-comments/

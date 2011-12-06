@@ -1,2 +1,4 @@
 markdown: rdiscount
 pygments: true
+
+base_url: http://arnauld.github.com

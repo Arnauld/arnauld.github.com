@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[T|B|D]DD par la pratique 3 - AggregateRoot"
-category: TBD
+category: tbd-in-practice
 tags:
   - tdd
   - bdd
@@ -10,6 +10,7 @@ tags:
   - event-sourcing
   - nodejs
 published: true
+comments: true
 ---
 
 ## Echauffement
@@ -28,6 +29,8 @@ Les corrections à apporter sont alors les suivantes dans les fichiers `specs/pr
 * et tous les appels de méthode `domain.create_project` par `prj.create`
 
 Relançons les tests, et oh miracle ils passent tous.
+
+<!--more-->
 
 ### Renommer un projet
 

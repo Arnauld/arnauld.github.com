@@ -1,0 +1,60 @@
+---
+layout: post
+title: La sélection de décembre 
+category: Bleog
+tags:
+  - Links
+  - Selec
+published: false
+comments: true
+---
+
+h2. Divers
+
+"Technical Job Interview Questions for Java EE architects":http://java.dzone.com/articles/technical-job-interview
+
+"'Yoda Conditions', 'Pokémon Exception Handling' and other programming classics":http://www.dodgycoder.net/2011/11/yoda-conditions-pokemon-exception.html
+
+h2. Web design
+
+"Twitter bootstrap":http://twitter.github.com/bootstrap/
+
+
+h2. Event, CQRS, high-scalability
+
+"DataSift Architecture: Realtime Datamining At 120,000 Tweets Per Second":http://highscalability.com/blog/2011/11/29/datasift-architecture-realtime-datamining-at-120000-tweets-p.html
+
+"Using Gossip Protocols For Failure Detection, Monitoring, Messaging And Other Good Things":http://highscalability.com/blog/2011/11/14/using-gossip-protocols-for-failure-detection-monitoring-mess.html
+
+"Kafka (Xebia-fr)":http://blog.xebia.fr/2011/12/02/kafka/
+
+"Building an Event-Sourced Web Application - Part 1: Domain Model, Events and State":http://krasserm.blogspot.com/2011/11/building-event-sourced-web-application.html
+
+"Understanding the differences between AMQP & JMS":http://www.wmrichards.com/amqp.pdf
+
+"Complex Event Processing":http://blog.octo.com/en/complex-event-processing/
+
+"CQRS, l’architecture aux deux visages (partie 1)":http://blog.octo.com/cqrs-larchitecture-aux-deux-visages-partie-1/
+
+h2. DDD
+
+"Effective Aggregate Design by Vaughn Vernon":http://dddcommunity.org/library/vernon_2011
+"Part 1":http://dddcommunity.org/sites/default/files/pdf_articles/Vernon_2011_1.pdf
+"Part 2":http://dddcommunity.org/sites/default/files/pdf_articles/Vernon_2011_2.pdf
+
+h2. Agilité
+
+"Agile Adoption – Vital Behaviours and Influence Strategies":http://www.infoq.com/articles/agile-adoption-vital-behaviours
+
+
+"Test-Driven Development: un pacte diabolique ?":http://www.cftl.de/index.php?id=78
+Traduction de _Test-Driven Development A Faustian Bargain_
+
+"Réaction @nmartignole":http://twitter.com/#!/nmartignole/status/142497996641280000
+"Réaction @BodySplash":http://twitter.com/#!/BodySplash/status/142250558286340096
+
+<blockquote>
+<p>As a Scrum Master, my struggle with architects is that they often want to slow things down to "do it right" which inhibits releasing early and often.</p>
+<small>from comment "trust?":http://www.infoq.com/articles/softwarearch-assessment#view_79319 </small>
+</blockquote>
+

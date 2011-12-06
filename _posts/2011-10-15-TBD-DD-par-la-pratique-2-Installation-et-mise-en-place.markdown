@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[T|B|D]DD par la pratique 2 - Installation et mise en place"
-category: TBD
+category: tbd-in-practice
 tags:
   - TDD
   - BDD
@@ -10,6 +10,7 @@ tags:
   - event-sourcing
   - nodejs
 published: true
+comments: true
 ---
 
 ## Introduction
@@ -21,6 +22,8 @@ Commençons par glaner à gauche et à droite les modules dont nous aurons besoi
 * un module pour la persistence de notre modèle, nous prendrons dans un 1er temps une base de données postgres
 * un module pour effectuer des tâches asynchrones (~actor)
 * un module pour générer les uuid de nos entités
+
+<!--more-->
 
 ## Preparation
 

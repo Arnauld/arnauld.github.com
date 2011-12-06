@@ -1,0 +1,32 @@
+---
+layout: default
+title: Technbolt's - Arnauld's Ramblings
+---
+
+<div id="about">
+
+  <h1>Qui suis-je?</h1>
+  <p>
+    Développeur depuis plus d'une dizaine d'années, mon experience m'a permis d'avoir une très bonne connaissance du langage Java et de son écosystème. J'ai pu participer à plusieurs projets de maturités très différentes, et acquérir de forte compétences dans la modélisation et la conception logicielle, ainsi que dans l'encadrement d'équipe technique.
+  </p>
+  
+  <p>
+    Mon intarissable soif d'apprendre et de découvrir me poussent quotidiennement à cultiver mon aptitude à abstraire et concevoir des applications, à experimenter de nouvelles librairies et de nouveaux langages.
+  </p>
+  
+  <p>
+    J'exerce actuellement le métier d' "artisan":http://www.touilleur-express.fr/2011/01/20/craftsmanship/ développeur au sein d'Eptica, où, entre deux évolutions et nouvelles fonctionnalités, je restructure le code et les algorithmes afin de les rendre plus lisibles, plus maintenables, plus fonctionnels, plus performants et "parallélisable", plus modulaires, et encore plus...
+  </p>
+
+  <p>
+    <a href="/documents/CV-2011.pdf"><span class="label notice">CV 2011</span></a>
+  </p>
+  <ul class="media-grid">
+    <li>
+      <a href="/documents/CV-2011.pdf">
+        <img class="thumbnail" src="/documents/CV-2011-thumbnails.png" alt="CV 2011">
+      </a>
+    </li>
+  </ul>
+
+</div>

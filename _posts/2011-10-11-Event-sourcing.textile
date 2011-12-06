@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "L'Event sourcing c'est quoi?"
-category: CQRS
+category: Blog
 tags:
   - cqrs
   - event-sourcing
@@ -13,6 +13,8 @@ Martin Fowler décrit l'Event Sourcing comme:
 bq. Captures all changes to an application state as a sequence of events.
 
 En bref, au lieu de conserver le dernier état d'un objet, on conserve toutes les transitions qui ont amené à cet état. En conservant l'ensemble de ces transitions, il est ainsi possible de rejouer les différents états pris par l'objet au cours de son cycle de vie. Plus important encore, ce n'est pas seulement le changement d'état qui est conservé, mais l'intention de l'utilisateur qui a provoqué ce changement.
+
+<!--more-->
 
 Supposons que l'on se promène sur amazon. A chaque fois que l'on tombe sur un livre qui nous plait, on l'ajoute à notre panier. Au bout d'un moment, notre panier pourrait ressembler à cela:
 
