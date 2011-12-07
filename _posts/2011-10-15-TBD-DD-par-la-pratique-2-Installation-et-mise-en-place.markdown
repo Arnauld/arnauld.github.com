@@ -11,20 +11,19 @@ tags:
   - nodejs
 published: true
 comments: true
-has_excerpt: true
+excerpt: |
+  ## Introduction
+  
+  Commençons par glaner à gauche et à droite les modules dont nous aurons besoin, nous voulons:
+  
+  * un module pour faire du BDD
+  * un module pour faire du TDD
+  * un module pour la persistence de notre modèle, nous prendrons dans un 1er temps une base de données postgres
+  * un module pour effectuer des tâches asynchrones (~actor)
+  * un module pour générer les uuid de nos entités
+
 ---
-
-## Introduction
-
-Commençons par glaner à gauche et à droite les modules dont nous aurons besoin, nous voulons:
-
-* un module pour faire du BDD
-* un module pour faire du TDD
-* un module pour la persistence de notre modèle, nous prendrons dans un 1er temps une base de données postgres
-* un module pour effectuer des tâches asynchrones (~actor)
-* un module pour générer les uuid de nos entités
-
-<!--more-->
+{{page.excerpt | markdownify }}
 
 ## Preparation
 

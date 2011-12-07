@@ -12,9 +12,11 @@
   </header>
 
   <section class='body'>
-      {{ post.content | split: "<!--more-->" | first }}
-      {% if post.has_excerpt %}
-        <p class='more'><a href='{{post.url}}'><span class='label important'>Lire la suite &raquo;</span></a></p>
+      {% if post.excerpt %}
+        {{post.excerpt | markdownify }}
+        <p class='more'><a href='{{post.url}}'><span class='label important'>Lire la suite &raquo;</span></a></p> 
+      {% else %}
+         {{post.content}}
       {% endif %}
   </section>
 

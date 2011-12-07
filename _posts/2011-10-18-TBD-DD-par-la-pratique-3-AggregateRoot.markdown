@@ -11,27 +11,27 @@ tags:
   - nodejs
 published: true
 comments: true
-has_excerpt: true
+excerpt: |
+  ## Echauffement
+
+  Un peu de refactoring pour s'échauffer. 
+  Au lieu de définir tout notre domaine dans le fichier `domain.js`, associons chaque élément de notre
+  domaine à un fichier spécifique:
+
+  * le fichier `lib/domain.js` est alors renomé en `lib.project.js`
+  * la fonction `create_project` en `create` puisque le fichier sera dédié à notre classe projet
+
+  Les corrections à apporter sont alors les suivantes dans les fichiers `specs/project_specs.js` et 
+  `test/project_test.js` :
+
+  * modifier `var domain = require('../lib/domain')` par `var prj = require('../lib/project')` 
+  * et tous les appels de méthode `domain.create_project` par `prj.create`
+
+  Relançons les tests, et oh miracle ils passent tous.
+
 ---
 
-## Echauffement
-
-Un peu de refactoring pour s'échauffer. 
-Au lieu de définir tout notre domaine dans le fichier `domain.js`, associons chaque élément de notre
-domaine à un fichier spécifique:
-
-* le fichier `lib/domain.js` est alors renomé en `lib.project.js`
-* la fonction `create_project` en `create` puisque le fichier sera dédié à notre classe projet
-
-Les corrections à apporter sont alors les suivantes dans les fichiers `specs/project_specs.js` et 
-`test/project_test.js` :
-
-* modifier `var domain = require('../lib/domain')` par `var prj = require('../lib/project')` 
-* et tous les appels de méthode `domain.create_project` par `prj.create`
-
-Relançons les tests, et oh miracle ils passent tous.
-
-<!--more-->
+{{page.excerpt | markdownify }}
 
 ### Renommer un projet
 

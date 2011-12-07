@@ -8,7 +8,6 @@ tags:
   - French
 published: true
 comments: false
-has_excerpt: false
 ---
 
 Le nouvel hébergement de ce blog s'accompagnera d'une migration de certains seulement de mes anciens messages. Pour les autres je vous invite à retourner là: "Ancien blog":http://technbolts.tumblr.com/

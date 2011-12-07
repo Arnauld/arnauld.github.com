@@ -10,15 +10,13 @@ tags:
   - event-sourcing
 published: true
 comments: true
-has_excerpt: true
+excerpt: |
+  Dans cette série, nous allons tenter de mettre en pratique la théorie autour des notions d' "Event Sourcing":http://technbolts.tumblr.com/post/11317032794 et de "CQRS":http://martinfowler.com/bliki/CQRS.html (pour plus d'informations voir "CQRS links":http://technbolts.tumblr.com/post/10529825424).
+  
+  Pour ce faire, nous allons développer une nouvelle application selon les principes du Test Driven Developpement, du Behavior Driven Developpement et du Domain Driven Developpement.
+
 ---
-
-Dans cette série, nous allons tenter de mettre en pratique la théorie autour des notions d' "Event Sourcing":http://technbolts.tumblr.com/post/11317032794 et de "CQRS":http://martinfowler.com/bliki/CQRS.html (pour plus d'informations voir "CQRS links":http://technbolts.tumblr.com/post/10529825424).
-
-Pour ce faire, nous allons développer une nouvelle application selon les principes du Test Driven Developpement, du Behavior Driven Developpement et du Domain Driven Developpement.
-
-<!--more-->
-
+{{page.excerpt | markdownify }}
 
 Dans "The Pragmatic Programmer":http://pragprog.com/refer/pragpub24/titles/tpp/the-pragmatic-programmer, il est conseillé que "l'on apprenne au moins un langage de programmation chaque année" (*"Learn at least one new language every year"*) et il paraitrait que le @javascript@ soit un vrai langage, hummm... nous allons donc lui donner sa chance, et plus précisement utiliser la plateforme **NodeJS** comme infrastructure de notre application. Il s'agira pour moi de découvrir NodeJS et une tentative de se reconcillier avec le javascript.
 

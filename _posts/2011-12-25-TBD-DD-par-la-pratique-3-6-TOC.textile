@@ -12,12 +12,10 @@ tags:
   - graphviz
 published: false
 comments: true
-has_excerpt: true
+excerpt: |
+  !/images/Blog/TBD-chronologie.png(alt text)!
+
 ---
-
-!/images/Blog/TBD-chronologie.png(alt text)!
-
-<!--more-->
 
 Pour information, le fichier "Graphviz":http://www.graphviz.org/ pour la génération de l'image.
 

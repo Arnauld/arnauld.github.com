@@ -11,13 +11,14 @@ tags:
   - nodejs
 published: false
 comments: true
-has_excerpt: true
+excerpt: |
+  En prenant un peu de recul sur cette série d'article, je me rends compte que j'ai très vite survollé le domaine pour m'interesser à l'implémentation de l'application. Même si le domaine est relativement clair dans ma tête, il est important que je passe un peu de temps à le mettre à plat: c'est d'ailleurs le but de cette série d'articles.
+  
+  Ordinairement, quand on pense modèle on arrive rapidement à dessiner une sorte de diagramme de classe. Je ne vais pas y échapper afin d'avoir une base de discussion.
+
 ---
-En prenant un peu de recul sur cette série d'article, je me rends compte que j'ai très vite survollé le domaine pour m'interesser à l'implémentation de l'application. Même si le domaine est relativement clair dans ma tête, il est important que je passe un peu de temps à le mettre à plat: c'est d'ailleurs le but de cette série d'articles.
 
-Ordinairement, quand on pense modèle on arrive rapidement à dessiner une sorte de diagramme de classe. Je ne vais pas y échapper afin d'avoir une base de discussion.
-
-<!--more-->
+{{page.excerpt | markdownify }}
 
 ![Domain Overview][domain-overview-01]
 

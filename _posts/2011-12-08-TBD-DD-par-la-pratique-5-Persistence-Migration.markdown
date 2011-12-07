@@ -12,19 +12,18 @@ tags:
   - postgres
 published: false
 comments: true
-has_excerpt: true
+excerpt: |
+  ## Persistence
+  
+  Interessons-nous à persister nos données afin de pouvoir les conserver d'une session à l'autre.
+  Afin de démarrer simplement nous utiliserons une base de données `postgres` comme unité de stockage. Nous verrons plus tard pour une implémentation type NoSQL: `MongoDB` ou `CouchDB`.
+  
+  Nous avons vu que seuls nos évènements devaient être persistés, ce n'est pas tout à fait vrai. Nous allons persister les entités et leurs évènements. Il n'est pas nécessaire de créer une table par type d'entité, mais uniquement les tables nécessaires à stocker les évènements.
+  
+  Il existe de nombreux articles sur la création d'un `EventStore`, nous prendrons comme base une modélisation décrite par Greg Young dans [cet article][eventstore1].
+
 ---
-
-## Persistence
-
-Interessons-nous à persister nos données afin de pouvoir les conserver d'une session à l'autre.
-Afin de démarrer simplement nous utiliserons une base de données `postgres` comme unité de stockage. Nous verrons plus tard pour une implémentation type NoSQL: `MongoDB` ou `CouchDB`.
-
-Nous avons vu que seuls nos évènements devaient être persistés, ce n'est pas tout à fait vrai. Nous allons persister les entités et leurs évènements. Il n'est pas nécessaire de créer une table par type d'entité, mais uniquement les tables nécessaires à stocker les évènements.
-
-Il existe de nombreux articles sur la création d'un `EventStore`, nous prendrons comme base une modélisation décrite par Greg Young dans [cet article][eventstore1].
-
-<!--more-->
+{{page.excerpt | markdownify }}
 
 [eventstore1]:http://cqrsinfo.com/documents/building-event-storage/
 

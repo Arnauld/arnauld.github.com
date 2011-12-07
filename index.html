@@ -1,15 +1,16 @@
 ---
 layout: default
 title: Technbolt's - Arnauld's Ramblings
+excerpt: true
 ---
 
 <div id="home">
 
   {% for post in site.posts limit:5 %}
-	{% include excerpt-post.html %}
-	{% if forloop.last == false %}
-		{% include separator.html %}
-	{% endif %}
+    {% include excerpt-post.html %}
+    {% if forloop.last == false %}
+  		{% include separator.html %}
+  	{% endif %}
   {% endfor %}
 
   {% include separator.html %}
