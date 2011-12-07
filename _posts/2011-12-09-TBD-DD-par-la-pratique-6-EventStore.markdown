@@ -12,6 +12,7 @@ tags:
   - postgres
 published: false
 comments: true
+has_excerpt: false
 ---
 
 ## EventStore

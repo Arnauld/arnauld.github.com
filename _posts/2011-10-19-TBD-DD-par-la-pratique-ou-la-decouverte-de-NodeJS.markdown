@@ -11,6 +11,7 @@ tags:
   - nodejs
 published: true
 comments: true
+has_excerpt: false
 ---
 
 Après reflexion, la série aurait tout aussi bien pu s'appeller:

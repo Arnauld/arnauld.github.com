@@ -11,6 +11,7 @@ tags:
   - nodejs
 published: false
 comments: true
+has_excerpt: true
 ---
 En prenant un peu de recul sur cette série d'article, je me rends compte que j'ai très vite survollé le domaine pour m'interesser à l'implémentation de l'application. Même si le domaine est relativement clair dans ma tête, il est important que je passe un peu de temps à le mettre à plat: c'est d'ailleurs le but de cette série d'articles.
 

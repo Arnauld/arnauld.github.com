@@ -12,7 +12,10 @@
   </header>
 
   <section class='body'>
-      {{ post.content | postmorefilter: post.url, "Lire la suite &raquo;" }}
+      {{ post.content | split: "<!--more-->" | first }}
+      {% if post.has_excerpt %}
+        <p class='more'><a href='{{post.url}}'><span class='label important'>Lire la suite &raquo;</span></a></p>
+      {% endif %}
   </section>
 
 </article>

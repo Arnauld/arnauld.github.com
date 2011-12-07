@@ -6,7 +6,8 @@ tags:
   - Github
   - Jekyll
   - French
-published: true
+published: false
+has_excerpt: true
 ---
 
 "Jekyll":https://github.com/mojombo/jekyll est un générateur de pages statiques particulièrement adapté aux développeurs. Il permet de générer un site complet à partir de pages statiques ou de post, et de le publier. Développé par un des cofondateurs de Github, il est même directement intégré à Github. Il est donc possible de stocker, versionner, travailler ses articles ou ses pages statiques, et de les publier automatiquement sur un simple commit.
@@ -54,4 +55,6 @@ Voir aussi:
 * Passer de wordpress jekyll "premiere-partie":http://jeremy.tagada.hu/passer-de-wordpress-jekyll-premiere-partie/ et "deuxième partie":http://jeremy.tagada.hu/passer-de-wordpress-jekyll-deuxieme-partie/ 
 * "Jekyll Github Page":http://developmentseed.org/blog/2011/09/09/jekyll-github-pages/
 * "Jekyll a static site generator":http://klepas.org/jekyll-a-static-site-generator/
-* "Creating Excerpts in Jekyll with Wordpress-style <!--more--> HTML Comments":http://www.jacquesf.com/2011/03/creating-excerpts-in-jekyll-with-wordpress-style-more-html-comments/
+* "Creating Excerpts in Jekyll with Wordpress-style &lt;!--more--&gt; HTML Comments":http://www.jacquesf.com/2011/03/creating-excerpts-in-jekyll-with-wordpress-style-more-html-comments/
+
+

@@ -11,6 +11,7 @@ tags:
   - nodejs
 published: true
 comments: true
+has_excerpt: true
 ---
 
 ## Echauffement

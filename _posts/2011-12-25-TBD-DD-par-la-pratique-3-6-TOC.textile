@@ -12,6 +12,7 @@ tags:
   - graphviz
 published: false
 comments: true
+has_excerpt: true
 ---
 
 !/images/Blog/TBD-chronologie.png(alt text)!

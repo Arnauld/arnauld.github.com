@@ -6,6 +6,7 @@ tags:
   - cqrs
   - event-sourcing
 published: true
+has_excerpt: true
 ---
 
 Martin Fowler décrit l'Event Sourcing comme:
