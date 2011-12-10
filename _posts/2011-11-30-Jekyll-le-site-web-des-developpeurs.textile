@@ -8,7 +8,7 @@ tags:
   - French
 published: true
 excerpt: |
-  "Jekyll":https://github.com/mojombo/jekyll est un générateur de pages statiques particulièrement adapté aux développeurs. Il permet de générer un site complet à partir de pages statiques ou de post, et de le publier. Développé par un des cofondateurs de Github, il est même directement intégré à Github. Il est donc possible de stocker, versionner, travailler ses articles ou ses pages statiques, et de les publier automatiquement sur un simple commit.
+  <a href="https://github.com/mojombo/jekyll">Jekyll</a> est un générateur de pages statiques particulièrement adapté aux développeurs. Il permet de générer un site complet à partir de pages statiques ou de post, et de le publier. Développé par un des cofondateurs de Github, il est même directement intégré à Github. Il est donc possible de stocker, versionner, travailler ses articles ou ses pages statiques, et de les publier automatiquement sur un simple commit.
  
 ---
 {{page.excerpt | markdownify }}
