@@ -62,6 +62,7 @@ table {
   font: 100%;
 }
 
+/*
 blockquote {
   background: url("/images/oquote.png") left -6px no-repeat;
   min-height: 32px;
@@ -77,6 +78,7 @@ blockquote p {
   font-style: italic;
   font-weight: lighter;
 }
+*/
 
 pre {
   white-space: pre;

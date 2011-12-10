@@ -9,15 +9,19 @@ published: false
 comments: true
 ---
 
-h2. Divers
+h2. Coding styles
 
-"Technical Job Interview Questions for Java EE architects":http://java.dzone.com/articles/technical-job-interview
+So real...
 
 "'Yoda Conditions', 'Pokémon Exception Handling' and other programming classics":http://www.dodgycoder.net/2011/11/yoda-conditions-pokemon-exception.html
+
 
 h2. Web design
 
 "Twitter bootstrap":http://twitter.github.com/bootstrap/
+
+<blockquote><p>Bootstrap is a toolkit from Twitter designed to kickstart development of webapps and sites. It includes base CSS and HTML for typography, forms, buttons, tables, grids, navigation, and more.</p>
+<small>Twitter bootstrap</small></blockquote>
 
 
 h2. Event, CQRS, high-scalability
@@ -39,16 +43,13 @@ h2. Event, CQRS, high-scalability
 h2. DDD
 
 "Effective Aggregate Design by Vaughn Vernon":http://dddcommunity.org/library/vernon_2011
-"Part 1":http://dddcommunity.org/sites/default/files/pdf_articles/Vernon_2011_1.pdf
-"Part 2":http://dddcommunity.org/sites/default/files/pdf_articles/Vernon_2011_2.pdf
+"Effective Aggregate Design by Vaughn Vernon - Part 1":http://dddcommunity.org/sites/default/files/pdf_articles/Vernon_2011_1.pdf
+"Effective Aggregate Design by Vaughn Vernon - Part 2":http://dddcommunity.org/sites/default/files/pdf_articles/Vernon_2011_2.pdf
 
-h2. Agilité
-
-"Agile Adoption – Vital Behaviours and Influence Strategies":http://www.infoq.com/articles/agile-adoption-vital-behaviours
-
-
-"Test-Driven Development: un pacte diabolique ?":http://www.cftl.de/index.php?id=78
+h2. "Test-Driven Development: un pacte diabolique ?":http://www.cftl.de/index.php?id=78
 Traduction de _Test-Driven Development A Faustian Bargain_
+
+Ou comment faire l'amalgame entre un outil de travail et un process de développement. Le _TDD_ n'est pas une méthode de gestion de projet et encore moins une méthode pour diriger ou concevoir un projet de bout en bout. Le _TDD_ est un outil, parmis d'autre, pour la phase d'implémentation et ne se substitue pas à des phases de design, d'analyse et de conception plus globale de l'application. 
 
 "Réaction @nmartignole":http://twitter.com/#!/nmartignole/status/142497996641280000
 "Réaction @BodySplash":http://twitter.com/#!/BodySplash/status/142250558286340096

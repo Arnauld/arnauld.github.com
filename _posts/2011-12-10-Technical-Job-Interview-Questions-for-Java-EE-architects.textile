@@ -1,0 +1,644 @@
+---
+layout: post
+title: Response to "Technical Job Interview Questions for Java EE architects"
+category: Bleog
+tags:
+  - jvm
+  - architect
+  - memory
+  - gc
+  - lectures
+  - links
+published: true
+comments: true
+excerpt: |
+  Here is some answers from the questions raised in the article : <a href="http://java.dzone.com/articles/technical-job-interview">Technical Job Interview Questions for Java EE architects</a>
+
+  Most answers are quotes taken from various documentations or articles. Links are provided for further informations. Quotes will be a lot more understandable than a translation of what is in my head on this subject.
+
+---
+
+<div class="toc">
+<h2>Table of content</h2>
+<ul>
+<li><a href="#database">Database systems</a><p
+><a href="#heuristic-exceptions">What are heuristic exceptions?</a
+> &#8212; <a href="#acid">What does ACID mean?</a
+> &#8212; <a href="#base">What does BASE mean?</a
+> &#8212; <a href="#isolation-level">What are isolation levels?</a
+> &#8212; <a href="#hibernate-cache">What kind of caches are there in Hibernate ORM?</a
+></p></li>
+
+<li><a href="#modelling">Modelling and Coding</a><p
+><a href="#anemic">What are anemic domain models?</a
+> &#8212; <a href="#solid">What are the SOLID principles?</a
+> &#8212; <a href="#code-gen">What code generation tools do you know?</a
+> &#8212; <a href="#dsl">Which ways of creating your own DSLs do you know?</a
+> &#8212; <a href="#uml">Which UML diagram types do you know?</a
+></p></li>
+
+<li><a href="#jvm">Java VM</a><p
+><a href="#gc-collector">What kind of garbage collectors are there in Java 6?</a
+> &#8212; <a href="#gc-generation">What is the generational hypothesis concerning garbage collection?</a
+> &#8212; <a href="#lock">What kind of locks in the Java VM do you know?</a
+> &#8212; <a href="#mutex-semaphore">What is the difference between a mutex and a semaphore and similiar questions?</a
+> &#8212; <a href="#jvm-language">What are the most important languages running on a Java VM?</a
+> &#8212; <a href="#monitoring">What monitoring tools do you know?</a
+></p></li>
+
+<li><a href="#jee">Java EE</a><p
+><a href="#jee-tech">What are the most important technologies / specifications in Java EE 6?</a
+> &#8212; <a href="#weld">What is Weld?</a
+> &#8212; <a href="#web-framework">Which Java web frameworks do you know?</a
+> &#8212; <a href="#jee-async">Which ways of making asynchronous calls within a Java EE 6 server do you know?</a
+> &#8212; <a href="#web-async">Which ways of asynchronous communication between web browsers and web servers do you know?</a
+> &#8212; <a href="#perf-web">What are the most important performance issues in Java web applications? </a
+> &#8212; <a href="#perf-jee">What are the most important performance issues in Java EE server applications?</a
+></p></li>
+
+<li><a href="#distributed-computing">Distributed Computing</a><p
+><a href="#esb">What are the advantages and disadvantages of ESBs?</a
+> &#8212; <a href="#cap">What is the CAP theorem?</a
+> &#8212; <a href="#terracotta">What is Terracotta used for?</a
+> &#8212; <a href="#token-bucket">What is the token bucket algorithm? </a
+> &#8212; <a href="#rest">What is REST used for? What are the advantages and disadvantages?</a
+> &#8212; <a href="#amdahl-law">What is Amdahls Law? What is Gustafson's Law?</a
+></p></li>
+
+<li><a href="#other-topics">Additional topics and tools</a><p
+><a href="#security">Security</a
+> &#8212; <a href="#tools">Tools</a
+> &#8212; <a href="#programming-models">Programming models</a
+> &#8212; <a href="#java-libraries">Java libraries</a
+> &#8212; <a href="#java-utilities">Java utilities</a
+></p></li>
+
+<li><a href="#lectures">Recommended Lectures to go further</a><p
+><a href="#lectures-general">General</a
+> &#8212; <a href="#lectures-concurrency">Concurrency</a
+></p></li>
+
+<li><a href="#">Conclusion</a></li>
+</div>
+
+{{ page.excerpt | textilize }}
+
+h2. <a name="database"></a>Database systems
+
+First, i strongly encourage you to read the ebook _*Java Transaction design strategies*_ available on "InfoQ":http://infoq.com/books/JTDS.
+
+h3. <a name="heuristic-exceptions"></a>What are heuristic exceptions?
+
+<blockquote><h5>4.1.3. The two-phase XA protocol</h5><p>When a transaction is about to be committed, it is the responsibility of the transaction manager to ensure that either all of it is committed, or that all of is rolled back. If only a single recoverable resource is involved in the transaction, the task of the transaction manager is simple: It just has to tell the resource to commit the changes to stable storage.</p>
+<p>When more than one recoverable resource is involved in the transaction, management of the commit gets more complicated. Simply asking each of the recoverable resources to commit changes to stable storage is not enough to maintain the atomic property of the transaction. The reason for this is that if one recoverable resource has committed and another fails to commit, part of the transaction would be committed and the other part rolled back.</p>
+<p>To get around this problem, the two-phase XA protocol is used. The XA protocol involves an extra prepare phase before the actual commit phase. Before asking any of the recoverable resources to commit the changes, the transaction manager asks all the recoverable resources to prepare to commit. When a recoverable resource indicates it is prepared to commit the transaction, it has ensured that it can commit the transaction. The resource is still able to rollback the transaction if necessary as well.</p>
+<p>So the first phase consists of the transaction manager asking all the recoverable resources to prepare to commit. If any of the recoverable resources fails to prepare, the transaction will be rolled back. But if all recoverable resources indicate they were able to prepare to commit, the second phase of the XA protocol begins. This consists of the transaction manager asking all the recoverable resources to commit the transaction. Because all the recoverable resources have indicated they are prepared, this step cannot fail.</p>
+<small><a href="http://docs.jboss.org/jbossas/admindevel326/html/ch4.chapt.html#d0e8337">Chapter 4. Transactions on JBoss</a></small></blockquote>
+
+<blockquote><h5>4.1.4. Heuristic exceptions</h5><p>In a distributed environment communications failures can happen. If communication between the transaction manager and a recoverable resource is not possible for an extended period of time, the recoverable resource may decide to unilaterally commit or rollback changes done in the context of a transaction. Such a decision is called a heuristic decision. It is one of the worst errors that may happen in a transaction system, as it can lead to parts of the transaction being committed while other parts are rolled back, thus violating the atomicity property of transaction and possibly leading to data integrity corruption.</p>
+<p>Because of the dangers of heuristic exceptions, a recoverable resource that makes a heuristic decision is required to maintain all information about the decision in stable storage until the transaction manager tells it to forget about the heuristic decision. The actual data about the heuristic decision that is saved in stable storage depends on the type of recoverable resource and is not standardized. The idea is that a system manager can look at the data, and possibly edit the resource to correct any data integrity problems.</p>
+<p>There are several different kinds of heuristic exceptions defined by the JTA. The javax.transaction.HeuristicCommitException is thrown when a recoverable resource is asked to rollback to report that a heuristic decision was made and that all relevant updates have been committed. On the opposite end is the javax.transaction.HeuristicRollbackException, which is thrown by a recoverable resource when it is asked to commit to indicate that a heuristic decision was made and that all relevant updates have been rolled back.</p>
+<p>The javax.transaction.HeuristicMixedException is the worst heuristic exception. It is thrown to indicate that parts of the transaction were committed, while other parts were rolled back. The transaction manager throws this exception when some recoverable resources did a heuristic commit, while other recoverable resources did a heuristic rollback.</p>
+<small><a href="http://docs.jboss.org/jbossas/admindevel326/html/ch4.chapt.html#d0e8348">Chapter 4. Transactions on JBoss</a></small></blockquote>
+
+
+h3. <a name="acid"></a>What does ACID mean?
+
+<blockquote>
+<p><b>Atomicity:</b> A transaction must be atomic. This means that either all the work done in the transaction must be performed, or none of it must be performed. Doing part of a transaction is not allowed.<br/>To be compliant with the 'A', a system must guarantee the atomicity in each and every situation, including power failures / errors / crashes.<br/>
+This guarantees that 'an incomplete transaction' cannot exist.</p>
+
+<p><b>Consistency:</b> When a transaction is completed, the system must be in a stable and consistent condition.</p>
+
+<p><b>Isolation:</b> Different transactions must be isolated from each other. This means that the partial work done in one transaction is not visible to other transactions until the transaction is committed, and that each process in a multi-user system can be programmed as if it was the only process accessing the system.<br/>
+In other words, it should not be possible that two transactions affect the same rows run concurrently, as the outcome would be unpredicted and the system thus made unreliable.</p>
+
+<p><b>Durability:</b> The changes made during a transaction are made persistent when it is committed. When a transaction is committed, its changes will not be lost, even if the server crashes afterwards.<br/>
+In other words, every committed transaction is protected against power loss/crash/errors and cannot be lost by the system and can thus be guaranteed to be completed.<br/>
+In a relational database, for instance, once a group of SQL statements execute, the results need to be stored permanently. If the database crashes right after a group of SQL statements execute, it should be possible to restore the database state to the point after the last transaction committed.</p>
+<small><a href="http://docs.jboss.org/jbossas/admindevel326/html/ch4.chapt.html#d0e8259">Chapter 4. Transactions on JBoss</a> &amp; <a href="http://en.wikipedia.org/wiki/ACID">Wikipedia</a>
+</small>
+</blockquote>
+
+h3. <a name="base"></a>What does BASE mean?
+
+Probably a word game from chemistry "Acid-base reaction":http://en.wikipedia.org/wiki/Acid%E2%80%93base_reaction remember your "pH":http://en.wikipedia.org/wiki/PH courses...
+
+BASE stands for _Basically Available, Soft state, Eventual consistency._
+
+<blockquote><p>Eventual consistency is one of the consistency models used in the domain of parallel programming, for example in distributed shared memory, distributed transactions, and optimistic replication, it means that given a sufficiently long period of time over which no changes are sent, all updates can be expected to propagate eventually through the system and all the replicas will be consistent. While some authors use that definition (e.g. Vogels), others prefer a stronger definition that requires good things to happen even in the presence of continuing updates, reconfigurations, or failures. In the Terry et al. work referenced above, eventual consistency means that for a given accepted update and a given replica, eventually, either the update reaches the replica, or the replica retires from service.<br/>
+In database terminology, this is known as BASE (Basically Available, Soft state, Eventual consistency), as opposed to the database concept of ACID.</p>
+<small><a href="http://en.wikipedia.org/wiki/Eventual_consistency">Wikipedia</a></small>
+</blockquote>
+
+See also: "Eventually Consistent - Revisited (By Werner Vogels)":http://www.allthingsdistributed.com/2008/12/eventually_consistent.html
+
+h3. <a name="isolation-level"></a>What are isolation levels?
+
+* @Read Uncommited@: It is the lowest isolation level. It allows transactions to read non-committed updates made by other transactions prior to those updates being committed to the database.
+* @Read Committed@: It allows multiple transactions to access to the same data, but hides non-committed updates from other transactions until they are committed.
+* @Repeatable Read@: It keeps all transactions isolated from one another. It ensures that once a set of values is read from the database within a particular transaction, that same set of values will be read every time they are re-queried.
+* @Serializable@: It is the highest and most strict level of isolation. It ensures only one transaction is allowed access to the data at a time, other transactions are "stacked" until the completion of the current transaction.
+
+"Wikipedia":http://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels
+
+More details there: "Postgresql 9.1 - Transaction Isolation":http://www.postgresql.org/docs/9.1/static/transaction-iso.html, you should especially read about the three phenomena:
+
+<blockquote><p>*Dirty read*: A transaction reads data written by a concurrent uncommitted transaction.
+</p><p>*Nonrepeatable read*: A transaction re-reads data it has previously read and finds that data has been modified by another transaction (that committed since the initial read).
+</p><p>*Phantom read*: A transaction re-executes a query returning a set of rows that satisfy a search condition and finds that the set of rows satisfying the condition has changed due to another recently-committed transaction.</p><small>"Postgresql 9.1 - Transaction Isolation":http://www.postgresql.org/docs/9.1/static/transaction-iso.html</small></blockquote>
+
+h3. <a name="hibernate-cache"></a>What kind of caches are there in Hibernate ORM?
+
+* "First level cache":http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html_single/#architecture-overview-terms: Session cache
+* "Second level cache":http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html_single/#performance-cache: <quote>Cache of data that is reusable between transactions at a process or cluster level. You can even plug in a clustered cache. Be aware that caches are not aware of changes made to the persistent store by another application.</quote>. Cache provider should provide replication feature when used in cluster environement (e.g. "ehCache replication":http://ehcache.org/documentation/replication/rmi-replicated-caching).
+* "Query cache":http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html_single/#performance-querycache: <quote>Query result sets can also be cached. This is only useful for queries that are run frequently with the same parameters.</quote>
+* "C3PO statement pooling":http://www.mchange.com/projects/c3p0/index.html#configuring_statement_pooling
+
+Three must read articles:
+* "Understanding Caching in Hibernate – Part One : The Session Cache":http://blog.dynatrace.com/2009/02/16/understanding-caching-in-hibernate-part-one-the-session-cache/
+* "Understanding Caching in Hibernate – Part Two : The Query Cache":http://blog.dynatrace.com/2009/02/16/understanding-caching-in-hibernate-part-two-the-query-cache/
+* "Understanding Caching in Hibernate – Part Three : The Second Level Cache":http://blog.dynatrace.com/2009/03/24/understanding-caching-in-hibernate-part-three-the-second-level-cache/
+
+Finally keep in mind (an underused behavior) that:
+
+<blockquote>
+<p>... if you are processing a huge number of objects and need to manage memory efficiently, the @evict()@ method can be used to remove the object and its collections from the first-level cache.</p>
+<p>... To evict all objects from the session cache, call @Session.clear()@
+For the second-level cache, there are methods defined on @SessionFactory@ for evicting the cached state of an instance, entire class, collection instance or entire collection role.</p><small>"Managing the caches":http://docs.jboss.org/hibernate/core/3.3/reference/en/html/performance.html#performance-sessioncache</small>
+</blockquote>
+
+h2. <a name="modelling"></a>Modelling and Coding
+
+I strongly suggests once this part has been read, to learn also about:
+
+* "Domain Driven Design":http://www.infoq.com/minibooks/domain-driven-design-quickly
+* "CQRS":http://martinfowler.com/bliki/CQRS.html
+* "Event Sourcing":http://martinfowler.com/eaaDev/EventSourcing.html
+* "Behavior Driven Development":http://dannorth.net/introducing-bdd/
+
+h3. <a name="anemic"></a>What are anemic domain models?
+
+Basically a POJO without any behavior only data.
+
+<blockquote><p>The catch comes when you look at the behavior, and you realize that there is hardly any behavior on these objects, making them little more than bags of getters and setters.</p><small>"Martin Fowler - Anemic Domain Model":http://martinfowler.com/bliki/AnemicDomainModel.html</small></blockquote>
+
+It mmust be opposed to "Domain Model":http://martinfowler.com/eaaCatalog/domainModel.html or DDD's "Entity", where DDD stands for Domain Driven Design.
+
+h3. <a name="solid"></a>What are the SOLID principles?
+
+SOLID stands for <b>S</b>ingle responsibility, <b>O</b>pen-closed, <b>L</b>iskov substitution, <b>I</b>nterface segregation and <b>D</b>ependency inversion.
+
+* Single Responsibility Principle: A class should have one, and only one, reason to change.
+* Open Closed Principle: You should be able to extend a classes behavior, without modifying it.
+* Liskov Substitution Principle: Derived classes must be substitutable for their base classes.
+* Interface Segregation Principle: Make fine grained interfaces that are client specific.
+* Dependency Inversion Principle: Depend on abstractions, not on concretions.
+
+"Uncle Bob - The Principles of OOD":http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod
+
+Check also the following principles:
+* DRY ("Don't Repeat Yourself":http://www.artima.com/intv/dry.html), 
+* <a name="kiss-principle"></a>KISS ("Keep it simple, Stupid!":http://people.apache.org/~fhanik/kiss.html)
+* YAGNI ("You ain't gonna need it":http://c2.com/cgi/wiki?YouArentGonnaNeedIt)
+
+
+h3. <a name="code-gen"></a>What code generation tools do you know? <small>Which ones did you use?</small> 
+
+* "Eclipse EMF/JEF":http://www.eclipse.org/modeling/emf/docs/
+* "Eclipse Xtext/Xtend":http://www.eclipse.org/Xtext/
+* "Antlr":http://www.antlr.org / "StringTemplates":http://www.stringtemplate.org/
+* "Velocity":http://velocity.apache.org/engine/releases/velocity-1.7/ / "Freemarker":http://freemarker.sourceforge.net/
+* JSP...
+
+h3. <a name="dsl"></a>Which ways of creating your own DSLs do you know? <small>Which ones did you use?</small> 
+
+* "Fluent interface":http://martinfowler.com/bliki/FluentInterface.html
+* "Groovy DSL":http://groovy.codehaus.org/Writing+Domain-Specific+Languages
+* "Antlr":http://www.antlr.org / Code Generation
+* "Xtext":http://www.eclipse.org/Xtext/ is an amazing project, it allows to quickly create a language with its corresponding Eclipse editor
+
+"Martin Fowler - DSL":http://martinfowler.com/bliki/DomainSpecificLanguage.html
+"Debasish Ghosh ==(author of DSL in action)==":http://debasishg.blogspot.com/search/label/dsl
+
+For advanced user who wants to create DSL, i recommend the lectures of:
+* "Language Implementation Patterns: Create Your Own Domain-Specific and General Programming Languages":http://pragprog.com/book/tpdsl/language-implementation-patterns
+* "Antlr":http://pragprog.com/book/tpantlr/the-definitive-antlr-reference
+
+
+h3. <a name="uml"></a>Which UML diagram types do you know? <small>What are UML stereotypes? What are UML color standards?</small> 
+
+Depending on the organization, it is not necessary to know all about UML, just the essential diagrams and convention. For me essentials diagrams are: *class diagram* / *sequence diagram* / *activity diagram*.
+
+Stereotype is an extension feature allowing to "tag" element with a special semantic e.g. an element could be tagged &laquo;Repository&raquo;, &laquo;Entity&raquo;, &laquo;DTO&raquo;...
+
+<blockquote><p>A stereotype is one of three types of extensibility mechanisms in the Unified Modeling Language (UML). They allow designers to extend the vocabulary of UML in order to create new model elements, derived from existing ones, but that have specific properties that are suitable for a particular problem domain or otherwise specialized usage.</p> <small><a href="http://en.wikipedia.org/wiki/Stereotype_(UML)">Wikipedia</a></small>
+</blockquote>
+
+For a nice introduction and to learn what is really necessary read Martin Fowler "Distilled UML 3rd Ed.":http://martinfowler.com/books.html#uml
+
+I didn't even known UML have colors! Here is a "link to them":http://en.wikipedia.org/wiki/UML_colors
+
+
+h2. <a name="jvm"></a>Java VM
+
+I must admit i had to read some articles and documentation about garbage collection to have a more precise knowledge of the terms and the type of collectors.
+
+For a simple introduction read "AZUL - Understanding GC":http://www.azulsystems.com/sites/www.azulsystems.com/SpringOne2011_UnderstandingGC.pdf and for a deeper understanding "Java SE 6 HotSpot[tm] Virtual Machine Garbage Collection Tuning":http://www.oracle.com/technetwork/java/javase/gc-tuning-6-140523.html
+You might also read the "The Memory Management Reference":http://www.memorymanagement.org/
+
+h3. <a name="gc-collector"></a>What kind of garbage collectors are there in Java 6? <small>What are the differences? Which ones are usually used for Java EE applications? How can you find out which garbage collector should be used for a Java EE application?</small>
+
+* *A Concurrent Collector* performs garbage collection work concurrently with the application’s own execution
+* *A Parallel Collector* uses multiple CPUs to perform garbage collection
+* *A Stop-the-World collector* performs garbage collection while the application is completely stopped
+* *An Incremental collector* performs a garbage collection operation or phase as a series of smaller discrete operations with (potentially long) gaps in between
+* *Mostly* means sometimes it isn’t (usually means a different fall back mechanism exists)
+
+Mark &amp; Sweep // Compact // Copy:
+* *Mark*
+** Start from "roots" (thread stacks, statics, etc.)
+** "Paint" anything you can reach as "live"
+** At the end of a mark pass:
+*** all reachable objects will be marked "live"
+*** all non-reachable objects will be marked “dead” (aka "non-live")
+* *Sweep*
+** Scan through the heap, identify "dead" objects and track them somehow
+* *Compact*
+** Over time, heap will get "swiss cheesed": contiguous dead space between objects may not be large enough to ﬁt new objects (aka "fragmentation")
+** Compaction moves live objects together to reclaim contiguous empty space (aka "relocate")
+** Compaction has to correct all object references to point to new object locations (aka "remap")
+** Remap scan must cover all references that could possibly point to relocated objects
+* *Copy*
+** Copying collector moves all lives objects from a "from" space to a "to" space &amp; reclaims "from" space
+** At start of copy, all objects are in "from" space and all references point to "from" space.
+** Start from "root" references, copy any reachable object to "to" space, correcting references as we go
+** At End of copy, all objects are in "to" space, and all references point to "to" space
+
+
+Available Collectors:
+
+<blockquote>
+<p><b>The serial collector</b> uses a single thread to perform all garbage collection work, which makes it relatively efficient since there is no communication overhead between threads. It is best-suited to single processor machines, since it cannot take advantage of multiprocessor hardware, although it can be useful on multiprocessors for applications with small data sets (up to approximately 100MB). The serial collector is selected by default on certain hardware and operating system configurations, or can be explicitly enabled with the option ==-XX:+UseSerialGC==.</p>
+<p><b>The parallel collector (also known as the throughput collector)</b> performs minor collections in parallel, which can significantly reduce garbage collection overhead. It is intended for applications with medium- to large-sized data sets that are run on multiprocessor or multi-threaded hardware. The parallel collector is selected by default on certain hardware and operating system configurations, or can be explicitly enabled with the option ==-XX:+UseParallelGC==.<br/>
+New: parallel compaction is a feature introduced in J2SE 5.0 update 6 and enhanced in Java SE 6 that allows the parallel collector to perform major collections in parallel. Without parallel compaction, major collections are performed using a single thread, which can significantly limit scalability. Parallel compaction is enabled by adding the option ==-XX:+UseParallelOldGC== to the command line.</p>
+<p><b>The concurrent collector</b> performs most of its work concurrently (i.e., while the application is still running) to keep garbage collection pauses short. It is designed for applications with medium- to large-sized data sets for which response time is more important than overall throughput, since the techniques used to minimize pauses can reduce application performance. The concurrent collector is enabled with the option ==-XX:+UseConcMarkSweepGC==.</p>
+<small><a href="http://www.oracle.com/technetwork/java/javase/gc-tuning-6-140523.html#available_collectors">Java SE 6 HotSpot[tm] Virtual Machine Garbage Collection Tuning</a></small></blockquote>
+
+Selecting a Collector:
+
+<blockquote>
+<p>Unless your application has rather strict pause time requirements, first run your application and allow the VM to select a collector. If necessary, adjust the heap size to improve performance. If the performance still does not meet your goals, then use the following guidelines as a starting point for selecting a collector.</p>
+<p>If the application has a small data set (up to approximately 100MB), then select the serial collector with ==-XX:+UseSerialGC==.</p>
+<p>If the application will be run on a single processor and there are no pause time requirements, then let the VM select the collector, or select the serial collector with ==-XX:+UseSerialGC==.</p>
+<p>If (a) _peak application performance is the first priority_ and (b) _there are no pause time requirements or pauses of one second or longer are acceptable_, then let the VM select the collector, or select the parallel collector with ==-XX:+UseParallelGC== and (optionally) enable parallel compaction with ==-XX:+UseParallelOldGC==.</p>
+<p>If response time is more important than overall throughput and garbage collection pauses must be kept shorter than approximately one second, then
+select the concurrent collector with ==-XX:+UseConcMarkSweepGC==. If only one or two processors are available, consider using incremental mode, described below.</p>
+<small><a href="http://www.oracle.com/technetwork/java/javase/gc-tuning-6-140523.html#available_collectors.selecting">Java SE 6 HotSpot[tm] Virtual Machine Garbage Collection Tuning</a></small></blockquote>
+
+More informations there: "Java SE 6 HotSpot[tm] Virtual Machine Garbage Collection Tuning":http://www.oracle.com/technetwork/java/javase/gc-tuning-6-140523.html
+
+h3. <a name="gc-generation"></a>What is the generational hypothesis concerning garbage collection?
+
+* A generation is a set of objects which have similar expected lifetimes.
+* Objects are gathered together in generations. 
+* The heap is divided into generations so that it is possible to eliminate most of the garbage by looking at only a small fraction of the heap.
+* The collector can promote objects into older generations as they survive successive collection cycles.
+* New objects are usually allocated in the youngest or nursery generation, but if we know that particular objects will be long-lived, we might want to allocate them directly in an older generation. 
+* Objects within a generation are all roughly the same age.
+* Higher-numbered generations indicate areas of the heap with older objects—those objects are much more likely to be stable.
+* Objects in older generations are condemned less frequently, saving CPU time.
+
+* Generational Hypothesis: most objects die young
+* Focus collection efforts on young generation
+* Generally based on a copy collector
+
+<blockquote><p>... memory is managed in generations, or memory pools holding objects of different ages. Garbage collection occurs in each generation when the generation fills up. The vast majority of objects are allocated in a pool dedicated to young objects (the young generation), and most objects die there. When the young generation fills up it causes a minor collection in which only the young generation is collected; garbage in other generations is not reclaimed. Minor collections can be optimized assuming the weak generational hypothesis holds and most objects in the young generation are garbage and can be reclaimed. The costs of such collections are, to the first order, proportional to the number of live objects being collected; a young generation full of dead objects is collected very quickly. Typically some fraction of the surviving objects from the young generation are moved to the tenured generation during each minor collection. Eventually, the tenured generation will fill up and must be collected, resulting in a major collection, in which the entire heap is collected. Major collections usually last much longer than minor collections because a significantly larger number of objects are involved.</p><small><a href="http://www.oracle.com/technetwork/java/javase/gc-tuning-6-140523.html#generations">Java SE 6 HotSpot[tm] Virtual Machine Garbage Collection Tuning</a></small></blockquote>
+
+h3. <a name="lock"></a>What kind of locks in the Java VM do you know? 
+
+* @synchronized@ keyword
+* @ReentrantLock@
+* @ReadWriteLock@
+* @CyclicBarrier@
+* @CountDownLatch@
+* @Semaphore@
+* All kind of @BlockingQueue@ could also be used as lock in a certain manner...
+
+Check for more information in the corresponding packages: "java.util.concurrent package":http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/package-frame.html and "java.util.concurrent.locks package":http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/locks/package-frame.html .
+
+Concurency *AND* Parallelism should be high topic with today multi-core systems, i strongly recommend to have a look at the followings:
+
+* "5 things you didn't know about ... java.util.concurrent, Part 1":http://www.ibm.com/developerworks/java/library/j-5things4/index.html
+* "5 things you didn't know about ... java.util.concurrent, Part 2":http://www.ibm.com/developerworks/java/library/j-5things5/index.html
+* "Java Concurrency in Practice":http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601
+
+
+h3. <a name="mutex-semaphore"></a>What is the difference between a mutex and a semaphore and similiar questions?
+
+Mutexes and semaphores are very similar, with the only significant difference being that semaphores can count higher than one.
+
+"Lock":http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/locks/Lock.html can be viewed as a Mutex implementation in java, and more specifically "ReentrantLock":http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/locks/Lock.html. Whereas only the "Write lock" of the "ReadWriteLock":http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/locks/ReadWriteLock.html is a mutex.
+
+<blockquote><p>Mutexes are typically used to serialise access to a section of  re-entrant code that cannot be executed concurrently by more than one thread. A mutex object only allows one thread into a controlled section, forcing other threads which attempt to gain access to that section to wait until the first thread has exited from that section.</p>
+<small>Symbian Developer Library</small>
+</blockquote>
+
+<blockquote><p>A semaphore restricts the number of simultaneous users of a shared resource up to a maximum number. Threads can request access to the resource (decrementing the semaphore), and can signal that they have finished using the resource (incrementing the semaphore).</p>
+<small>Symbian Developer Library</small>
+</blockquote>
+
+<blockquote><p>Conceptually, a semaphore maintains a set of permits. Each acquire() blocks if necessary until a permit is available, and then takes it. Each release() adds a permit, potentially releasing a blocking acquirer.</p>
+<small><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/Semaphore.html">Semaphore JDK API</a></small>
+</blockquote>
+
+A nice story to explain the difference "The Toilet Example":http://koti.mbnet.fi/niclasw/MutexSemaphore.html
+
+h3. <a name="jvm-language"></a>What are the most important languages running on a Java VM? <small>Which ones did you use? What are their advantages and disadvantages?</small>
+
+* "Groovy":http://groovy.codehaus.org/: for scripting purpose and some "Grails":http://grails.org/ simple applications.
+* "Mvel":http://mvel.codehaus.org/: simple expression language similar to OGNL but a lot faster
+* "Scala":http://www.scala-lang.org/ for personnal use only, love the compacity, expressiveness and scalability of the language such as the actor stack added by "Akka". It mixes both procedural and functionnal approach, and allow a switch for one approach to another smoothly. I really think it can replace Java as the mainstream JVM language, evolution are less tied to the JVM version. Developper is free to choose the scala version he wants to use, simply compile and drop the corresponding jars. Dislike the ASCII art that emerge for some "elite coders".
+* "Clojure":http://clojure.org/: never used it, but i should really take a look at it. At least for a better knowledge and way of thinking of "lisp"-like language.
+* "Ruby":http://www.ruby-lang.org/en/ through "JRuby":http://jruby.org/ really interesting approach of meta-programming and flexibility. Really easy for day-to-day programming and utilities (see "Everyday Scripting with Ruby: for Teams, Testers, and You":http://pragprog.com/book/bmsft/everyday-scripting-with-ruby). Ever body should take a look at least one day to "Rails":http://rubyonrails.org/
+* "Python":http://python.org/ through "Jython":http://www.jython.org/ a single try through the scripting of "Grinder":http://grinder.sourceforge.net/ a java load testing framework. I still prefer ruby to python.
+* Javascript through "Rhino":http://www.mozilla.org/rhino/. Javascript is an important language nowadays and shouldn't be neglected anymore. "NodeJS":http://nodejs.org/ offers a great playground to learn and use javascript without the browser approach. Whereas it is essential in web front end, it also offers a nice scripting environement for server side scripting.
+
+See a more complete list of available JVM languages "here":http://en.wikipedia.org/wiki/List_of_JVM_languages. 
+
+Note also that two *big* new languages have appeared recently: 
+* "kotlin":http://confluence.jetbrains.net/display/Kotlin/Welcome by "JetBrains":http://jetbrains.com/
+* "ceylon":http://ceylon-lang.org/ by "Red Hat":http://www.redhat.com/
+
+I strongly recommend every programmer to read the "Seven languages in seven weeks":http://pragprog.com/book/btlang/seven-languages-in-seven-weeks book.
+
+h3. <a name="monitoring"></a>What monitoring tools do you know? <small>Which ones did you use in production?</small>
+
+* "JMX":http://java.sun.com/developer/technicalArticles/J2SE/jmx.html in production too
+* "VisualVM":http://visualvm.java.net
+* Log file analysis // Addition of probes in Code manually or through "AOP":http://www.eclipse.org/aspectj/: in production too
+* "JProfiler":http://www.ej-technologies.com/products/jprofiler/overview.html
+
+h2. <a name="jee"></a>Java EE
+
+I am not fan of the 'EE' and 'application server' approach, and really prefer lightweight approach such as spring and web server like "tomcat":http://tomcat.apache.org/
+
+Furthermore alternate approach such as "Play!":http://www.playframework.org/ is rising and allow really more flexibility, emergent design and up-to-date techniques.
+
+Remember the <a href="#kiss-principle">"KISS"</a> principle above.
+
+<blockquote><p>... the biggest problem is the complexity of IT. If you look at any IT in business, it is so complex it hinders the ability to be agile and efficient. Throughout the history of IT we all have said that we will make it simpler by adding more things to it, but that makes it more and more complex.
+IT departments spend 75% to 85% of their budgets just to keep existing IT environments running; that leaves little capacity for innovation</p>
+<p>(...)</p>
+<p><b>What's the biggest technology mistake you ever made - either at work or in your own life?</b><br/>
+When I was at IBM, I started a product called Websphere [which helps companies to operate and integrate business applications across multiple computing platforms].<br/>
+Because I had come from working on big mission-critical systems, I thought it needs to be scalable, reliable, have a single point of control ... I tried to build something like a mainframe, a system that was capable of doing anything, that would be able to do what might be needed in five years.<br/>
+I call it the endgame fallacy. It was too complex for people to master. I overdesigned it.<br/>
+Because we were IBM, we survived it, but if we'd been a start-up, we'd have gone to the wall.
+</p><small>"The mantra of CA Technologies' Donald Ferguson: Simplify":http://www.bbc.co.uk/news/business-11944966</small></blockquote>
+
+h3. <a name="jee-tech"></a>What are the most important technologies / specifications in Java EE 6? 
+
+* Servlet 3.0 and annotation based configuration
+** <a href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletRequest.html#startAsync(javax.servlet.ServletRequest, javax.servlet.ServletResponse)">Asynchronous</a> processing support
+* CDI think of "Guice":http://code.google.com/p/google-guice/ or "Spring IOC":http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/beans.html
+* JPA think of "Hibernate":http://www.hibernate.org/ as standard implementation
+
+
+"Java EE 6 - Overview":http://www.theserverside.com/news/1363662/Java-EE-6-Overview
+
+h3. <a name="weld"></a>What is Weld?
+
+<blockquote><p>Weld is the reference implementation (RI) for "JSR-299":http://jcp.org/en/jsr/detail?id=299 : _*Java Contexts and Dependency Injection for the Java EE platform (CDI)*_. CDI is the Java standard for dependency injection and contextual lifecycle management, led by Gavin King for Red Hat, Inc. and is a Java Community Process (JCP) specification that integrates cleanly with the Java EE platform. Any Java EE 6-compliant application server provides support for JSR-299 (even the web profile).</p>
+<small><a href="http://seamframework.org/Weld">Weld Home</a></small>
+</blockquote>
+
+Think of it as an embedded "Spring IOC".
+
+h3. <a name="web-framework"></a>Which Java web frameworks do you know? <small>What are their advantages and disadvantages?</small>
+
+* Struts 1 &amp; 2
+* Spring MVC
+* GWT
+* Grails
+* JSF / Tapestry / Stripes / Wicket : heard of them only
+
+h3. <a name="jee-async"></a>Which ways of making asynchronous calls within a Java EE 6 server do you know? 
+
+Only read about it: <a href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletRequest.html#startAsync(javax.servlet.ServletRequest, javax.servlet.ServletResponse)">Asynchronous</a> processing support.
+
+h3. <a name="web-async"></a>Which ways of asynchronous communication between web browsers and web servers do you know?
+
+* "AJAX":http://en.wikipedia.org/wiki/Ajax_(programming)
+* "Comet or long polling":http://en.wikipedia.org/wiki/Comet_(programming)
+* "Event Source":http://www.html5rocks.com/en/tutorials/eventsource/basics/
+* "Web sockets":http://www.html5rocks.com/en/tutorials/websockets/basics/
+
+
+h3. <a name="perf-web"></a>What are the most important performance issues in Java web applications?
+
+I don't think main issues are Java related, but are Web related.
+
+* Browser still in HTTP 1.0
+* Page loading time / Response time
+* Javascript poor performance on some browser
+* Almost no asynchronous feedback for processing: usually blocking call only
+
+A really powerfull tool to measure such issues: "Page Speed, the Web Performance Tool and Apache module":http://code.google.com/intl/fr-FR/speed/page-speed/
+
+Read some of them here "Top 8 Performance Problems on Top 50 Retail Sites before Black Friday":http://blog.dynatrace.com/2011/11/23/top-8-performance-problems-on-top-50-retail-sites-before-black-friday/ and here "Top 10 Client-Side Performance Problems in Web 2.0":http://blog.dynatrace.com/2010/08/25/top-10-client-side-performance-problems-in-web-2-0/
+
+h3. <a name="perf-jee"></a>What are the most important performance issues in Java EE server applications?
+
+humm... same as above i guess
+
+The usage of *Websphere* may also a notable performance issue...
+
+h2. <a name="distributed-computing"></a>Distributed Computing
+
+I strongly recommend the read of the following articles "NOSQL Patterns":http://horicky.blogspot.com/2009/11/nosql-patterns.html and "Scalable System Design Patterns":http://horicky.blogspot.com/2010/10/scalable-system-design-patterns.html in order to grab all the required keywords and basis of distributed database and scalability.
+
+It would also be a good idea to have a general knowledge of "Event Driven Architecture":http://en.wikipedia.org/wiki/Event-driven_architecture (a really interesting article with many links "Event Driven Architecture: Publishing Events using an IOC container":http://elegantcode.com/2010/01/06/event-driven-architecture-publishing-events-using-an-ioc-container/) and "Message-oriented middleware":http://en.wikipedia.org/wiki/Message-oriented_middleware (pick at least one of "AMQP":http://www.amqp.org/ or "XMPP":http://xmpp.org/xmpp-protocols/, i would suggest to not spend so much time on "JMS":http://en.wikipedia.org/wiki/Java_Message_Service since it is strongly tied to java platform).
+
+<blockquote><p>SOA 2.0 event-driven programming is structured around the concept of decoupled relationships between event producers and event consumers: an event consumer doesn't care where or why an event occurs; rather, it's concerned that it will be invoked when the event has occurred. Systems and applications that separate event producers from event consumers typically rely on an event dispatcher, or channel. This channel contains an event queue that acts as an intermediary between event producers and event handlers.</p><small>"Wikipedia - Event-driven SOA":http://en.wikipedia.org/wiki/Event-driven_SOA</small></blockquote>
+
+Finally have a look at "Enterprise Integration Patterns" "site":http://www.eaipatterns.com/ and *read* the "book":http://www.amazon.com/Enterprise-Integration-Patterns-Designing-Deploying/dp/0321200683!
+
+Presentation on the subject (i've not seen it yet) "Messaging for Modern Applications":http://www.infoq.com/presentations/Messaging-for-Modern-Applications.
+
+h3. <a name="esb"></a>What are the advantages and disadvantages of ESBs? <small>Which ESBs do you know? Which ones did you use?</small>
+
+I've never used one of them, and i only know the theory around. "Enterprise Service Bus":http://www.amazon.com/Enterprise-Service-Bus-Theory-Practice/dp/0596006756 is a great book on such subject.
+
+Have a look to the following article for an introduction of their usage:
+
+"Understand Enterprise Service Bus scenarios and solutions in Service-Oriented Architecture, Part 1":http://www.ibm.com/developerworks/webservices/library/ws-esbscen/
+"Understand Enterprise Service Bus scenarios and solutions in Service-Oriented Architecture, Part 2":http://www.ibm.com/developerworks/webservices/library/ws-esbscen2/
+"Understand Enterprise Service Bus scenarios and solutions in Service-Oriented Architecture, Part 3":http://www.ibm.com/developerworks/webservices/library/ws-esbscen3/
+
+h3. <a name="cap"></a>What is the CAP theorem? <small>(Now that's quite important)</small>
+
+CAP theorem is becomming known due to the increase hype around NoSQL database.
+
+<blockquote><p>the CAP theorem, also known as Brewer's theorem, states that it is impossible for a distributed computer system to simultaneously provide all three of the following guarantees:
+* *Consistency* (all nodes see the same data at the same time)
+* *Availability* (a guarantee that every request receives a response about whether it was successful or failed)
+* *Partition tolerance* (the system continues to operate despite arbitrary message loss)
+According to the theorem, a distributed system can satisfy any two of these guarantees at the same time, but not all three.
+</p><small>"Wikipedia":http://en.wikipedia.org/wiki/CAP_theorem</small>
+</blockquote>
+
+Read more here: "Brewers CAP Theorem":http://en.wikipedia.org/wiki/CAP_theorem
+
+h3. <a name="terracotta"></a>What is Terracotta used for?
+
+Distributed VM with shared memory through datagraph of objects.
+
+"Terracota":http://www.terracotta.org/
+
+I recommend to have a look to it when it is required to have really big JVM. But don't forget that hidding the underlying distributed infrastructure may have some bad drawbacks afterwards. I usually prefer to be aware that i'm acting on a local object or a remote one.
+
+h3. <a name="token-bucket"></a>What is the token bucket algorithm? 
+
+Humm... never heard about it. Let's do some research.
+
+<blockquote><p>The token bucket is an algorithm used in packet switched computer networks and telecommunications networks to check that data transmissions conform to defined limits on bandwidth and burstiness</p><small>"Wikipedia":http://en.wikipedia.org/wiki/Token_bucket</small></blockquote>
+
+... ok... may be not really *Software* but more *Network* consideration.
+
+Let's continue:
+
+<blockquote><p>The algorithm can be conceptually understood as follows:
+A token is added to the bucket every 1 / r seconds.
+The bucket can hold at the most b tokens. If a token arrives when the bucket is full, it is discarded.
+When a packet (network layer PDU) of n bytes arrives, n tokens are removed from the bucket, and the packet is sent to the network.
+If fewer than n tokens are available, no tokens are removed from the bucket, and the packet is considered to be non-conformant.</p><small>"Wikipedia":http://en.wikipedia.org/wiki/Token_bucket</small></blockquote>
+
+<blockquote><p> Essentially, token bucket algorithms are metering engines that keep track of how much traffic can be sent to conform to the specified traffic rates. A token permits the algorithm to send a single bit (or, in some cases, a byte) of traffic. These tokens are granted at the beginning of some time increment, typically every second, according to the specified rate referred to as the committed information rate (CIR). The CIR is the access bit rate contracted with a service provider or the service level to be maintained.
+For example, if the CIR is set to 8000 bps, then 8000 tokens are placed in a “bucket” at the beginning of the time period. (Note that this description represents a simplified view of the algorithm and might not be strictly true in all cases, but it illustrates the general operation of the policing mechanism.) 
+Each time a bit of traffic is offered to the policer, the bucket is checked for tokens. If there are tokens in the bucket, the traffic is passed. One token is removed from the bucket for each bit of traffic that is passed. Therefore, traffic is viewed to conform the rate, and the specified action for conforming traffic is taken. (Typically, the conforming traffic is transmitted.) When the bucket runs out of tokens, any additional offered traffic is viewed to exceed the rate, and the exceed action is taken. (The exceeding traffic typically either is re-marked or is dropped.)</p><small>"End-to-End QoS Network Design - Safari book":http://my.safaribooksonline.com/book/networking/network-management/1587051761/policing-and-shaping-tools/ch04lev1sec1</small></blockquote>
+
+"Single Token Bucket Algorithm":http://www.juniper.net/techpubs/en_US/junos/topics/concept/policer-algorithm-single-token-bucket.html
+
+h3. <a name="rest"></a>What is REST used for? What are the advantages and disadvantages?
+
+REST is a so big subject, it would be hard to explain fully here. I strongly recommend to read the book "Restful Web Services":http://www.amazon.com/Restful-Web-Services-Leonard-Richardson/dp/0596529260
+
+An really nice introduction here : "How I Explained REST to My Wife":http://tomayko.com/writings/rest-to-my-wife
+A more technological approach there "RESTful Web services: The basics":http://www.ibm.com/developerworks/webservices/library/ws-restful
+
+Some of the main ideas behind REST:
+
+* Rely on and exploit @HTTP@ protocol
+* use already known "HTTP methods":http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+** @GET@ or @HEAD@ to query data or part of it
+** @POST@ to modify data
+** @PUT@ to create data
+** @DELETE@ to ... delete data
+* Use HTTP parameters, URL or body to provides the required parameters for the wanted action to be executed. For example a @GET@ with @http://somewh.ere/person/24@ to retrieve the data relative to the @person@ with id @24@, @HTTP@ headers could contains required credentials for example.
+** There is no predefined protocol except HTTP to transmit data, it is up to the application to define it as opposed to SOAP. Usually xml or json is used.
+* All actions should be stateless: no client context is being stored on the server between requests, all requests should be self-sufficient to execute
+
+* Whenever data is returned, it is nice to retrieve the url to access to linked data as opposed to its raw id. So that the entry points are not predefined. For example:
+
+{% highlight javascript %}
+  {
+  	"type": "person",
+  	"uuid": "550e8400-e29b-41d4-a716-446655440000",
+  	"first_name": "Sherlock",
+  	"last_name": "Holmes",
+  	"organisation": "http://somewh.ere/organisation/550e8400-f34d-41d4-a716-876543211234"
+  }
+{% endhighlight %}
+
+
+h3. <a name="amdahl-law"></a>What is Amdahls Law? What is Gustafson's Law? 
+
+<blockquote><p>For the past 30 years, computer performance has been driven by Moore's Law; from now on, it will be driven by Amdahl's Law. Writing code that effectively exploits multiple processors can be very challenging. </p><small>Doron Rajwan - Research Scientist, Intel Corp</small></blockquote>
+
+<blockquote><p>The speedup of a program using multiple processors in parallel computing is limited by the time needed for the sequential fraction of the program. For example, if a program needs 20 hours using a single processor core, and a particular portion of 1 hour cannot be parallelized, while the remaining promising portion of 19 hours (95%) can be parallelized, then regardless of how many processors we devote to a parallelized execution of this program, the minimum execution time cannot be less than that critical 1 hour. </p><small>"Amdahl's law":http://en.wikipedia.org/wiki/Amdahl's_law</small>
+</blockquote>
+
+<blockquote><p>Gustafson's Law (...) says that problems with large, repetitive data sets can be efficiently parallelized. Gustafson's Law contradicts Amdahl's law, which describes a limit on the speed-up that parallelization can provide.</p><small>"Gustafson's Law":http://en.wikipedia.org/wiki/Gustafson's_law</small>
+</blockquote>
+
+h2. <a name="other-topics"></a>[Added] Additional topics and tools 
+
+Here is some additional topics that should require some attention and personal interests
+
+h3. <a name="security"></a>Security 
+
+* Web Security: "Google Code University":http://code.google.com/intl/fr-FR/edu/security/index.html
+* "Single Sign On (SSO)":http://en.wikipedia.org/wiki/Single_sign-on
+* "Java EE security":http://docs.oracle.com/javaee/5/tutorial/doc/bnbwj.html 
+* "Spring security":http://static.springsource.org/spring-security/site/features.html
+
+h3. <a name="tools"></a>Tools 
+
+* "Version control system":http://en.wikipedia.org/wiki/Revision_control: -CVS- / SVN / "GIT":http://git-scm.com/ ...
+
+h3. <a name="programming-models"></a>Programming models 
+
+* "Map Reduce":http://en.wikipedia.org/wiki/MapReduce and "Introduction to Parallel Programming and MapReduce":http://code.google.com/intl/fr-FR/edu/parallel/mapreduce-tutorial.html
+* "Software Transactional Memory(STM)":http://en.wikipedia.org/wiki/Software_transactional_memory
+* "Actor":http://en.wikipedia.org/wiki/Actor_model (see "Akka":http://akka.io/docs/akka/1.2/scala/actors.html or "Erlang process":http://www.erlang.org/doc/reference_manual/processes.html)
+
+h3. <a name="java-libraries"></a>Java libraries 
+
+* "Hadoop":http://hadoop.apache.org/: <quote>The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using a simple programming model. It is designed to scale up from single servers to thousands of machines, each offering local computation and storage.</quote>
+* "Lucene":http://lucene.apache.org/java/docs/index.html: <quote>Apache Lucene(TM) is a high-performance, full-featured text search engine library written entirely in Java. It is a technology suitable for nearly any application that requires full-text search, especially cross-platform.</quote>
+* "Mahout":http://mahout.apache.org/ <quote>The Apache Mahout(TM) machine learning library's goal is to build scalable machine learning libraries.</quote>
+* "Camel":http://camel.apache.org/: <quote>Apache Camel is a powerful open source integration framework based on known Enterprise Integration Patterns with powerful Bean Integration.</quote>
+
+h3. <a name="java-utilities"></a>Java utilities
+
+* "Guava: Google Core Libraries":http://code.google.com/p/guava-libraries/: <quote>The Guava project contains several of Google's core libraries that we rely on in our Java-based projects: collections, caching, primitives support, concurrency libraries, common annotations, string processing, I/O, and so forth.</quote>
+* "Joda Time":http://joda-time.sourceforge.net/: <quote>Joda-Time provides a quality replacement for the Java date and time classes.</quote>
+* "Mockito":http://code.google.com/p/mockito/: <quote>simpler &amp; better mocking</quote>
+* "PowerMock":http://code.google.com/p/powermock/: <quote>Writing unit tests can be hard and sometimes good design has to be sacrificed for the sole purpose of testability. Often testability corresponds to good design, but this is not always the case. For example final classes and methods cannot be used, private methods sometimes need to be protected or unnecessarily moved to a collaborator, static methods should be avoided completely and so on simply because of the limitations of existing frameworks.</quote>
+* "JBehave":http://jbehave.org/: <quote>Behaviour-driven development in Java...</quote>
+* "Selenium Webdriver":http://code.google.com/p/selenium/wiki/GettingStarted: <quote>WebDriver is a tool for automating testing web applications, and in particular to verify that they work as expected.</quote>
+
+h2. <a name="lectures"></a>[Added] Recommended Lectures to go further 
+
+h3. <a name="lectures-general"></a>General 
+
+* "Patterns of Enterprise Application Architecture":http://www.amazon.com/Patterns-Enterprise-Application-Architecture-Martin/dp/0321127420 <quote>The main topic areas are: how to layer an enterprise application, how to organize domain logic, how to tie that logic to a relational database, how to design a web based presentation, some important principles in distributed design, and handling of what we call "offline concurrency" - concurrency that spans transactions.</quote>
+* "Enterprise Integration Patterns":http://www.amazon.com/Enterprise-Integration-Patterns-Designing-Deploying/dp/0321200683 <quote>The book Enterprise Integration Patterns provides a consistent vocabulary and visual notation to describe large-scale integration solutions across many implementation technologies. It also explores in detail the advantages and limitations of asynchronous messaging architectures. You will learn how to design code that connects an application to a messaging system, how to route messages to the proper destination and how to monitor the health of a messaging system.</quote>
+* "Camel in Action":http://www.amazon.com/Camel-Action-Claus-Ibsen/dp/1935182366 <quote>Camel lets you create the Enterprise Integration Patterns to implement routing and mediation rules in either a Java based Domain Specific Language (or Fluent API), via Spring or Blueprint based Xml Configuration files or via the Scala DSL. This means you get smart completion of routing rules in your IDE whether in your Java, Scala or XML editor.</quote>
+* "Domain-Driven Design: Tackling Complexity in the Heart of Software":http://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215 <quote>It provides a broad framework for making design decisions and a technical vocabulary for discussing domain design. It is a synthesis of widely accepted best practices along with the author's own insights and experiences. Projects facing complex domains can use this framework to approach domain-driven design systematically.</quote>
+* "Enterprise Service Bus":http://www.amazon.com/Enterprise-Service-Bus-Theory-Practice/dp/0596006756 <quote>Enterprise Service Bus offers a thorough introduction and overview for systems architects, system integrators, technical project leads, and CTO/CIO level managers who need to understand, assess, and evaluate this new approach.</quote>
+* "Event Centric: Finding Simplicity in Complex Systems":http://www.amazon.com/gp/product/0321768221/ (coming soon)
+* "Microsoft Application Architecture Guide, 2nd Edition":http://msdn.microsoft.com/en-us/library/ff650706.aspx <quote>The guide provides an overview of the underlying principles and patterns that provide a solid foundation for good application architecture and design. On top of this foundation, the guide provides generally applicable guidance for partitioning an application’s functionality into layers, components, and services. It goes on to provide guidance on identifying and addressing the key design characteristics of the solution and the key quality attributes (such as performance, security, and scalability) and crosscutting concerns (such as caching and logging)</quote>
+* And finally have a look to the site part of "97 Things Every Software Architect Should Know":http://97things.oreilly.com/wiki/index.php/97_Things_Every_Software_Architect_Should_Know_-_The_Book
+
+h3. <a name="lectures-concurrency"></a>Concurrency 
+
+* "Java Concurrency in Practice":http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601 <quote>This book covers a very deep and subtle topic in a very clear and concise way, making it the perfect Java Concurrency reference manual. Each page is filled with the problems (and solutions!) that programmers struggle with every day.<small>&mdash; Cliff Click</small></quote>
+* "Programming Erlang: Software for a Concurrent World":http://pragprog.com/book/jaerlang/programming-erlang <quote>Learn how to write truly concurrent programs—programs that run on dozens or even hundreds of local and remote processors. See how to write high reliability applications—even in the face of network and hardware failure—using the Erlang programming language.</quote>
+* "Seven languages in seven weeks":http://pragprog.com/book/btlang/seven-languages-in-seven-weeks <quote>You should learn a programming language every year, as recommended by The Pragmatic Programmer. But if one per year is good, how about Seven Languages in Seven Weeks? In this book you’ll get a hands-on tour of Clojure, Haskell, Io, Prolog, Scala, Erlang, and Ruby. Whether or not your favorite language is on that list, you’ll broaden your perspective of programming by examining these languages side-by-side.</quote>
+
+h2. <a name="conclusion"></a>[Added] Conclusion 
+
+Whenever you want to claim yourself as an architect, be aware that you never know enough. Technologies, patterns, frameworks and even paradigms are living creatures, that born, grow, change and some times died replaced by new ones or killed by their children. You can't stay with what you learnt, you have to train and discover every times. It is quite hard to be efficient on all technics, the most important is to know they exists, and to know how to learn about when necessary.
+
+I would personnally change most of these questions by
+* have you heard about ... do you know how to learn about it ... what are the usecases ?
+* how do you stay tuned to industry and computer science change? what kind of blogs are you reading?
+
+Furthermore, a broader attention must be paid to the fact that you can't work anymore with a unique technology such as Java. "Polyglot programming":http://memeagora.blogspot.com/2006/12/polyglot-programming.html (a five years old article) is becommig more and more present, Martin Fowler even speaks about "Polyglot Persistence":http://martinfowler.com/bliki/PolyglotPersistence.html
+I personnally think it is more efficient to know about *AMQP* than *JMS*. If you have an architecture big enough to have a distributed computing infrastructure, maybe you'll have a better software experience with *MapReduce* or *NoSQL* database. Maybe it would be more efficient to have a *ruby* frontend with a *scala* backend linked to a cluster through *RabbitMQ*...
+
+Architect in Java is not enough!
+
+The good intention of the article (<a href="http://java.dzone.com/articles/technical-job-interview">Technical Job Interview Questions for Java EE architects</a>), or at least the goal it achieved, is not to define the right questions for an interview, but it gives a general overview of the points an architect may have to deal with. It can also be viewed as a check list: what else should i learn ? All questions does not require the right response to be a good architect, it all depends on the application you are working on or the team you are part of, and knowing that those things exist are usually enough.
+It is a good opportunity to learn or re-adjust your knowledge, that what i felt writing this article.
+
+And the final quote:
+
+<blockquote>
+<p>As a Scrum Master, my struggle with architects is that they often want to slow things down to "do it right" which inhibits releasing early and often.</p>
+<small>InfoQ comment "trust?":http://www.infoq.com/articles/softwarearch-assessment#view_79319</small>
+</blockquote>
+
+Last minute link: have a look at the presentation "Architects? We Don't Need No Stinkin’ Architects!":http://www.infoq.com/presentations/We-Dont-Need-No-Stinkin-Architects
