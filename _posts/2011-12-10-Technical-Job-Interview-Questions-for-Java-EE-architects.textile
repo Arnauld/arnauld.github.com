@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Response to "Technical Job Interview Questions for Java EE architects"
-category: Bleog
+category: Blog
 tags:
   - jvm
   - architect
