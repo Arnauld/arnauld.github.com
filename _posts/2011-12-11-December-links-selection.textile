@@ -5,7 +5,7 @@ category: Bleog
 tags:
   - Links
   - Selec
-published: false
+published: true
 comments: true
 ---
 
@@ -53,9 +53,3 @@ Ou comment faire l'amalgame entre un outil de travail et un process de développ
 
 "Réaction @nmartignole":http://twitter.com/#!/nmartignole/status/142497996641280000
 "Réaction @BodySplash":http://twitter.com/#!/BodySplash/status/142250558286340096
-
-<blockquote>
-<p>As a Scrum Master, my struggle with architects is that they often want to slow things down to "do it right" which inhibits releasing early and often.</p>
-<small>from comment "trust?":http://www.infoq.com/articles/softwarearch-assessment#view_79319 </small>
-</blockquote>
-
