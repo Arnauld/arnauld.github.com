@@ -17,6 +17,9 @@ excerpt: |
 
 ---
 
+{{page.excerpt | markdownify }}
+
+
 Pour information, le fichier "Graphviz":http://www.graphviz.org/ pour la génération de l'image.
 
 {% highlight bash %}
