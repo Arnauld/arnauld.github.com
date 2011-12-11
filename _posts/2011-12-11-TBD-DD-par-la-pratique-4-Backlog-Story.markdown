@@ -9,7 +9,7 @@ tags:
   - cqrs
   - event-sourcing
   - nodejs
-published: false
+published: true
 comments: true
 excerpt: |
   Le `backlog` est directement lié au projet par une relation 1-1: le backlog appartient à un projet et un projet ne possède qu'un backlog. D'un certain point de vue, le backlog existe fonctionnellement, mais créer une entité dédiée n'apporte, à ce stade, pas grand chose: il s'agit plus d'un concept que l'on qualifiera d'affichage qu'un besoin de persistence. Nous nous passerons donc de définir une entité dédiée au backlog.
