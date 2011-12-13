@@ -22,11 +22,11 @@ excerpt: |
   Nous avons vu que seuls nos évènements devaient être persistés, ce n'est pas tout à fait vrai. Nous allons persister les entités et leurs évènements. Il n'est pas nécessaire de créer une table par type d'entité, mais uniquement les tables nécessaires à stocker les évènements.
   
   Il existe de nombreux articles sur la création d'un `EventStore`, nous prendrons comme base une modélisation décrite par Greg Young dans [cet article][eventstore1].
+  [eventstore1]:http://cqrsinfo.com/documents/building-event-storage/
 
 ---
 {{page.excerpt | markdownify }}
 
-[eventstore1]:http://cqrsinfo.com/documents/building-event-storage/
 
 Rappellons brièvement cette modélisation d'un point de vue base de données.
 
