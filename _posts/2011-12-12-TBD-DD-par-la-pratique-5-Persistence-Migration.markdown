@@ -11,7 +11,7 @@ tags:
   - nodejs
   - postgres
   - non-blocking
-published: false
+published: true
 comments: true
 excerpt: |
   ## Persistence

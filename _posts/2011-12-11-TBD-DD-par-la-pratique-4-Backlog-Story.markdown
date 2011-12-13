@@ -17,7 +17,8 @@ excerpt: |
   En revanche, une `story` joue un rôle centrale (certain parle même de *ventrale*) dans notre application. Les discussions de travail seront souvent centrées autour d'une `story` particulère, bien identifiée par son nom et sa description. Et même si une `story` appartient à un projet, nous considérerons plutôt qu'elle est liée à celui-ci, et qu'elle constitue une entité à part entière.
 
 ---
-{{page.excerpt | markdownify }}
+
+{{ page.excerpt | markdownify }}
 
 Rappelez-vous:
 
