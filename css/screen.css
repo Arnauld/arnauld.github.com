@@ -120,10 +120,32 @@ article header h1 {
   -moz-opacity: 0.95;
   opacity: 0.95;
 }
+/*****************************************************************************/
+/*
+/* Color
+/*
+/*****************************************************************************/
+.color0 {
+  background-color:#a00;
+  color:white;
+  padding: 0px 2px 0px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.color1 {
+  color:#a00;
+}
+.color2 {
+  color:#771E10;
+}
+.color3 {
+  color:#DB4C2C;
+}
 
 /*****************************************************************************/
 /*
-/*
+/* Cloud
 /*
 /*****************************************************************************/
 #cloud {
@@ -136,15 +158,6 @@ article header h1 {
   float:left; 
   margin-left:2px;
   margin-right:2px;
-}
-#cloud span.color1 {
-  color:#a00;
-}
-#cloud span.color2 {
-  color:#B88A00;
-}
-#clour span.color3 {
-  color:#F5B800;
 }
 #cloud .tag1  { font-size: 0.7em; font-weight: 100; }
 #cloud .tag2  { font-size:  8px; font-weight: 200; height: 8px;  line-height: 8px;}
