@@ -1,7 +1,7 @@
 ---
 layout: post
 title: La sélection de décembre 
-category: Bleog
+category: Blog
 tags:
   - Links
   - Selec
