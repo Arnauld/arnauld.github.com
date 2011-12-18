@@ -12,7 +12,7 @@ tags:
   - dsl
   - code-gen
   - mda
-published: false
+published: true
 comments: true
 excerpt: |
   En lisant la fin de l'article [3.5 - Notre domaine]() ainsi que le début de notre implémentation, on peux se rendre compte d'une certaine répétitivité dans la définition de nos objets, on voit facilement émerger (dans le cas d'une implémentation très simpliste du modèle CQRS) plusieurs motifs tels que:
@@ -325,7 +325,7 @@ optional_extends
 
 ### Un peu d'action!
 
-Crééons un nouveau projet dédié à notre DSL
+Crééons un nouveau projet dédié à notre DSL, avec les libraries [Jison](http://zaach.github.com/jison) et [nodeunit](https://github.com/caolan/nodeunit).
 
 {% highlight bash %}
 $ cd ~/Projects
@@ -398,7 +398,7 @@ $  mv cqrs.js lib/parser.js
 
 Commençons par écrire un test très simple:
 
-`test/basic-test.js`
+`test/parser_test.js`
 
 {% highlight javascript %}
 var parser = require('../lib/parser').parser;
@@ -421,7 +421,7 @@ En lançant les tests, on obtient alors:
 {% highlight bash %}
 $ node_modules/.bin/nodeunit test
 
-basic-test
+parser_test
 Parsed=[
     [
         "Story",
@@ -456,7 +456,7 @@ exports.aggregate_root = function(identifier, inherits) {
 
 Et transformons, notre tests afin de prendre en compte cette nouvelle structure en définissant la variable `yy` avec notre modèle:
 
-`test/basic-test.js`
+`test/parser_test.js`
 
 {% highlight javascript %}
 var parser = require('../lib/parser').parser;
@@ -483,7 +483,7 @@ aggregateDef
 $ ./node_modules/.bin/jison lib/cqrs.y && mv cqrs.js lib/parser.js
 $ node_modules/.bin/nodeunit test
 
-basic-test
+parser_test
 Parsed=[
     {
         "type": "aggregate_root",
@@ -559,7 +559,7 @@ Relançons les tests, et nous obtenons:
 {% highlight bash %}
 $ node_modules/.bin/nodeunit test
 
-basic-test
+parser_test
 ✔ Simple input can be parsed
 ✔ Multiple but simple aggregates can be parsed
 
@@ -722,7 +722,7 @@ Le cas de l'absence de comportement est géré au niveau de l'aggrégat par l'al
 $ ./node_modules/.bin/jison lib/cqrs.y && mv cqrs.js lib/parser.js
 $ node_modules/.bin/nodeunit test
 
-basic-test
+parser_test
 ✔ Simple input can be parsed
 ✔ Multiple but simple aggregates can be parsed
 {
@@ -797,7 +797,6 @@ aggregateRoot Story extends HasComment {
 Ajoutons l'alternative correspondante dans la rêgle `feature`:
 
 {% highlight antlr linenos %}
-
 ...
 
 feature
@@ -813,4 +812,19 @@ structuralFeature
   ;
 {% endhighlight %}
 
+En complétant les tests, nous obtenons finalement le résultat suivant:
 
+{% highlight bash %}
+parser_test
+✔ Simple input can be parsed
+✔ Multiple but simple aggregates can be parsed
+✔ Aggregate with defs and factory can be parsed
+✔ Aggregate with def without argument can be parsed
+✔ Aggregate with defs, factory and fields can be parsed
+
+OK: 115 assertions (15ms)
+{% endhighlight %}
+
+Voici les sources à ce stade: [cqrs.y](/documents/posts/tbd-in-practice/7_1/cqrs-01.y), [models.js](/documents/posts/tbd-in-practice/7_1/models-01.js), [models-test.js](/documents/posts/tbd-in-practice/7_1/models-test-01.js) et [parser-test.js](/documents/posts/tbd-in-practice/7_1/parser-test-01.js).
+
+Dans le prochain article, nous nous interesserons à la transformation de notre modèle et la génération de code.
