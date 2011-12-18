@@ -108,6 +108,55 @@ article header h1 {
   display: inline;
 }
 
+.twipsy {
+  display: block;
+  position: absolute;
+  visibility: visible;
+  padding: 5px;
+  font-size: 14px;
+  z-index: 1000;
+  filter: alpha(opacity=95);
+  -khtml-opacity: 0.95;
+  -moz-opacity: 0.95;
+  opacity: 0.95;
+}
+
+/*****************************************************************************/
+/*
+/*
+/*
+/*****************************************************************************/
+#cloud {
+  width: 30em;
+  text-align: center;
+  margin: auto;
+  height: 5em;
+}
+#cloud span  { 
+  float:left; 
+  margin-left:2px;
+  margin-right:2px;
+}
+#cloud span.color1 {
+  color:#a00;
+}
+#cloud span.color2 {
+  color:#B88A00;
+}
+#clour span.color3 {
+  color:#F5B800;
+}
+#cloud .tag1  { font-size: 0.7em; font-weight: 100; }
+#cloud .tag2  { font-size:  8px; font-weight: 200; height: 8px;  line-height: 8px;}
+#cloud .tag3  { font-size: 12px; font-weight: 300; height: 12px; line-height: 12px;}
+#cloud .tag4  { font-size: 14px; font-weight: 400; height: 14px; line-height: 14px;}
+#cloud .tag5  { font-size: 16px; font-weight: 500; height: 16px; line-height: 16px;}
+#cloud .tag6  { font-size: 20px; font-weight: 600; height: 20px; line-height: 20px;}
+#cloud .tag7  { font-size: 24px; font-weight: 700; height: 24px; line-height: 24px;}
+#cloud .tag8  { font-size: 28px; font-weight: 800; height: 28px; line-height: 28px;}
+#cloud .tag9  { font-size: 32px; font-weight: 900; height: 32px; line-height: 32px;}
+#cloud .tag10 { font-size: 40px; font-weight: 900; height: 40px; line-height: 40px;}
+
 /*****************************************************************************/
 /*
 /* Home
@@ -170,10 +219,14 @@ ul.posts {
     color: black;
   }
 
+  .site .title .extra-separator {
+    margin-left: 0.5em;
+  }
+
   .site .title a.extra {
     color: #aaa;
     text-decoration: none;
-    margin-left: 1em;
+    margin-left: 0.5em;
   }
 
   .site .title a.extra:hover {
