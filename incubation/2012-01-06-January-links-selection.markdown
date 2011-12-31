@@ -9,6 +9,8 @@ published: true
 comments: true
 ---
 
+http://blog.valtech.fr/wordpress/2011/12/21/de-scrum-a-kanban
+
 <blockquote><p>For those learning #CQRS &amp; #EventSourcing it's good to keep in mind that commands are what you intend to do &amp; events are what have happened.</p><small><a href="http://twitter.com/#!/Arcond/status/146295631135248385">
 @Arcond</a></small></blockquote>
 
@@ -23,6 +25,8 @@ http://ddd-cqrs-leaven.blogspot.com/2011/12/alternative-implementation-in-jee.ht
 http://www.ibm.com/developerworks/library/wa-objprev/
 http://java.dzone.com/news/evolution-ddd-cqrs-and-event
 http://jdon.sourceforge.net/
+http://www.infoq.com/interviews/greg-young-ddd
+
 
 <blockquote><p>... I was thinking about event oriented domain model (aka CQRS) not event-driven programming</p><small>http://twitter.com/#!/natpryce/status/147356188210757632</small></blockquote>
 

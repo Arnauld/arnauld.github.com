@@ -13,6 +13,10 @@ excerpt: |
 
 ---
 
+http://matteo.vaccari.name/blog/archives/154
+http://devblog.consileon.pl/2011/08/02/Axon-Framework-DDD-EDA-meet-together/
+https://github.com/AxonFramework/AxonFramework
+
 [Pyxis - Conception pilotée par le domaine (DDD)](http://pyxis-tech.com/fr/expertise/conception-pilotee-par-le-domaine-ddd)
 
 <blockquote><p>La conception pilotée par le domaine (Domain-driven design, DDD) est une approche de développement logiciel adaptée aux besoins complexes dont l'idée est de connecter fortement l'implémentation d'un modèle aux concepts métiers associés. L'approche est basée sur les principes suivants :
