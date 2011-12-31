@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[T|B|D]DD par la pratique 5 - Persistence et Migrations"
+title: "Quote of the day"
 category: blog
 tags:
   - quote
