@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Joyeux Noël et problème du père noël!"
+title: "Architecture Hexagonale"
 category: DDD
 tags:
   - cqrs
