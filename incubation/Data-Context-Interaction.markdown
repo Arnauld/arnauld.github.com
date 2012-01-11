@@ -12,6 +12,9 @@ excerpt: |
 
 ---
 
+<span class="label warning">In Progress // Incubation</span><br/>
+
+
 Data, Context and Interaction (DCI) est un paradigme utilisé en génie logiciel pour programmer des systèmes orientés objet. Les objectifs sont :
 
 * Améliorer la lisibilité du code orienté objet en donnant au comportement du système un statut de première classe;

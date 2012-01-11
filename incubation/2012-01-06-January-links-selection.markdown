@@ -9,6 +9,9 @@ published: true
 comments: true
 ---
 
+<span class="label warning">In Progress // Incubation</span><br/>
+
+
 <blockquote><p>it's reached a point where the consensus based approach has limited the competitiveness of the project. It's not personal, it's business</p><small><a href="http://damienkatz.net/2012/01/the_future_of_couchdb.html">DAMIEN KATZ - The future of couchdb</a></small></blockquote>
 
 http://blog.valtech.fr/wordpress/2011/12/21/de-scrum-a-kanban

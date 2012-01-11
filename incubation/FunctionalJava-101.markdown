@@ -12,3 +12,6 @@ excerpt: |
 ---
 
 {{ page.excerpt | markdownify }}
+
+<span class="label warning">In Progress // Incubation</span><br/>
+

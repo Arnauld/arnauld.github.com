@@ -8,9 +8,11 @@ tags:
   - axon
 published: false
 comments: true
-excerpt: |
-  Que l'on traduira (maladroitement) comme suit:
-
 ---
+
+<span class="label warning">In Progress // Incubation</span><br/>
+
+
+https://github.com/AxonFramework/AxonFramework
 
 [Axon Framework - DDD and EDA meet together](http://devblog.consileon.pl/2011/08/02/Axon-Framework-DDD-EDA-meet-together/)
