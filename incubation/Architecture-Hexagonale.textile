@@ -1,0 +1,800 @@
+---
+layout: post
+title: "Architecture Hexagonale"
+category: DDD
+tags:
+  - cqrs
+  - hexagonale
+  - architecture
+published: false
+comments: true
+excerpt: |
+  Que l'on traduira (maladroitement) comme suit:
+
+---
+
+<span class="label warning">In Progress // Incubation</span><br/>
+
+http://matteo.vaccari.name/blog/archives/154
+
+<blockquote><p>La conception pilotée par le domaine (Domain-driven design, DDD) est une approche de développement logiciel adaptée aux besoins complexes dont l'idée est de connecter fortement l'implémentation d'un modèle aux concepts métiers associés. L'approche est basée sur les principes suivants :
+
+<ul>
+<li>Mettre l'emphase du projet sur sur le domaine et la logique métier ;</li>
+<li>Baser les conceptions complexes sur un modèle ;</li>
+<li>Initier la collaboration créative entre les experts techniques et du domaine dans le but de s'approcher itérativement du coeur conceptuel du problème.</li>
+</ul>
+
+La conception pilotée par le domaine n'est ni une technologie, ni une méthodologie. DDD fournit une structure de pratiques et une terminologie pour effectuer des choix de conception qui mettent l'accent et accélèrent les projets associés à des domaines complexes.
+
+Les concepts introduits dans le livre Domain-Driven Design de Eric Evan's incluent :
+
+<ul>
+<li>Langage ubiquitaire (Ubiquitous Language)</li>
+<li>Conception orientée domaine (Model-Driven Design)
+	<ul>
+		<li>Architecture à Couche (Layered Architecture)</li>
+		<li>Entités (Entities)</li>
+		<li>Objet valeur (Value Objects)</li>
+		<li>Service (Services)</li>
+		<li>Modules</li>
+		<li>Aggrégats (Aggregates)</li>
+		<li>Fabriques (Factories)</li>
+		<li>Dépôts (Repositories)</li>
+	</ul>
+</li>
+<li>Remaniement vers un insight plus profond (Refactoring toward deeper insight)</li>
+<li>Préservation de l'intégrité du modèle à travers la conception stratégique (Strategic Design)
+	<ul>
+		<li>Limite de contexte (Bounded Countext)</li>
+		<li>Intégration continue (Continuous Integration)</li>
+		<li>Carte de contexte (Context Map)</li>
+		<li>Noyau partagé (Shared Kernel)</li>
+		<li>Client-fournisseur (Customer-Supplier)</li>
+		<li>Conformisme (Conformist)</li>
+		<li>Couche d'anti-corruption (Anticorruption Layer)</li>
+		<ul>
+			<li>Différents chemins (Separate Ways)</li>
+		</ul>
+		<li>Service d'hôte ouvert (Open Host Service)</li>
+		<li>Distillation</li>
+	</ul>
+</li>
+</ul>
+
+L'architecture hexagonale de Alistair Cockburn est une référence intéressante à consulter lors de l'implémentation de systèmes utilisant l'approche DDD.
+</p><small>"Pyxis - Conception pilotée par le domaine (DDD)":http://pyxis-tech.com/fr/expertise/conception-pilotee-par-le-domaine-ddd
+</small></blockquote>
+
+h1. The Pattern: Ports and Adapters ("Object Structural") ("Source":http://alistair.cockburn.us/Hexagonal+architecture)
+
+__Cet article se veux une tentative de traduction en français de l'article de Alistair Cockburn.__
+
+notextile.. <style>
+	.original,
+	.original h1,
+	.original h2,
+	.original h3,
+	.original h4,
+	.original p,
+	.original p em {
+		color: #7A5607;
+	}
+	.original ul li {
+		color: #8C6208;/*lighter*/
+		font-weight:lighter;
+	}
+
+	.google_trad,
+	.google_trad ul li {
+		font-style: italic;
+		color: gray;
+	}
+
+	.yahoo_trad,
+	.yahoo_trad ul li {
+		font-style: italic;
+		color: #A2B6DB;
+	}
+
+</style>
+
+<section class="original">
+<h2>The Pattern: Ports and Adapters (&#8216;&#8217;Object Structural&#8217;&#8217;) </h2>
+</section>
+
+<section class="original">
+<p><em>Create your application to work without either a UI or a database so you can run automated regression-tests against the application, work when the database becomes unavailable, and link applications together without any user involvement.</em></p>
+</section>
+
+p(google_trad). Créez votre application de travailler sans ce soit une interface ou une base de données de sorte que vous pouvez exécuter des tests automatisés de régression contre l'application, le travail lorsque la base de données devient indisponible, et les applications relier sans aucune intervention de l'utilisateur.
+
+p(yahoo_trad). Créez votre application pour travailler sans UI ou base de données ainsi vous pouvez courir les régression-essais automatisés contre l'application, le travail quand la base de données devient indisponible, et les applications de lien ensemble sans n'importe quelle participation d'utilisateur.
+
+<section class="original">
+<h3>Alternative name: &#8216;&#8217;Hexagonal Architecture&#8217;&#8217; </h3>
+</section>
+
+
+<section class="original">
+<h3>Intent </h3>
+</section>
+
+<section class="original">
+<p>Allow an application to equally be driven by users, programs, automated test or batch scripts, and to be developed and tested in isolation from its eventual run-time devices and databases.</p>
+</section>
+
+p(google_trad). Permettre à une application aussi être entraînée par les utilisateurs, les programmes, test automatisé ou de scripts batch, et d'être développées et testées dans l'isolement de son éventuelle exécution des dispositifs et des bases de données.
+
+p(yahoo_trad). Permettez à une application d'être conduit également par des utilisateurs, des programmes, des manuscrits automatisés d'essai ou en lots, et d'être développé et examiné en isolation de ses dispositifs et bases de données d'exécution certains.
+
+
+<section class="original">
+<p>As events arrive from the outside world at a port, a technology-specific adapter converts it into a usable procedure call or message and passes it to the application. The application is blissfully ignorant of the nature of the input device. When the application has something to send out, it sends it out through a port to an adapter, which creates the appropriate signals needed by the receiving technology (human or automated). The application has a semantically sound interaction with the adapters on all sides of it, without actually knowing the nature of the things on the other side of the adapters.</p>
+</section>
+
+p(google_trad). Comme les événements arrivent du monde extérieur dans un port, un adaptateur de technologies spécifiques, il se transforme en un appel de procédure exploitable ou un message et le transmet à l'application. L'application est joyeusement ignorants de la nature de l'appareil d'entrée. Lorsque l'application a quelque chose à envoyer, il l'envoie à travers un port à un adaptateur, ce qui crée les signaux appropriés requis par la technologie de réception (humain ou automatisé). L'application a une interaction sémantiquement avec les adaptateurs sur tous les côtés de celui-ci, sans réellement connaître la nature des choses de l'autre côté des adaptateurs.
+
+p(yahoo_trad). Pendant que les événements arrivent du monde extérieur à un port, un adapteur technology-specific le convertit en appel de procédure ou message utilisable et le passe à l'application. L'application est avec bonheur ignorante de la nature du dispositif d'entrée. Quand l'application a quelque chose envoyer, elle l'envoie dehors par un port à un adapteur, qui crée les signaux appropriés requis par la technologie de réception (humain ou automatisé). L'application a une interaction sémantiquement saine avec les adapteurs de tous les côtés de elle, sans connaître réellement la nature des choses de l'autre côté des adapteurs.
+
+<section class="original">
+<p><img src='/images/hexagonal-architecture/2301' alt='Image176.gif' title='Image176.gif' /><br /><br />
+ Figure 1</p>
+</section>
+
+<section class="original">
+<h3>Motivation </h3>
+</section>
+
+<section class="original">
+<p>One of the great bugaboos of software applications over the years has been infiltration of business logic into the user interface code. The problem this causes is threefold: <br />
+<ul>
+<li>First, the system can&#8217;t neatly be tested with automated test suites because part of the logic needing to be tested is dependent on oft-changing visual details such as field size and button placement; </li>
+<li>For the exact same reason, it becomes impossible to shift from a human-driven use of the system to a batch-run system; </li>
+<li>For still the same reason, it becomes difficult or impossible to allow the program to be driven by another program when that becomes attractive.</li>
+</ul>
+</p>
+</section>
+
+p(google_trad). Un des grands Bugaboos d'applications logicielles au fil des années a été l'infiltration de la logique métier dans le code de l'interface utilisateur. Le problème de cette cause est triple:
+* Premièrement, le système ne peut pas parfaitement être testés avec des suites de tests automatisés, parce qu'une partie de la logique devant être testés dépend souvent changer des détails visuels tels que la taille du champ et de l'emplacement des boutons;
+* Pour la raison exactement les mêmes, il devient impossible de passer d'une utilisation humaine axée sur le système à un système de lots gérés;
+* Pour la même raison encore, il devient difficile, voire impossible, pour permettre au programme d'être entraîné par un autre programme quand cela devient intéressant.
+
+p(yahoo_trad). Un des grands bugaboos des applications de logiciel au cours des années a été infiltration de la logique d'affaires dans le code d'interface utilisateurs. Le problème ce des causes est triple : 
+* D'abord, le système ne peut pas d'une manière ordonnée être examiné avec les suites d'essai automatisées parce qu'une partie de la logique devant être examiné dépend de souvent-changer les détails visuels tels que la taille de champ et le placement de bouton ;
+* Pour l'exact la même raison, il devient pour décaler d'une utilisation humain-conduite du système à l'groupe-courent le système ;
+* Pour immobile la même raison, il devient difficile ou impossible de permettre au programme d'être conduit par un autre programme quand cela devient attrayant.
+
+<section class="original">
+<p>The attempted solution, repeated in many organizations, is to create a new layer in the architecture, with the promise that this time, really and truly, no business logic will be put into the new layer. However, having no mechanism to detect when a violation of that promise occurs, the organization finds a few years later that the new layer is cluttered with business logic and the old problem has reappeared.</p>
+</section>
+
+p(google_trad). La tentative de solution, a répété dans de nombreuses organisations, est de créer une nouvelle couche dans l'architecture, avec la promesse que cette fois, vraiment, pas de logique d'entreprise sera mis dans le nouveau calque. Cependant, n'ayant pas de mécanisme permettant de détecter si une violation de cette promesse se produit, l'organisation trouve quelques années plus tard que la nouvelle couche est encombré de logique métier et le vieux problème est réapparu.
+
+p(yahoo_trad). La solution essayée, répétée dans beaucoup d'organismes, est de créer une nouvelle couche dans l'architecture, avec la promesse que cette fois, vraiment et vraiment, aucune logique d'affaires ne sera mise dans la nouvelle couche. Cependant, n'ayant aucun mécanisme pour détecter quand une violation de cette promesse se produit, l'organisation trouve quelques ans après que la nouvelle couche est encombrée avec la logique d'affaires et le vieux problème a réapparu.
+
+
+<section class="original">
+<p>Imagine now that &#8216;&#8217;every&#8217;&#8217; piece of functionality the application offers were available through an API (application programmed interface) or function call. In this situation, the test or QA department can run automated test scripts against the application to detect when any new coding breaks a previously working function. The business experts can create automated test cases, before the GUI details are finalized, that tells the programmers when they have done their work correctly (and these tests become the ones run by the test department). The application can be deployed in &#8216;&#8217;headless&#8217;&#8217; mode, so only the API is available, and other programs can make use of its functionality &#8212; this simplifies the overall design of complex application suites and also permits business-to-business service applications to use each other without human intervention over the web. Finally, the automated function regression tests detect any violation of the promise to keep business logic out of the presentation layer. The organization can detect, and then correct, the logic leak.</p>
+</section>
+
+p(google_trad). Imaginez maintenant que chaque morceau''''offre des fonctionnalités de l'application ont été disponibles grâce à un appel d'API (interface de l'application programmée) ou une fonction. Dans cette situation, le département de test ou AQ peut exécuter des scripts de test automatisés contre l'application de détecter quand un nouveau codage des pauses d'une fonction préalablement travail. Les experts métier peuvent créer des cas de test automatisés, avant que les détails graphiques sont finalisés, qui raconte les programmeurs quand ils ont fait leur travail correctement (et ces tests deviennent celles gérées par le Département d'essai). L'application peut être déployée en''mode''sans tête, de sorte que l'API est disponible, et d'autres programmes peuvent faire usage de ses fonctionnalités - ce qui simplifie la conception globale des suites d'applications complexes et permet également des applications de services d'entreprise à entreprise pour l'utilisation de l'autre sans intervention humaine sur le web. Enfin, les tests automatisés de régression de fonction de détecter toute violation de la promesse de garder la logique métier de la couche de présentation. L'organisation peut détecter, puis corriger, la fuite de logique.
+
+p(yahoo_trad). Imaginez maintenant que morceau d'every'de `le 'de fonctionnalité les offres d'application étaient disponible par un api (interface programmée par application) ou l'appel de fonction. Dans cette situation, l'essai ou le département de QA peut courir les manuscrits automatisés d'essai contre l'application pour détecter quand n'importe quel nouveau codage casse précédemment une fonction de fonctionnement. Les experts en matière d'affaires peuvent créer les cas de test automatisés, avant que les détails de GUI soient menés à bonne fin, qui indique aux programmeurs quand ils ont fait leur travail correctement (et ces essais deviennent ceux courus par le département d'essai). L'application peut être déployée mode de headless'dans `', ainsi seulement l'api est disponible, et d'autres programmes peuvent se servir de sa fonctionnalité - ceci simplifie la conception globale des progiciels d'application complexes et permet également à des applications de service d'entreprise à entreprise de s'employer sans intervention humaine au-dessus du Web. En conclusion, les essais automatisés de régression de fonction détectent n'importe quelle violation de la promesse de garder la logique d'affaires hors de la couche de présentation. L'organisation peut détecter, et puis corriger, la fuite de logique.
+
+<section class="original">
+<p>An interesting similar problem exists on what is normally considered &#8220;the other side&#8221; of the application, where the application logic gets tied to an external database or other service. When the database server goes down or undergoes significant rework or replacement, the programmers can&#8217;t work because their work is tied to the presence of the database. This causes delay costs and often bad feelings between the people.</p>
+</section>
+
+p(google_trad). Un problème similaire existe intéressante sur ce qui est normalement considéré comme "l'autre côté" de la demande, où la logique de l'application se fait attacher à une base de données externe ou un autre service. Lorsque le serveur de bases de données tombe en panne ou subit retravailler significative ou de remplacement, les programmeurs ne peuvent pas travailler parce que leur travail est lié à la présence de la base de données. Cela occasionne des coûts de retard et des sentiments souvent mauvaises entre les personnes.
+
+p(yahoo_trad). Un problème semblable intéressant existe sur ce qui est normalement considéré « l'autre côté » de l'application, où la logique d'application obtient attachée à une base de données externe ou à tout autre service. Quand le serveur de base de données descend ou subit la reprise ou le remplacement significative, les programmeurs ne peuvent pas fonctionner parce que leur travail est attaché à la présence de la base de données. Ceci cause des coûts de retard et des sentiments souvent mauvais entre les personnes.
+
+
+<section class="original">
+<p>It is not obvious that the two problems are related, but there is a symmetry between them that shows up in the nature of the solution.</p>
+</section>
+
+p(google_trad). Il n'est pas évident que les deux problèmes sont liés, mais il ya une symétrie entre eux qui se manifeste dans la nature de la solution.
+
+p(yahoo_trad). Il n'est pas évident que les deux problèmes soient connexes, mais il y a une symétrie entre eux que révèle en forme de la solution.
+
+
+
+<section class="original">
+<h3>Nature of the Solution </h3>
+</section>
+
+<section class="original">
+<p>Both the user-side and the server-side problems actually are caused by the same error in design and programming &#8212; the entanglement between the business logic and the interaction with external entities. The asymmetry to exploit is not that between &#8216;&#8217;left&#8217;&#8217; and &#8216;&#8217;right&#8217;&#8217; sides of the application but between &#8216;&#8217;inside&#8217;&#8217; and &#8216;&#8217;outside&#8217;&#8217; of the application. The rule to obey is that code pertaining to the &#8216;&#8217;inside&#8217;&#8217; part should not leak into the &#8216;&#8217;outside&#8217;&#8217; part.</p>
+</section>
+
+p(google_trad). Tant le côté utilisateur et les problèmes côté serveur sont en réalité causés par la même erreur dans la conception et la programmation - l'intrication entre la logique métier et l'interaction avec des entités extérieures. L'asymétrie d'exploiter n'est pas celle entre''gauche''et''droit''côtés de l'application, mais entre l'intérieur et l'extérieur''''''''de l'application. La règle d'obéir, c'est que le code se rapportant à l'intérieur de la pièce''''ne doit pas s'infiltrer dans le cadre''en dehors''.
+
+p(yahoo_trad). L'utilisateur-côté et les problèmes de serveur-côté sont provoqués réellement par la même erreur dans la conception et la programmation - l'enchevêtrement entre la logique d'affaires et l'interaction avec les entités externes. L'asymétrie à exploiter n'est pas celle entre de `de `les côtés de right'de 'left'et 'de l'application mais entre de `de `l'outside'de 'inside'et 'de l'application. La règle à obéir est que code concernant le `la 'pièce d'inside'ne devrait pas couler cloison d'outside'dans que `'.
+
+
+
+<section class="original">
+<p>Removing any left-right or up-down asymmetry for a moment, we see that the application communicates over &#8216;&#8217;ports&#8217;&#8217; to external agencies. The word &#8220;port&#8221; is supposed to evoke thoughts of &#8216;&#8217;ports&#8217;&#8217; in an operating system, where any device that adheres to the protocols of a port can be plugged into it; and &#8216;&#8217;ports&#8217;&#8217; on electronics gadgets, where again, any device that fits the mechanical and electrical protocols can be plugged in. The protocol for a port is given by the purpose of the conversation between the two devices. The protocol takes the form of an application program interface (API).</p>
+</section>
+
+p(google_trad). Suppression des gauche-droite ou haut-bas asymétrie pour un moment, nous voyons que l'application communique via les ports''''à des organismes externes. Le mot «port» est censé évoquer des pensées de ports''''dans un système d'exploitation, où tout dispositif qui adhère aux protocoles d'un port peut être branché sur elle, et les ports''''sur les gadgets électroniques, où à nouveau , tout appareil qui tient les protocoles mécanique et électrique peut être branché po le protocole pour le port est donnée par le but de la conversation entre les deux appareils. Le protocole prend la forme d'une interface de programmation d'application (API).
+
+p(yahoo_trad). Enlevant de gauche à droite ou asymétrie d'up-down pour un instant, nous voyons que l'application communique ports'au-dessus de `'aux agences externes. Ports'de `de « port » du mot est censé évoquer des pensées 'dans un du système d'exploitation, où n'importe quel dispositif qui adhère aux protocoles d'un port peut être branché à lui ; et de `le mécanique et électrique 'sur des instruments de l'électronique, où encore, n'importe quel dispositif qui adapte ports'des protocoles peut être branché. Le protocole pour un port est donné par le but de la conversation entre les deux dispositifs. Le protocole prend la forme d'un Application Program Interface (api).
+
+
+
+<section class="original">
+<p>For each external device there is an &#8216;&#8217;adapter&#8217;&#8217; that converts the API definition to the signals needed by that device and vice versa. A graphical user interface or GUI is an example of an adapter that maps the movements of a person to the API of the port. Other adapters that fit the same port are automated test harnesses such as FIT or Fitnesse, batch drivers, and any code needed for communication between applications across the enterprise or net.</p>
+</section>
+
+p(google_trad). Pour chaque périphérique externe, il est un adaptateur qui convertit''''la définition API pour les signaux requis par ce périphérique et vice versa. Une interface utilisateur graphique ou GUI est un exemple d'un adaptateur qui fait correspondre les mouvements d'une personne à l'API du port. D'autres adaptateurs qui s'adaptent le même port sont harnais de test automatisés, tels que la FIT ou Fitnesse, les chauffeurs de lot, ainsi que tout code nécessaire pour la communication entre les applications dans l'entreprise ou d'un filet.
+
+p(yahoo_trad). Pour chaque dispositif externe il y a adapter'd'un `le 'qui convertit la définition d'api en signaux requis par ce dispositif et vice versa. Une interface utilisateurs graphique ou un GUI est un exemple d'un adapteur qui trace les mouvements d'une personne à l'api du port. D'autres adapteurs qui adaptent le même port sont les logiciels de validation automatisés tels que l'AJUSTEMENT ou le Fitnesse, les conducteurs en lots, et n'importe quel code requis pour la communication entre les applications à travers l'entreprise ou le filet.
+
+
+<section class="original">
+<p>On another side of the application, the application communicates with an external entity to get data. The protocol is typically a database protocol. From the application&#8217;s perspective, if the database is moved from a SQL database to a flat file or any other kind of database, the conversation across the API should not change. Additional adapters for the same port thus include an SQL adapter, a flat file adapter, and most importantly, an adapter to a &#8220;mock&#8221; database, one that sits in memory and doesn&#8217;t depend on the presence of the real database at all.</p>
+</section>
+
+p(google_trad). D'un autre côté de la demande, l'application communique avec une entité externe pour obtenir des données. Le protocole est généralement un protocole base de données. Du point de vue de l'application, si la base est passée d'une base de données SQL dans un fichier plat ou tout autre type de base de données, la conversation à travers l'API ne devrait pas changer. Adaptateurs supplémentaires pour le même port comprennent donc un adaptateur SQL, un adaptateur de fichier plat, et surtout, un adaptateur pour une "maquette" base de données, celui qui est assis dans la mémoire et ne dépend pas de la présence de la véritable base de données du tout.
+
+p(yahoo_trad). D'un autre côté de l'application, l'application communique avec une entité externe pour obtenir des données. Le protocole est typiquement un protocole de base de données. De la perspective de l'application, si la base de données est déplacée d'une base de données de SQL à un dossier plat ou de n'importe quel autre genre de base de données, la conversation à travers l'api ne devrait pas changer. Les adapteurs additionnels pour le même port incluent ainsi un adapteur de SQL, un adapteur de dossier plat, et d'une manière plus importante, un adapteur à une « fausse » base de données, une qui se repose dans la mémoire et ne dépend pas de la présence de la vraie base de données du tout.
+
+
+<section class="original">
+<p>Many applications have only two ports: the user-side dialog and the database-side dialog. This gives them an asymmetric appearance, which makes it seem natural to build the application in a one-dimensional, three-, four-, or five-layer stacked architecture.</p>
+</section>
+
+p(google_trad). Beaucoup d'applications n'ont que deux ports: le dialogue utilisateur-côté et la boîte de dialogue base de données-côté. Cela leur donne une apparence asymétrique, ce qui en fait sembler naturel pour construire l'application dans un unidimensionnelle, trois, quatre ou cinq couches superposées d'architecture.
+
+p(yahoo_trad). Beaucoup d'applications ont seulement deux ports : le dialogue d'utilisateur-côté et le dialogue de base de données-côté. Ceci leur donne un aspect asymétrique, qui le fait sembler normal d'établir l'application dans un unidimensionnel, trois, quatre, ou architecture empilée de cinq-couche.
+
+
+
+<section class="original">
+<p>There are two problems with these drawings. First and worst, people tend not to take the &#8220;lines&#8221; in the layered drawing seriously. They let the application logic leak across the layer boundaries, causing the problems mentioned above. Secondly, there may be more than two ports to the application, so that the architecture does not fit into the one-dimensional layer drawing.</p>
+</section>
+
+p(google_trad). Il ya deux problèmes avec ces dessins. D'abord et, au pire, les gens ont tendance à ne pas prendre les "lignes" dans le dessin couches sérieux. Ils ont laissé la fuite logique de l'application à travers les frontières couche, causant des problèmes mentionnés ci-dessus. Deuxièmement, il peut y avoir plus de deux ports à la demande, de sorte que l'architecture ne rentre pas dans le dessin couche unidimensionnelle.
+
+p(yahoo_trad). Il y a deux problèmes avec ces schémas. Premier et le plus mauvais, les gens tendent à ne pas prendre « rayent » dans le schéma posé sérieusement. Ils ont laissé la fuite de logique d'application à travers les frontières de couche, posant les problèmes mentionnés ci-dessus. Deuxièmement, il peut y avoir plus de deux ports à l'application, de sorte que l'architecture ne s'insère pas dans le schéma unidimensionnel de couche.
+
+
+<section class="original">
+<p>The hexagonal, or ports and adapters, architecture solves these problems by noting the symmetry in the situation: there is an application on the inside communicating over some number of ports with things on the outside. The items outside the application can be dealt with symmetrically.</p>
+</section>
+
+p(google_trad). Le hexagonale, ou des ports et des adaptateurs, l'architecture résout ces problèmes en prenant note de la symétrie dans la situation: il ya une application à l'intérieur communique sur un certain nombre de ports avec des choses à l'extérieur. Les éléments en dehors de l'application peuvent être traitées de façon symétrique.
+
+p(yahoo_trad). L'hexagonal, ou les ports et les adapteurs, architecture résout ces problèmes en notant la symétrie dans la situation : il y a une application sur l'intérieur communiquant au-dessus d'un certain nombre de ports avec des choses sur l'extérieur. Les articles en dehors de l'application peuvent être traités symétriquement.
+
+<section class="original">
+<p>The hexagon is intended to visually highlight</p>
+</section>
+
+p(google_trad). L'hexagone est destinée à mettre en évidence visuellement
+
+p(yahoo_trad). L'hexagone est prévu pour accentuer visuellement
+
+<section class="original">
+<p>(a) the inside-outside asymmetry and the similar nature of ports, to get away from the one-dimensional layered picture and all that evokes, and</p>
+</section>
+
+p(google_trad). (a) l'intérieur et l'extérieur d'asymétrie et de la nature même des ports, de s'éloigner de l'image unidimensionnelle couches et tout ce qui évoque, et
+
+p(yahoo_trad). (a) l'asymétrie d'à l'intérieur-extérieur et la nature semblable des ports, pour obtenir à partir de l'image posée unidimensionnelle et tout qui évoque, et
+
+<section class="original">
+<p>(b) the presence of a defined number of different ports &#8211; two, three, or four (four is most I have encountered to date).</p>
+</section>
+
+p(google_trad). (b) la présence d'un nombre défini de ports différents - deux, trois, ou quatre (quatre est le plus que j'ai rencontré à ce jour).
+
+p(yahoo_trad). (b) la présence d'un nombre défini des différents ports - deux, trois, ou quatre (quatre est plus moi ont rencontré jusqu'ici).
+
+<section class="original">
+<p>The hexagon is not a hexagon because the number six is important, but rather to allow the people doing the drawing to have room to insert ports and adapters as they need, not being constrained by a one-dimensional layered drawing. The term &#8216;&#8217;hexagonal architecture&#8217;&#8217; comes from this visual effect.</p>
+</section>
+
+p(google_trad). L'hexagone n'est pas un hexagone car le nombre six est important, mais plutôt de permettre aux gens qui font du dessin à avoir de la place pour insérer les ports et les adaptateurs car ils ont besoin, ne pas être contraint par un dessin unidimensionnelle couches. Le terme''''l'architecture hexagonale vient de cet effet visuel.
+
+p(yahoo_trad). L'hexagone n'est pas un hexagone parce que le numéro six est important, mais permettre plutôt les personnes faisant le schéma pour avoir la pièce d'insérer des ports et des adapteurs car ils ont besoin, non contraint par un schéma posé unidimensionnel. L'architecture'hexagonal du `de limite 'vient de cet effet visuel.
+
+<section class="original">
+<p>The term &#8220;port and adapters&#8221; picks up the &#8216;&#8217;purposes&#8217;&#8217; of the parts of the drawing. A port identifies a purposeful conversation. There will typically be multiple adapters for any one port, for various technologies that may plug into that port. Typically, these might include a phone answering machine, a human voice, a touch-tone phone, a graphical human interface, a test harness, a batch driver, an http interface, a direct program-to-program interface, a mock (in-memory) database, a real database (perhaps different databases for development, test, and real use).</p>
+</section>
+
+p(google_trad). Le terme «port et adaptateurs" ramasse les fins''''des parties du dessin. Un port identifie une conversation réfléchie. Il sera généralement plusieurs adaptateurs pour tout un seul port, pour les différentes technologies qui peuvent brancher dans ce port. Typiquement, ces mesures peuvent inclure un téléphone répondeur, une voix humaine, un téléphone à clavier, une interface graphique homme, un harnais de test, un chauffeur de lot, une interface HTTP, un programme directement à l'interface du programme, une maquette (en -mémoire) base de données, une véritable base de données (bases de données peut-être différentes pour le développement, de test et l'utilisation réelle).
+
+p(yahoo_trad). Le « port et adapteurs » du terme purposes'prend `'des parties du schéma. Un port identifie une conversation utile. Il y aura typiquement les adapteurs multiples pour n'importe quel un port, pour différentes technologies qui peuvent brancher à ce port. Typiquement, ceux-ci pourraient inclure un répondeur de téléphone, une voix humaine, un téléphone par boutons-poussoirs, une interface humaine graphique, un logiciel de validation, un conducteur en lots, une interface de HTTP, une interface program-to-program directe, une fausse base de données (de dans-mémoire), une vraie base de données (bases de données peut-être différentes pour le développement, l'essai, et le vrai usage).
+
+
+<section class="original">
+<p>In the Application Notes, the left-right asymmetry will be brought up again. However, the primary purpose of this pattern is to focus on the inside-outside asymmetry, pretending briefly that all external items are identical from the perspective of the application.</p>
+</section>
+
+p(google_trad). Dans les notes d'application, l'asymétrie gauche-droite sera à nouveau évoquée. Cependant, le but principal de ce modèle est de se concentrer sur l'asymétrie dedans-dehors, semblant brièvement que tous les éléments extérieurs sont identiques du point de vue de l'application.
+
+p(yahoo_trad). Dans les notes d'application, l'asymétrie de gauche à droite sera évoquée encore. Cependant, le but primaire de ce modèle est de se concentrer sur l'asymétrie d'à l'intérieur-extérieur, feignant brièvement que tous les articles externes sont identiques de la perspective de l'application.
+
+<section class="original">
+<h3>Structure </h3>
+</section>
+
+<section class="original">
+<p><img src='/images/hexagonal-architecture/2302' alt='Image177.gif' title='Image177.gif' /><br /><br />
+ Figure 2</p>
+</section>
+
+<section class="original">
+<p>Figure 2 shows an application having two active ports and several adapters for each port. The two ports are the application-controlling side and the data-retrieval side. This drawing shows that the application can be equally driven by an automated, system-level regression test suite, by a human user, by a remote http application, or by another local application. On the data side, the application can be configured to run decoupled from external databases using an in-memory oracle, or &#8216;&#8217;mock&#8217;&#8217;, database replacement; or it can run against the test- or run-time database. The functional specification of the application, perhaps in use cases, is made against the inner hexagon&#8217;s interface and not against any one of the external technologies that might be used.</p>
+</section>
+
+p(google_trad). La figure 2 montre une application possédant deux ports actifs et plusieurs adaptateurs pour chaque port. Les deux ports sont du côté de l'application sans contrôle et le côté d'extraction de données. Ce dessin montre que l'application peut être également piloté par un système automatisé de niveau suite de tests de régression, par un utilisateur humain, par une application distante http, ou par une autre application locale. Sur le côté des données, l'application peut être configurée pour fonctionner découplée de bases de données externes en utilisant un en mémoire oracle, ou''maquette''de remplacement de bases de données, ou il peut courir contre la base de données de test ou de l'exécution. La spécification fonctionnelle de l'application, peut-être en cas d'utilisation, l'interface est faite contre l'hexagone intérieur et non pas contre l'une des technologies externes qui pourraient être utilisés.
+
+p(yahoo_trad). Le schéma 2 montre une application ayant deux ports actifs et plusieurs adapteurs pour chaque port. Les deux ports sont le côté de application-contrôle et le côté de donnée-récupération. Ce schéma prouve que l'application peut être également conduite par automatisé, suite d'essai au niveau système de régression, par un utilisateur humain, par une application à distance de HTTP, ou par une autre application locale. Du côté de données, l'application peut être configurée à la course découplée des bases de données externes utilisant un oracle de dans-mémoire, ou mock'de `au ', remplacement de base de données ; ou elle peut fonctionner contre la base de données d'essai ou d'exécution. Les spécifications fonctionnelles de l'application, peut-être en service des cas, sont faites contre l'interface de l'hexagone intérieur et pas contre des n'importe quelles des technologies externes qui pourraient être employées.
+
+<section class="original">
+<p><img src='/images/hexagonal-architecture/2303' alt='Hexagonal architecture barn door image.gif' title='Hexagonal architecture barn door image.gif' /><br /><br />
+ Figure 3</p>
+</section>
+
+<section class="original">
+<p>Figure 3 shows the same application mapped to a three-layer architectural drawing. To simplify the drawing only two adapters are shown for each port. This drawing is intended to show how multiple adapters fit in the top and bottom layers, and the sequence in which the various adapters are used during system development. The numbered arrows show the order in which a team might develop and use the application:</p>
+</section>
+
+p(google_trad). La figure 3 montre la même application mappée sur un dessin à trois couches architecturales. Pour simplifier le dessin que deux adaptateurs sont présentés pour chaque port. Ce dessin est destiné à montrer comment de multiples adaptateurs ajustement dans les couches supérieures et inférieures, et la séquence dans laquelle les différents adaptateurs sont utilisés pendant le développement du système. Les flèches numérotées indiquent l'ordre dans lequel une équipe peut développer et utiliser l'application:
+
+p(yahoo_trad). Le schéma 3 montre la même application tracée à un schéma architectural de trois-couche. Pour simplifier le schéma seulement deux adapteurs sont montrés pour chaque port. Ce schéma est prévu pour montrer comment les adapteurs multiples adaptés dans les couches de dessus et de bas, et l'ordre dans lequel les divers adapteurs sont utilisés pendant le développement de système. Les flèches numérotées montrent l'ordre dans lequel une équipe pourrait se développer et emploient l'application :
+
+
+<section class="original">
+<ol>
+<li>With a FIT test harness driving the application and using the mock (in-memory) database substituting for the real database;</li>
+<li>Adding a GUI to the application, still running off the mock database;</li>
+<li>In integration testing, with automated test scripts (e.g., from Cruise Control) driving the application against a real database containing test data;</li>
+<li>In real use, with a person using the application to access a live database.</li>
+</ol>
+</section>
+
+p(google_trad). 
+# Avec un harnais de test FIT conduire à l'application et l'utilisation de la maquette (en mémoire) base de données substituant à la base de données réelles;
+# Ajout d'une interface graphique à l'application, encore en cours au large de la base de données se moquer;
+# Dans les tests d'intégration, avec des scripts de test automatisés (par exemple, de Cruise Control) de conduire l'application contre une véritable base de données contenant les données d'essai;
+# En utilisation réelle, avec une personne utilisant l'application pour accéder à une base de données en direct.
+
+p(yahoo_trad). 
+# Avec un logiciel de validation d'AJUSTEMENT conduisant l'application et employant la fausse base de données (de dans-mémoire) remplaçant la vraie base de données ;
+# Ajouter un GUI à l'application, coulant toujours de la fausse base de données ;
+# Dans l'essai d'intégration, avec les manuscrits automatisés d'essai (par exemple, de la commande de croisière) conduisant l'application contre une vraie base de données contenant des essais ;
+# Dans la vraie utilisation, avec une personne employant l'application pour accéder à une base de données de phase.
+
+<section class="original">
+<h3>Sample Code </h3>
+</section>
+
+<section class="original">
+<p>The simplest application that demonstrates the ports &amp; adapters fortunately comes with the FIT documentation. It is a simple discount computing application:</p>
+</section>
+
+<section class="original">
+<pre>
+discount(amount) = amount * rate(amount);
+</pre>
+</section>
+
+<section class="original">
+<p>In our adaptation, the amount will come from the user and the rate will come from a database, so there will be two ports. We implement them in stages:</p>
+</section>
+
+<section class="original">
+<ul>
+<li>With tests but with a constant rate instead of a mock database,</li>
+<li>then with the GUI,</li>
+<li>then with a mock database that can be swapped out for a real database.</li>
+</ul>
+</section>
+
+<section class="original">
+<p><em>Thanks to Gyan Sharma at IHC for providing the code for this example.</em></p>
+</section>
+
+<section class="original">
+<h4>Stage 1: FIT <ins> App </ins> constant-as-mock-database</h4>
+</section>
+
+<section class="original">
+<p>First we create the test cases as an HTML table (see the FIT documentation for this):</p>
+</section>
+
+<section class="original">
+<table>
+<tr>
+<td> TestDiscounter </td><td> </td>
+</tr>
+<tr>
+<td> amount  </td><td> discount() </td>
+</tr>
+<tr>
+<td> 100  </td><td> 5 </td>
+</tr>
+<tr>
+<td> 200  </td><td>10 </td>
+</tr>
+</table>
+</section>
+
+<section class="original">
+<p>Note that the column names will become class and function names in our program. FIT contains ways to get rid of this &#8220;programmerese&#8221;, but for this article it is easier just to leave them in.</p>
+</section>
+
+<section class="original">
+<p>Knowing what the test data will be, we create the user-side adapter, the ColumnFixture that comes with FIT as shipped:</p>
+</section>
+
+<section class="original">
+<pre>
+import fit.ColumnFixture; 
+public class TestDiscounter extends ColumnFixture 
+{ 
+   private Discounter app = new Discounter(); 
+   public double amount;
+   public double discount() 
+   { return app.discount(amount); } 
+}
+</pre>
+</section>
+
+<section class="original">
+<p>That&#8217;s actually all there is to the adapter. So far, the tests run from the command line (see the FIT book for the path you&#8217;ll need). We used this one:</p>
+</section>
+
+<section class="original">
+<pre>
+set FIT_HOME=/FIT/FitLibraryForFit15Feb2005
+java -cp %FIT_HOME%/lib/javaFit1.1b.jar;%FIT_HOME%/dist/fitLibraryForFit.jar;src;bin
+fit.FileRunner test/Discounter.html TestDiscount_Output.html
+</pre>
+</section>
+
+<section class="original">
+<p>FIT produces an output file with colors showing us what passed (or failed, in case we made a typo somewhere along the way).</p>
+<p>At this point the code is ready to check in, hook into Cruise Control or your automated build machine, and include in the build-and-test suite.</p>
+</section>
+
+<section class="original">
+<h4>Stage 2: UI <ins> App </ins> constant-as-mock-database </h4>
+</section>
+
+<section class="original">
+<p>I&#8217;m going to let you create your own UI and have it drive the Discounter application, since the code is a bit long to include here. Some of the key lines in the code are these:</p>
+</section>
+
+<section class="original">
+<pre>
+...
+ Discounter app = new Discounter();
+public void actionPerformed(ActionEvent event) 
+{
+    ...
+   String amountStr = text1.getText();
+   double amount = Double.parseDouble(amountStr);
+   discount = app.discount(amount));
+   text3.setText( "" + discount );
+   ...
+</pre>
+</section>
+
+<section class="original">
+<p>At this point the application can be both demoed and regression tested. The user-side adapters are both running.</p>
+</section>
+
+<section class="original">
+<h4>Stage 3: (FIT or UI) <ins> App </ins> mock database </h4>
+</section>
+
+<section class="original">
+<p>To create a replaceable adapter for the database side, we create an &#8216;&#8217;interface&#8217;&#8217; to a repository, a &#8216;&#8217;RepositoryFactory&#8217;&#8217; that will produce either the mock database or the real service object, and the in-memory mock for the database.</p>
+</section>
+
+<section class="original">
+<pre>
+public interface RateRepository 
+{
+   double getRate(double amount);
+ }
+public class RepositoryFactory 
+{
+   public RepositoryFactory() {  super(); }
+   public static RateRepository getMockRateRepository() 
+   {
+      return new MockRateRepository();
+   }
+}
+public class MockRateRepository implements RateRepository 
+{
+   public double getRate(double amount) 
+   {
+      if(amount &lt;= 100) return 0.01;
+      if(amount &lt;= 1000) return 0.02;
+      return 0.05;
+    }
+ }
+</pre>
+</section>
+
+<section class="original">
+<p>To hook this adapter into the Discounter application, we need to update the application itself to accept a repository adapter to use, and the have the (FIT or UI) user-side adapter pass the repository to use (real or mock) into the constructor of the application itself. Here is the updated application and a FIT adapter that passes in a mock repository (the FIT adapter code to choose whether to pass in the mock or real repository&#8217;s adapter is longer without adding much new information, so I omit that version here).</p>
+</section>
+
+<section class="original">
+<pre>
+import repository.RepositoryFactory;
+import repository.RateRepository;
+public class Discounter 
+{
+   private RateRepository rateRepository;
+   public Discounter(RateRepository r) 
+   {
+      super();
+      rateRepository = r;
+    }
+   public double discount(double amount) 
+   {
+      double rate = rateRepository.getRate( amount ); 
+      return amount * rate;
+    }
+}
+import app.Discounter;
+import fit.ColumnFixture;
+public class TestDiscounter extends ColumnFixture 
+{
+   private Discounter app = 
+       new Discounter(RepositoryFactory.getMockRateRepository());
+   public double amount;
+   public double discount() 
+   {
+      return app.discount( amount );
+   }
+}
+</pre>
+</section>
+
+<section class="original">
+<p>That concludes implementation of the simplest version of the hexagonal architecture.</p>
+</section>
+
+<section class="original">
+<h3>Application Notes </h3>
+</section>
+
+<section class="original">
+<h4>The Left-Right Asymmetry </h4>
+</section>
+
+<section class="original">
+<p>The ports and adapters pattern is deliberately written pretending that all ports are fundamentally similar. That pretense is useful at the architectural level. In implementation, ports and adapters show up in two flavors, which I&#8217;ll call &#8216;&#8217;primary&#8217;&#8217; and &#8216;&#8217;secondary&#8217;&#8217;, for soon-to-be-obvious reasons. They could be also called &#8216;&#8217;driving&#8217;&#8217; adapters and &#8216;&#8217;driven&#8217;&#8217; adapters.</p>
+</section>
+
+<section class="original">
+<p>The alert reader will have noticed that in all the examples given, FIT fixtures are used on the left-side ports and mocks on the right. In the three-layer architecture, FIT sits in the top layer and the mock sits in the bottom layer.</p>
+</section>
+
+<section class="original">
+<p>This is related to the idea from use cases of &#8220;primary actors&#8221; and &#8220;secondary actors&#8221;. A &#8216;&#8217;primary actor&#8217;&#8217; is an actor that drives the application (takes it out of quiescent state to perform one of its advertised functions). A &#8216;&#8217;secondary actor&#8217;&#8217; is one that the application drives, either to get answers from or to merely notify. The distinction between &#8216;&#8217;primary &#8216;&#8217;and&#8217;&#8217; secondary &#8216;&#8217;lies in who triggers or is in charge of the conversation.</p>
+</section>
+
+<section class="original">
+<p>The natural test adapter to substitute for a &#8216;&#8217;primary&#8217;&#8217; actor is FIT, since that framework is designed to read a script and drive the application. The natural test adapter to substitute for a &#8216;&#8217;secondary&#8217;&#8217; actor such as a database is a mock, since that is designed to answer queries or record events from the application.</p>
+</section>
+
+<section class="original">
+<p>These observations lead us to follow the system&#8217;s use case context diagram and draw the &#8216;&#8217;primary ports &#8216;&#8217;and&#8217;&#8217; primary adapters&#8217;&#8217; on the left side (or top) of the hexagon, and the &#8216;&#8217;secondary ports&#8217;&#8217; and &#8216;&#8217;secondary adapters&#8217;&#8217; on the right (or bottom) side of the hexagon.</p>
+</section>
+
+<section class="original">
+<p>The relationship between primary and secondary ports/adapters and their respective implementation in FIT and mocks is useful to keep in mind, but it should be used as a consequence of using the ports and adapters architecture, not to short-circuit it. The ultimate benefit of a ports and adapters implementation is the ability to run the application in a fully isolated mode.</p>
+</section>
+
+<section class="original">
+<h4>Use Cases And The Application Boundary </h4>
+</section>
+
+<section class="original">
+<p>It is useful to use the hexagonal architecture pattern to reinforce the preferred way of writing use cases.</p>
+</section>
+
+<section class="original">
+<p>A common mistake is to write use cases to contain intimate knowledge of the technology sitting outside each port. These use cases have earned a justifiably bad name in the industry for being long, hard-to-read, boring, brittle, and expensive to maintain.</p>
+</section>
+
+<section class="original">
+<p>Understanding the ports and adapters architecture, we can see that the use cases should generally be written at the application boundary (the inner hexagon), to specify the functions and events supported by the application, regardless of external technology. These use cases are shorter, easier to read, less expensive to maintain, and more stable over time.</p>
+</section>
+
+<section class="original">
+<h4>How Many Ports? </h4>
+</section>
+
+<section class="original">
+<p>What exactly a port is and isn&#8217;t is largely a matter of taste. At the one extreme, every use case could be given its own port, producing hundreds of ports for many applications. Alternatively, one could imagine merging all primary ports and all secondary ports so there are only two ports, a left side and a right side.</p>
+</section>
+
+<section class="original">
+<p>Neither extreme appears optimal.</p>
+</section>
+
+<section class="original">
+<p>The weather system described in the Known Uses has four natural ports: the weather feed, the administrator, the notified subscribers, the subscriber database. A coffee machine controller has four natural ports: the user, the database containing the recipes and prices, the dispensers, and the coin box. A hospital medication system might have three: one for the nurse, one for the prescription database, and one for the computer-controller medication dispensers.</p>
+</section>
+
+<section class="original">
+<p>It doesn&#8217;t appear that there is any particular damage in choosing the &#8220;wrong&#8221; number of ports, so that remains a matter of intuition. My selection tends to favor a small number, two, three or four ports, as described above and in the Known Uses.</p>
+</section>
+
+<section class="original">
+<h3>Known Uses </h3>
+</section>
+
+<section class="original">
+<p><img src='/images/hexagonal-architecture/2304' alt='Image179.gif' title='Image179.gif' /><br /><br />
+ Figure 4</p>
+</section>
+
+<section class="original">
+<p>Figure 4 shows an application with four ports and several adapters at each port. This was derived from an application that listened for alerts from the national weather service about earthquakes, tornadoes, fires and floods, and notified people on their telephones or telephone answering machines. At the time we discussed this system, the system&#8217;s interfaces were identified and discussed by &#8216;&#8217;technology, linked to purpose&#8217;&#8217;. There was an interface for trigger-data arriving over a wire feed, one for notification data to be sent to answering machines, an administrative interface implemented in a GUI, and a database interface to get their subscriber data.</p>
+</section>
+
+<section class="original">
+<p>The people were struggling because they needed to add an http interface from the weather service, an email interface to their subscribers, and they had to find a way to bundle and unbundle their growing application suite for different customer purchasing preferences. They feared they were staring at a maintenance and testing nightmare as they had to implement, test and maintain separate versions for all combinations and permutations.</p>
+</section>
+
+<section class="original">
+<p>Their shift in design was to architect the system&#8217;s interfaces &#8216;&#8217;by purpose&#8217;&#8217; rather than by technology, and to have the technologies be substitutable (on all sides) by adapters. They immediately picked up the ability to include the http feed and the email notification (the new adapters are shown in the drawing with dashed lines). By making each application executable in headless mode through APIs, they could add an app-to-add adapter and unbundle the application suite, connecting the sub-applications on demand. Finally, by making each application executable completely in isolation, with test and mock adapters in place, they gained the ability to regression test their applications with stand-alone automated test scripts.</p>
+</section>
+
+<section class="original">
+<h4>Mac, Windows, Google, Flickr, Web 2.0 </h4>
+</section>
+
+<section class="original">
+<p>In the early 1990s, MacIntosh applications such as word processor applications were required to have API-drivable interfaces, so that applications and user-written scripts could access all the functions of the applications. Windows desktop applications have evolved the same ability (I don&#8217;t have the historical knowledge to say which came first, nor is that relevant to the point).</p>
+</section>
+
+<section class="original">
+<p>The current (2005) trend in web applications is to publish an API and let other web applications access those APIs directly. Thus, it is possible to publish local crime data over a Google map, or create web applications that include Flickr&#8217;s photo archiving and annotating abilities.</p>
+</section>
+
+<section class="original">
+<p>All of these examples are about making the &#8216;&#8217;primary &#8216;&#8217;ports&#8217; APIs visible. We see no information here about the secondary ports.</p>
+</section>
+
+<section class="original">
+<h4>Stored Outputs </h4>
+</section>
+
+<section class="original">
+<p>This example written by Willem Bogaerts on the C2 wiki:</p>
+</section>
+
+<section class="original">
+<p>&#8220;I encountered something similar, but mainly because my application layer had a strong tendency to become a telephone switchboard that managed things it should not do. My application generated output, showed it to the user and then had some possibility to store it as well. My main problem was that you did not need to store it always. So my application generated output, had to buffer it and present it to the user. Then, when the user decided that he wanted to store the output, the application retrieved the buffer and stored it for real.</p>
+</section>
+
+<section class="original">
+<p>I did not like this at all. Then I came up with a solution: Have a presentation control with storage facilities. Now the application no longer channels the output in different directions, but it simply outputs it to the presentation control. It&#8217;s the presentation control that buffers the answer and gives the user the possibility to store it.</p>
+</section>
+
+<section class="original">
+<p>The traditional layered architecture stresses &#8220;UI&#8221; and &#8220;storage&#8221; to be different. The Ports and Adapters Architecture can reduce output to being simply &#8220;output&#8221; again. &#8221; </p>
+</section>
+
+<section class="original">
+<h4>Anonymous example from the C2-wiki </h4>
+</section>
+
+<section class="original">
+<p>&#8220;In one project I worked on, we used the SystemMetaphor of a component stereo system. Each component has defined interfaces, each of which has a specific purpose. We can then connect components together in almost unlimited ways using simple cables and adapters.&#8221; </p>
+</section>
+
+<section class="original">
+<h4>Distributed, Large-Team Development </h4>
+</section>
+
+<section class="original">
+<p>This one is still in trial use and so does not properly count as a use of the pattern. However, it is interesting to consider.</p>
+</section>
+
+<section class="original">
+<p>Teams in different locations all build to the Hexagonal architecture, using FIT and mocks so the applications or components can be tested in standalone mode. The CruiseControl build runs every half hour and runs all the applications using the FIT+mock combination. As application subsystem and databases get completed, the mocks are replaced with test databases.</p>
+</section>
+
+<section class="original">
+<h4>Separating Development of UI and Application Logic </h4>
+</section>
+
+<section class="original">
+<p>This one is still in early trial use and so does not count as a use of the pattern. However, it is interesting to consider.</p>
+</section>
+
+<section class="original">
+<p>The UI design is unstable, as they haven&#8217;t decided on a driving technology or a metaphor yet. The back-end services architecture hasn&#8217;t been decided, and in fact will probably change several times over the next six months. Nonetheless, the project has officially started and time is ticking by.</p>
+</section>
+
+<section class="original">
+<p>The application team creates FIT tests and mocks to isolate their application, and creates testable, demonstrable functionality to show their users. When the UI and back-end services decisions finally get met, it &#8220;should be straightforward&#8221; to add those elements the application. Stay tuned to learn how this works out (or try it yourself and write me to let me know).</p>
+</section>
+
+<section class="original">
+<h3>Related Patterns </h3>
+</section>
+
+<section class="original">
+<h4>Adapter </h4>
+</section>
+
+<section class="original">
+<p>The &#8216;&#8217;Design Patterns&#8217;&#8217; book contains a description of the generic &#8216;&#8217;Adapter&#8217;&#8217; pattern: &#8220;Convert the interface of a class into another interace clients expect.&#8221; The ports-and-adapters pattern is a particular use of the &#8216;&#8217;Adapter&#8217;&#8217; pattern.</p>
+</section>
+
+<section class="original">
+<h4>Model-View-Controller </h4>
+</section>
+
+<section class="original">
+<p>The MVC pattern was implemented as early as 1974 in the Smalltalk project. It has been given, over the years, many variations, such as Model-Interactor and Model-View-Presenter. Each of these implements the idea of ports-and-adapters on the primary ports, not the secondary ports.</p>
+</section>
+
+<section class="original">
+<h4>Mock Objects and Loopback </h4>
+</section>
+
+<section class="original">
+<p>&#8220;A mock object is a &#8220;double agent&#8221; used to test the behaviour of other objects. First, a mock object acts as a faux implementation of an interface or class that mimics the external behaviour of a true implementation. Second, a mock object observes how other objects interact with its methods and compares actual behaviour with preset expectations. When a discrepancy occurs, a mock object can interrupt the test and report the anomaly. If the discrepancy cannot be noted during the test, a verification method called by the tester ensures that all expectations have been met or failures reported.&#8221; &#8212; From <a href="http://MockObjects.com" target="_blank">http://MockObjects.com</a></p>
+</section>
+
+<section class="original">
+<p>Fully implemented according to the mock-object agenda, mock objects are used throughout an application, not just at the external interface The primary thrust of the mock object movement is conformance to specified protocol at the individual class and object level. I borrow their word &#8220;mock&#8221; as the best short description of an in-memory substitute for an external secondary actor.</p>
+</section>
+
+<section class="original">
+<p>The Loopback pattern is an explicit pattern for creating an internal replacement for an external device.</p>
+</section>
+
+<section class="original">
+<h4>Pedestals </h4>
+</section>
+
+<section class="original">
+<p>In &#8220;Patterns for Generating a Layered Architecture&#8221;, Barry Rubel describes a pattern about creating an axis of symmetry in control software that is very similar to ports and adapters. The &#8216;&#8217;Pedestal&#8217;&#8217; pattern calls for implementing an object representing each hardware device within the system, and linking those objects together in a control layer. The &#8216;&#8217;Pedestal&#8217;&#8217; pattern can be used to describe either side of the hexagonal architecture, but does not yet stress the similarity across adapters. Also, being written for a mechanical control environment, it is not so easy to see how to apply the pattern to IT applications.</p>
+</section>
+
+<section class="original">
+<h4>Checks </h4>
+</section>
+
+<section class="original">
+<p>Ward Cunningham&#8217;s pattern language for detecting and handling user input errors, is good for error handling across the inner hexagon boundaries.</p>
+</section>
+
+<section class="original">
+<h4>Dependency Inversion (Dependency Injection) and SPRING </h4>
+</section>
+
+<section class="original">
+<p>Bob Martin&#8217;s Dependency Inversion Principle (also called Dependency Injection by Martin Fowler) states that &#8220;High-level modules should not depend on low-level modules. Both should depend on abstractions. Abstractions should not depend on details. Details should depend on abstractions.&#8221; The &#8216;&#8217;Dependency Injection &#8216;&#8217;pattern by Martin Fowler gives some implementations. These show how to create swappable secondary actor adapters. The code can be typed in directly, as done in the sample code in the article, or using configuration files and having the SPRING framework generate the equivalent code.</p>
+</section>
+
+<section class="original">
+<h3>Acknowledgements </h3>
+
+(omitted for clarity)
+
+<h3>References and Related Reading </h3>
+
+(omitted for clarity)
+</section>
+
