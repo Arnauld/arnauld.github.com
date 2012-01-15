@@ -97,45 +97,79 @@ notextile.. <style>
 		color: #A2B6DB;
 	}
 
+	.trad,
+	.trad ul li {
+		color: black;
+	}
+
+	section.body {
+		position:relative;
+	}
+	.sidenote {
+		position: absolute;
+		right:-220px;
+		width:200px;
+		border: #A2B6DB;
+		float: right;
+	}
+
 </style>
 
 <section class="original">
 <h2>The Pattern: Ports and Adapters (&#8216;&#8217;Object Structural&#8217;&#8217;) </h2>
 </section>
 
+<section class="trad">
+
+h2. Le Motif: Ports[1] et Adaptateurs[2] (&#8216;&#8216;Motif Structurel&#8217;&#8217;) </h2>
+
+<div class="sidenote">
+
+fn1. <b>Un port</b> est un point d'entrée/sortie vers un autre dispositif, permettant à un client d'utiliser une application (ou un service).
+
+fn2. <b>Adaptateur</b> est un patron de conception de type structure. <small>Il permet de convertir l'interface d'une classe en une autre interface que le client attend. L' Adaptateur fait fonctionner un ensemble des classes qui n'auraient pas pu fonctionner sans lui, à cause d'une incompatibilité d'interfaces.</small>
+</div>
+</section>
+
 <section class="original">
 <p><em>Create your application to work without either a UI or a database so you can run automated regression-tests against the application, work when the database becomes unavailable, and link applications together without any user involvement.</em></p>
 </section>
 
-p(google_trad). Créez votre application de travailler sans ce soit une interface ou une base de données de sorte que vous pouvez exécuter des tests automatisés de régression contre l'application, le travail lorsque la base de données devient indisponible, et les applications relier sans aucune intervention de l'utilisateur.
-
-p(yahoo_trad). Créez votre application pour travailler sans UI ou base de données ainsi vous pouvez courir les régression-essais automatisés contre l'application, le travail quand la base de données devient indisponible, et les applications de lien ensemble sans n'importe quelle participation d'utilisateur.
+<section class="trad">
+<p><em>Créer votre application de sorte qu'elle puisse fonctionner sans interface utilisateur ni base de données, qu'il soit possible de lancer automatiquement des tests de non-regression sollicitant l'application, de travailler même lorsque la base de données est indisponible, et pouvoir connecter les applications les unes aux autres sans  intervention spécifique.</em></p>
+</section>
 
 <section class="original">
 <h3>Alternative name: &#8216;&#8217;Hexagonal Architecture&#8217;&#8217; </h3>
 </section>
 
+<section class="trad">
+<h3>Autre nom: &#8216;&#8216;Architecture Hexagonale&#8217;&#8217; </h3>
+</section>
 
 <section class="original">
 <h3>Intent </h3>
+</section>
+
+<section class="trad">
+<h3>But </h3>
 </section>
 
 <section class="original">
 <p>Allow an application to equally be driven by users, programs, automated test or batch scripts, and to be developed and tested in isolation from its eventual run-time devices and databases.</p>
 </section>
 
-p(google_trad). Permettre à une application aussi être entraînée par les utilisateurs, les programmes, test automatisé ou de scripts batch, et d'être développées et testées dans l'isolement de son éventuelle exécution des dispositifs et des bases de données.
-
-p(yahoo_trad). Permettez à une application d'être conduit également par des utilisateurs, des programmes, des manuscrits automatisés d'essai ou en lots, et d'être développé et examiné en isolation de ses dispositifs et bases de données d'exécution certains.
-
+<section class="trad">
+<p>Permettre à une application d'être sollicitée de la même manière par des utilisateurs, des programmes, des tests automatisés ou des scripts, et d'être développée et testée de manière isolée d'éventuels dispositifs et bases de données présents à l'execution.</p>
+</section>
 
 <section class="original">
 <p>As events arrive from the outside world at a port, a technology-specific adapter converts it into a usable procedure call or message and passes it to the application. The application is blissfully ignorant of the nature of the input device. When the application has something to send out, it sends it out through a port to an adapter, which creates the appropriate signals needed by the receiving technology (human or automated). The application has a semantically sound interaction with the adapters on all sides of it, without actually knowing the nature of the things on the other side of the adapters.</p>
 </section>
 
-p(google_trad). Comme les événements arrivent du monde extérieur dans un port, un adaptateur de technologies spécifiques, il se transforme en un appel de procédure exploitable ou un message et le transmet à l'application. L'application est joyeusement ignorants de la nature de l'appareil d'entrée. Lorsque l'application a quelque chose à envoyer, il l'envoie à travers un port à un adaptateur, ce qui crée les signaux appropriés requis par la technologie de réception (humain ou automatisé). L'application a une interaction sémantiquement avec les adaptateurs sur tous les côtés de celui-ci, sans réellement connaître la nature des choses de l'autre côté des adaptateurs.
-
-p(yahoo_trad). Pendant que les événements arrivent du monde extérieur à un port, un adapteur technology-specific le convertit en appel de procédure ou message utilisable et le passe à l'application. L'application est avec bonheur ignorante de la nature du dispositif d'entrée. Quand l'application a quelque chose envoyer, elle l'envoie dehors par un port à un adapteur, qui crée les signaux appropriés requis par la technologie de réception (humain ou automatisé). L'application a une interaction sémantiquement saine avec les adapteurs de tous les côtés de elle, sans connaître réellement la nature des choses de l'autre côté des adapteurs.
+<section class="trad">
+<p>Comme les évènements arrivent de l'exterieur via un point d'entrée (__port__[1]), un adaptateur[2] spécifique les transforme en des appels de fonction ou des messages exploitables avant de les transmettre à l'application. L'application est, et ce avec un grand bonheur, complétement ignorante de la nature du dispositif qui la sollicite. Lorsque l'application a quelque chose à emettre, elle l'envoie à travers un point de sortie (__port__[1]) à un adaptateur[2] qui créé le signal approprié requis par la technologie qui va le receptionner (humain ou automate). L'application a ainsi une interaction sémantiquement saine avec les adaptateurs de part et d'autre, sans connaître réellement la nature des choses qui se trouvent de l'autre côtés des adaptateurs.</p>
+</section>
 
 <section class="original">
 <p><img src='/images/hexagonal-architecture/2301' alt='Image176.gif' title='Image176.gif' /><br /><br />
@@ -156,169 +190,194 @@ p(yahoo_trad). Pendant que les événements arrivent du monde extérieur à un p
 </p>
 </section>
 
-p(google_trad). Un des grands Bugaboos d'applications logicielles au fil des années a été l'infiltration de la logique métier dans le code de l'interface utilisateur. Le problème de cette cause est triple:
-* Premièrement, le système ne peut pas parfaitement être testés avec des suites de tests automatisés, parce qu'une partie de la logique devant être testés dépend souvent changer des détails visuels tels que la taille du champ et de l'emplacement des boutons;
-* Pour la raison exactement les mêmes, il devient impossible de passer d'une utilisation humaine axée sur le système à un système de lots gérés;
-* Pour la même raison encore, il devient difficile, voire impossible, pour permettre au programme d'être entraîné par un autre programme quand cela devient intéressant.
+<section class="trad">
+<p>L'un des plus terribles Croque-mitaines[3] des applications logicielles au fil des années a été l'infiltration de la logique métier dans le code de l'interface utilisateur. Les problèmes que cela cause sont triples: <br/>
+<li>Premièrement, le système ne peux pas être complètement testé avec des tests automatisés puisqu'une partie de la logique, devant être testée, dépend généralement de modification de détails visuels comme la taille d'un champ ou l'emplacement d'un bouton.</li>
+<li>Pour la même raison, il devient impossible de passer d'un fonctionement basé sur une interaction humains à une interaction scriptée.</li>
+<li>Et pour la même raison encore, il devient difficile, voir impossible, de permettre à ce programme d'être piloté par un autre programme lorsque cela pourra s'averer utile.</li>
+</p>
 
-p(yahoo_trad). Un des grands bugaboos des applications de logiciel au cours des années a été infiltration de la logique d'affaires dans le code d'interface utilisateurs. Le problème ce des causes est triple : 
-* D'abord, le système ne peut pas d'une manière ordonnée être examiné avec les suites d'essai automatisées parce qu'une partie de la logique devant être examiné dépend de souvent-changer les détails visuels tels que la taille de champ et le placement de bouton ;
-* Pour l'exact la même raison, il devient pour décaler d'une utilisation humain-conduite du système à l'groupe-courent le système ;
-* Pour immobile la même raison, il devient difficile ou impossible de permettre au programme d'être conduit par un autre programme quand cela devient attrayant.
+<div class="sidenote">
+
+fn3. <quote>Bugaboo: An imaginary monster used to frighten children.</quote> <small>traduit en “Croque-mitaines”</small>
+</div>
+
+</section>
 
 <section class="original">
 <p>The attempted solution, repeated in many organizations, is to create a new layer in the architecture, with the promise that this time, really and truly, no business logic will be put into the new layer. However, having no mechanism to detect when a violation of that promise occurs, the organization finds a few years later that the new layer is cluttered with business logic and the old problem has reappeared.</p>
 </section>
 
-p(google_trad). La tentative de solution, a répété dans de nombreuses organisations, est de créer une nouvelle couche dans l'architecture, avec la promesse que cette fois, vraiment, pas de logique d'entreprise sera mis dans le nouveau calque. Cependant, n'ayant pas de mécanisme permettant de détecter si une violation de cette promesse se produit, l'organisation trouve quelques années plus tard que la nouvelle couche est encombré de logique métier et le vieux problème est réapparu.
-
-p(yahoo_trad). La solution essayée, répétée dans beaucoup d'organismes, est de créer une nouvelle couche dans l'architecture, avec la promesse que cette fois, vraiment et vraiment, aucune logique d'affaires ne sera mise dans la nouvelle couche. Cependant, n'ayant aucun mécanisme pour détecter quand une violation de cette promesse se produit, l'organisation trouve quelques ans après que la nouvelle couche est encombrée avec la logique d'affaires et le vieux problème a réapparu.
-
+<section class="trad">
+<p>La tentative de solution, utilisée par de nombreuses organisations, est de créer une nouvelle couche dans l'architecture, avec la promesse que cette fois, “juré craché”, qu'aucune logique métier ne sera présente. Mais comme aucun mécanisme ne permet de détecter que cette promesse est bien respectée, on se rend compte, quelques années plus tard, que la nouvelle couche est parsemée de logique métier et que notre bon vieux problème a réapparu.
+</section>
 
 <section class="original">
 <p>Imagine now that &#8216;&#8217;every&#8217;&#8217; piece of functionality the application offers were available through an API (application programmed interface) or function call. In this situation, the test or QA department can run automated test scripts against the application to detect when any new coding breaks a previously working function. The business experts can create automated test cases, before the GUI details are finalized, that tells the programmers when they have done their work correctly (and these tests become the ones run by the test department). The application can be deployed in &#8216;&#8217;headless&#8217;&#8217; mode, so only the API is available, and other programs can make use of its functionality &#8212; this simplifies the overall design of complex application suites and also permits business-to-business service applications to use each other without human intervention over the web. Finally, the automated function regression tests detect any violation of the promise to keep business logic out of the presentation layer. The organization can detect, and then correct, the logic leak.</p>
 </section>
 
-p(google_trad). Imaginez maintenant que chaque morceau''''offre des fonctionnalités de l'application ont été disponibles grâce à un appel d'API (interface de l'application programmée) ou une fonction. Dans cette situation, le département de test ou AQ peut exécuter des scripts de test automatisés contre l'application de détecter quand un nouveau codage des pauses d'une fonction préalablement travail. Les experts métier peuvent créer des cas de test automatisés, avant que les détails graphiques sont finalisés, qui raconte les programmeurs quand ils ont fait leur travail correctement (et ces tests deviennent celles gérées par le Département d'essai). L'application peut être déployée en''mode''sans tête, de sorte que l'API est disponible, et d'autres programmes peuvent faire usage de ses fonctionnalités - ce qui simplifie la conception globale des suites d'applications complexes et permet également des applications de services d'entreprise à entreprise pour l'utilisation de l'autre sans intervention humaine sur le web. Enfin, les tests automatisés de régression de fonction de détecter toute violation de la promesse de garder la logique métier de la couche de présentation. L'organisation peut détecter, puis corriger, la fuite de logique.
+<section class="trad">
+<p>Imaginez maintenant que &#8216;&#8216;chaque&#8217;&#8217; morceau de fonctionalité, que l'application met à disposition, soit disponible à travers une API (Interface de programmation) ou un appel de fonction. Dans ce cas, le département de tests ou de QA (assurance qualité) peux executer des scripts de tests automatisés sur l'application pour détecter si un nouveau développement a cassé un comportement qui marchait précédement. Les experts métiers peuvent créer des cas de tests automatisé, alors que l'interface utilisateur (GUI) n'est pas encore finalisée, et indiquer si les développeurs ont correctement fait leur travail (et ces tests deviennent par la suite ceux utilisés par les départements de tests). L'application peux être deployée en mode &#8216;&#8216;sans interface graphique&#8217;&#8217; et n'être accessible que par appel API, et les autres programmes peuvent encore se servir de ces fonctionnalités -- Cela simplifie la conception globale d'une suite d'applications complexes et permet aussi à des applications de services inter-entreprises d'interagir entre elles sans intervention humaine. Enfin, les tests automatisés de non-régression sur ces API permettent de détecter toute rupture du contrat si une partie de la logique métier a été déplacé dans la couche de présentation[4]. L'organisation peux détecter, et corriger, la fuite de cette logique.</p>
 
-p(yahoo_trad). Imaginez maintenant que morceau d'every'de `le 'de fonctionnalité les offres d'application étaient disponible par un api (interface programmée par application) ou l'appel de fonction. Dans cette situation, l'essai ou le département de QA peut courir les manuscrits automatisés d'essai contre l'application pour détecter quand n'importe quel nouveau codage casse précédemment une fonction de fonctionnement. Les experts en matière d'affaires peuvent créer les cas de test automatisés, avant que les détails de GUI soient menés à bonne fin, qui indique aux programmeurs quand ils ont fait leur travail correctement (et ces essais deviennent ceux courus par le département d'essai). L'application peut être déployée mode de headless'dans `', ainsi seulement l'api est disponible, et d'autres programmes peuvent se servir de sa fonctionnalité - ceci simplifie la conception globale des progiciels d'application complexes et permet également à des applications de service d'entreprise à entreprise de s'employer sans intervention humaine au-dessus du Web. En conclusion, les essais automatisés de régression de fonction détectent n'importe quelle violation de la promesse de garder la logique d'affaires hors de la couche de présentation. L'organisation peut détecter, et puis corriger, la fuite de logique.
+<div class="sidenote">
+
+fn4. La logique métier fait alors défaut dans la couche API. <small>Ceci ne permet pas de detecter qu'aucune logique métier n'est présente dans la couche de présentation. Cela permet de vérifier que s'il y a une logique métier et qu'elle est exprimée au travers de tests, ces tests doivent être satisfait au niveau API. Il est donc important que les tests de la couche API traitent l'ensemble des rêgles métiers.</small>
+</div>
+
+</section>
 
 <section class="original">
 <p>An interesting similar problem exists on what is normally considered &#8220;the other side&#8221; of the application, where the application logic gets tied to an external database or other service. When the database server goes down or undergoes significant rework or replacement, the programmers can&#8217;t work because their work is tied to the presence of the database. This causes delay costs and often bad feelings between the people.</p>
 </section>
 
-p(google_trad). Un problème similaire existe intéressante sur ce qui est normalement considéré comme "l'autre côté" de la demande, où la logique de l'application se fait attacher à une base de données externe ou un autre service. Lorsque le serveur de bases de données tombe en panne ou subit retravailler significative ou de remplacement, les programmeurs ne peuvent pas travailler parce que leur travail est lié à la présence de la base de données. Cela occasionne des coûts de retard et des sentiments souvent mauvaises entre les personnes.
-
-p(yahoo_trad). Un problème semblable intéressant existe sur ce qui est normalement considéré « l'autre côté » de l'application, où la logique d'application obtient attachée à une base de données externe ou à tout autre service. Quand le serveur de base de données descend ou subit la reprise ou le remplacement significative, les programmeurs ne peuvent pas fonctionner parce que leur travail est attaché à la présence de la base de données. Ceci cause des coûts de retard et des sentiments souvent mauvais entre les personnes.
+<section class="trad">
+<p>Un problème similaire existe sur ce qui est normalement considéré comme &#8220;en dehors&#8221; de l'application, lorsque la logique de l'application est liée à une base de données externe ou à tout autre service. Lorsque la base de donnée tombe en panne ou subit un important travail de maintenance ou de modification, les programeurs ne peuvent plus travailler parce que leur travail est lié à la présence de la base de données. Cela occasionne des retards et un mauvais ressenti entre les gens.
+</section>
 
 
 <section class="original">
 <p>It is not obvious that the two problems are related, but there is a symmetry between them that shows up in the nature of the solution.</p>
 </section>
 
-p(google_trad). Il n'est pas évident que les deux problèmes sont liés, mais il ya une symétrie entre eux qui se manifeste dans la nature de la solution.
-
-p(yahoo_trad). Il n'est pas évident que les deux problèmes soient connexes, mais il y a une symétrie entre eux que révèle en forme de la solution.
-
+<section class="trad">
+<p>Il n'est pas évident que les deux problèmes soient lié, mais il existe une symétrie entre eux qui se révèle dans la nature de la solution à apporter.</p>
+</section>
 
 
 <section class="original">
 <h3>Nature of the Solution </h3>
 </section>
 
+
+<section class="original">
+<h3>Nature de la solution</h3>
+</section>
+
+
 <section class="original">
 <p>Both the user-side and the server-side problems actually are caused by the same error in design and programming &#8212; the entanglement between the business logic and the interaction with external entities. The asymmetry to exploit is not that between &#8216;&#8217;left&#8217;&#8217; and &#8216;&#8217;right&#8217;&#8217; sides of the application but between &#8216;&#8217;inside&#8217;&#8217; and &#8216;&#8217;outside&#8217;&#8217; of the application. The rule to obey is that code pertaining to the &#8216;&#8217;inside&#8217;&#8217; part should not leak into the &#8216;&#8217;outside&#8217;&#8217; part.</p>
 </section>
 
-p(google_trad). Tant le côté utilisateur et les problèmes côté serveur sont en réalité causés par la même erreur dans la conception et la programmation - l'intrication entre la logique métier et l'interaction avec des entités extérieures. L'asymétrie d'exploiter n'est pas celle entre''gauche''et''droit''côtés de l'application, mais entre l'intérieur et l'extérieur''''''''de l'application. La règle d'obéir, c'est que le code se rapportant à l'intérieur de la pièce''''ne doit pas s'infiltrer dans le cadre''en dehors''.
+<section class="trad">
+<p>Tant du côté utilisateur que du côté serveur, les problèmes sont provoqués par la même erreur dans la conception et le développement -- l'enchevêtrement entre la logique métier et les interactions avec les entités externes.[5]
+L'asymétrie a exploiter n'est pas entre la partie “gauche" et la partie “droite“ de l'application, mais entre son “interieur" et son “exterieur”. La rêgle à suivre est que le code se rapportant à la partie “interieure” de l'application ne doit pas fuir dans la partie “exterieur”[6].
+</p>
 
-p(yahoo_trad). L'utilisateur-côté et les problèmes de serveur-côté sont provoqués réellement par la même erreur dans la conception et la programmation - l'enchevêtrement entre la logique d'affaires et l'interaction avec les entités externes. L'asymétrie à exploiter n'est pas celle entre de `de `les côtés de right'de 'left'et 'de l'application mais entre de `de `l'outside'de 'inside'et 'de l'application. La règle à obéir est que code concernant le `la 'pièce d'inside'ne devrait pas couler cloison d'outside'dans que `'.
+<div class="sidenote">
 
+fn5. On peux considérer que “ces interactions” correspondent aux solliçations externes comme celles d'un utilisateur via une interface utilisateur, ou un programme via une API. L'auteur évoque donc l'enchevêtrement de cette couche de saisie avec les rêgles métier. 
 
+fn6. Il faut imaginer la séparation comme faisant partie de l'application; la frontière a une épaisseur que l'on peux séparer en deux couches: une couche interieure et une couche exterieure comme un oignon -- voir "jeffreypalermo - L'architecture en oignon":http://jeffreypalermo.com/blog/the-onion-architecture-part-1/
+</div>
+</section>
 
 <section class="original">
 <p>Removing any left-right or up-down asymmetry for a moment, we see that the application communicates over &#8216;&#8217;ports&#8217;&#8217; to external agencies. The word &#8220;port&#8221; is supposed to evoke thoughts of &#8216;&#8217;ports&#8217;&#8217; in an operating system, where any device that adheres to the protocols of a port can be plugged into it; and &#8216;&#8217;ports&#8217;&#8217; on electronics gadgets, where again, any device that fits the mechanical and electrical protocols can be plugged in. The protocol for a port is given by the purpose of the conversation between the two devices. The protocol takes the form of an application program interface (API).</p>
 </section>
 
-p(google_trad). Suppression des gauche-droite ou haut-bas asymétrie pour un moment, nous voyons que l'application communique via les ports''''à des organismes externes. Le mot «port» est censé évoquer des pensées de ports''''dans un système d'exploitation, où tout dispositif qui adhère aux protocoles d'un port peut être branché sur elle, et les ports''''sur les gadgets électroniques, où à nouveau , tout appareil qui tient les protocoles mécanique et électrique peut être branché po le protocole pour le port est donnée par le but de la conversation entre les deux appareils. Le protocole prend la forme d'une interface de programmation d'application (API).
-
-p(yahoo_trad). Enlevant de gauche à droite ou asymétrie d'up-down pour un instant, nous voyons que l'application communique ports'au-dessus de `'aux agences externes. Ports'de `de « port » du mot est censé évoquer des pensées 'dans un du système d'exploitation, où n'importe quel dispositif qui adhère aux protocoles d'un port peut être branché à lui ; et de `le mécanique et électrique 'sur des instruments de l'électronique, où encore, n'importe quel dispositif qui adapte ports'des protocoles peut être branché. Le protocole pour un port est donné par le but de la conversation entre les deux dispositifs. Le protocole prend la forme d'un Application Program Interface (api).
-
-
+<section class="trad">
+<p>En supprimant les asymétries gauche-droite ou haut-bas pour un temps, nous voyons que l'application communique via des ports aux organismes externes. Le mot “port” est alors censé évoqué les ports d'un système d'exploitation, où tout dispositif qui adhère au protocol d'un port peut être branché dessus; et les “ports” (ou prises) sur les gadgets électroniques où, la aussi, tout appareil qui remplit les contraintes mécaniques et électriques peut être banché. Le protocole d'un port a pour but de permettre une conversation entre les deux dispositifs. Le protocole prend la forme d'une interface de programmation (API).</p>
+</section>
 
 <section class="original">
 <p>For each external device there is an &#8216;&#8217;adapter&#8217;&#8217; that converts the API definition to the signals needed by that device and vice versa. A graphical user interface or GUI is an example of an adapter that maps the movements of a person to the API of the port. Other adapters that fit the same port are automated test harnesses such as FIT or Fitnesse, batch drivers, and any code needed for communication between applications across the enterprise or net.</p>
 </section>
 
-p(google_trad). Pour chaque périphérique externe, il est un adaptateur qui convertit''''la définition API pour les signaux requis par ce périphérique et vice versa. Une interface utilisateur graphique ou GUI est un exemple d'un adaptateur qui fait correspondre les mouvements d'une personne à l'API du port. D'autres adaptateurs qui s'adaptent le même port sont harnais de test automatisés, tels que la FIT ou Fitnesse, les chauffeurs de lot, ainsi que tout code nécessaire pour la communication entre les applications dans l'entreprise ou d'un filet.
+<section class="trad">
+<p>Pour chaque périphérique externe, il y a un “adaptateur” qui convertit la définition de l'API en signaux requis par ce périphérique et réciproquement. Une interface graphique utilisateur ou GUI est un exemple d'adaptateur qui fait correspondre les mouvements d'une personne à l'API du port. Il existe d'autres adaptateurs qui s'adaptent au même port, tels que les harnais de tests automatisés comme FIT ou Fitnesse[7], les pilotes[8] de scripts, et tout autre code nécessaire pour la communication entre applications dans l'entreprise ou le réseau.</p>
 
-p(yahoo_trad). Pour chaque dispositif externe il y a adapter'd'un `le 'qui convertit la définition d'api en signaux requis par ce dispositif et vice versa. Une interface utilisateurs graphique ou un GUI est un exemple d'un adapteur qui trace les mouvements d'une personne à l'api du port. D'autres adapteurs qui adaptent le même port sont les logiciels de validation automatisés tels que l'AJUSTEMENT ou le Fitnesse, les conducteurs en lots, et n'importe quel code requis pour la communication entre les applications à travers l'entreprise ou le filet.
+<div class="sidenote">
 
+fn7. "FitNesse":http://fitnesse.org/FitNesse.UserGuide.OneMinuteDescription (basé sur "Framework for Integrated Test -- FIT":http://fitnesse.org/FitNesse.UserGuide.FitFramework) est un environement collaboratif permettant l'écriture de tests fonctionnels à travers un wiki.
+
+fn8. Un pilote (ou driver) est un programme, destiné à permettre à un autre programme (souvent un système d'exploitation) d'interagir avec un périphérique. ; par extension ce mot est aussi utilisé pour décrire un adaptateur.
+</div>
+</section>
 
 <section class="original">
 <p>On another side of the application, the application communicates with an external entity to get data. The protocol is typically a database protocol. From the application&#8217;s perspective, if the database is moved from a SQL database to a flat file or any other kind of database, the conversation across the API should not change. Additional adapters for the same port thus include an SQL adapter, a flat file adapter, and most importantly, an adapter to a &#8220;mock&#8221; database, one that sits in memory and doesn&#8217;t depend on the presence of the real database at all.</p>
 </section>
 
-p(google_trad). D'un autre côté de la demande, l'application communique avec une entité externe pour obtenir des données. Le protocole est généralement un protocole base de données. Du point de vue de l'application, si la base est passée d'une base de données SQL dans un fichier plat ou tout autre type de base de données, la conversation à travers l'API ne devrait pas changer. Adaptateurs supplémentaires pour le même port comprennent donc un adaptateur SQL, un adaptateur de fichier plat, et surtout, un adaptateur pour une "maquette" base de données, celui qui est assis dans la mémoire et ne dépend pas de la présence de la véritable base de données du tout.
+<section class="trad">
+<p>Une autre partie de l'application, quant a elle, communique avec une entité externe pour obtenir des données. Le protocole correspond généralement à celui d'une base de données. D'un point de vue de l'application, si la source de données passe d'une base de données SQL à un fichier plat ou n'importe quel autre type de base de données, la conversation à travers l'API ne devrait pas changer. Les adaptateurs pour ce port incluent donc: un adaptateur SQL, un adaptateur pour fichier plat, et plus important encore, un adaptateur pour un “simulacre”[9] de base de données, qui réside en mémoire et ne dépend pas de la présence de la véritable base de données.</p>
 
-p(yahoo_trad). D'un autre côté de l'application, l'application communique avec une entité externe pour obtenir des données. Le protocole est typiquement un protocole de base de données. De la perspective de l'application, si la base de données est déplacée d'une base de données de SQL à un dossier plat ou de n'importe quel autre genre de base de données, la conversation à travers l'api ne devrait pas changer. Les adapteurs additionnels pour le même port incluent ainsi un adapteur de SQL, un adapteur de dossier plat, et d'une manière plus importante, un adapteur à une « fausse » base de données, une qui se repose dans la mémoire et ne dépend pas de la présence de la vraie base de données du tout.
+<div class="sidenote">
+fn9. La traduction de “mock” en “bouchon” ne reflète pas toujours l'idée sous-jacente qu'il transmet, d'autant plus qu'il existe plusieurs definitions et plusieurs concepts qui y sont liés: mock, stub... Je conseille la lecture de "Mocks Aren't Stubs - Martin Fowler":http://martinfowler.com/articles/mocksArentStubs.html afin de mieux cerner les différences qui existent. J'ai donc opter pour “simulacre” qui, selon wikipedia, <quote>désigne une apparence qui ne renvoie à aucune réalité sous-jacente, et prétend valoir pour cette réalité elle-même.</quote>
 
+fn10. On retrouve généralement les couches: sécurité, présentation, application ou service, domaine ou métier, infrastructure, données... Il s'agit d'une architecture mono-dimensionelle puisqu'une couche n'interagit qu'avec les couches qui l'entourent: une couche au-dessus et une couche en-dessous façon sandwich.
+</div>
+
+</section>
 
 <section class="original">
 <p>Many applications have only two ports: the user-side dialog and the database-side dialog. This gives them an asymmetric appearance, which makes it seem natural to build the application in a one-dimensional, three-, four-, or five-layer stacked architecture.</p>
 </section>
 
-p(google_trad). Beaucoup d'applications n'ont que deux ports: le dialogue utilisateur-côté et la boîte de dialogue base de données-côté. Cela leur donne une apparence asymétrique, ce qui en fait sembler naturel pour construire l'application dans un unidimensionnelle, trois, quatre ou cinq couches superposées d'architecture.
-
-p(yahoo_trad). Beaucoup d'applications ont seulement deux ports : le dialogue d'utilisateur-côté et le dialogue de base de données-côté. Ceci leur donne un aspect asymétrique, qui le fait sembler normal d'établir l'application dans un unidimensionnel, trois, quatre, ou architecture empilée de cinq-couche.
-
-
+<section class="trad">
+<p>Beaucoup d'applications n'ont que deux ports: les interactions avec l'utilisateur et les interactions avec la base de données. Cela leur donne un aspect asymétrique qui semble naturel pour construire une architecture unidimensionelle à trois, quatre ou cinq couches.[10]</p>
+</section>
 
 <section class="original">
 <p>There are two problems with these drawings. First and worst, people tend not to take the &#8220;lines&#8221; in the layered drawing seriously. They let the application logic leak across the layer boundaries, causing the problems mentioned above. Secondly, there may be more than two ports to the application, so that the architecture does not fit into the one-dimensional layer drawing.</p>
 </section>
 
-p(google_trad). Il ya deux problèmes avec ces dessins. D'abord et, au pire, les gens ont tendance à ne pas prendre les "lignes" dans le dessin couches sérieux. Ils ont laissé la fuite logique de l'application à travers les frontières couche, causant des problèmes mentionnés ci-dessus. Deuxièmement, il peut y avoir plus de deux ports à la demande, de sorte que l'architecture ne rentre pas dans le dessin couche unidimensionnelle.
-
-p(yahoo_trad). Il y a deux problèmes avec ces schémas. Premier et le plus mauvais, les gens tendent à ne pas prendre « rayent » dans le schéma posé sérieusement. Ils ont laissé la fuite de logique d'application à travers les frontières de couche, posant les problèmes mentionnés ci-dessus. Deuxièmement, il peut y avoir plus de deux ports à l'application, de sorte que l'architecture ne s'insère pas dans le schéma unidimensionnel de couche.
-
+<section class="trad">
+<p>Il y a deux problèmes avec cette schématisation. La première, et la pire, est que les gens ne prennent pas au sérieux les “lignes” séparant les couches. Ils laissent la logique de l'application traverser les frontières, causant les problèmes mentionnés précédement. Deuxièmement, il peut y avoir plus de deux ports à l'application, de sorte que l'architecture ne s'insère plus dans le schéma unidimensionnel en couche.</p>
+</section>
 
 <section class="original">
 <p>The hexagonal, or ports and adapters, architecture solves these problems by noting the symmetry in the situation: there is an application on the inside communicating over some number of ports with things on the outside. The items outside the application can be dealt with symmetrically.</p>
 </section>
 
-p(google_trad). Le hexagonale, ou des ports et des adaptateurs, l'architecture résout ces problèmes en prenant note de la symétrie dans la situation: il ya une application à l'intérieur communique sur un certain nombre de ports avec des choses à l'extérieur. Les éléments en dehors de l'application peuvent être traitées de façon symétrique.
-
-p(yahoo_trad). L'hexagonal, ou les ports et les adapteurs, architecture résout ces problèmes en notant la symétrie dans la situation : il y a une application sur l'intérieur communiquant au-dessus d'un certain nombre de ports avec des choses sur l'extérieur. Les articles en dehors de l'application peuvent être traités symétriquement.
+<section class="trad">
+<p>L'architecture hexagonale, ou ports et adaptateurs, résout ces problématiques en prenant en compte la symétrie de la situation: il y a une application à l'interieur communiquant via plusieurs ports avec des choses à l'exterieur. Les choses à l'exterieur peuvent être traitées de la même façon par symétrie.</p>
+</section>
 
 <section class="original">
 <p>The hexagon is intended to visually highlight</p>
 </section>
 
-p(google_trad). L'hexagone est destinée à mettre en évidence visuellement
-
-p(yahoo_trad). L'hexagone est prévu pour accentuer visuellement
+<p class="trad"> L'hexagone est destiné à mettre en évidence visuellement</p>
 
 <section class="original">
 <p>(a) the inside-outside asymmetry and the similar nature of ports, to get away from the one-dimensional layered picture and all that evokes, and</p>
 </section>
 
-p(google_trad). (a) l'intérieur et l'extérieur d'asymétrie et de la nature même des ports, de s'éloigner de l'image unidimensionnelle couches et tout ce qui évoque, et
-
-p(yahoo_trad). (a) l'asymétrie d'à l'intérieur-extérieur et la nature semblable des ports, pour obtenir à partir de l'image posée unidimensionnelle et tout qui évoque, et
+<section class="trad">
+<p>(a) l'asymétrie interieure-exterieure et la nature similaire des ports, s'éloigner du schéma mono-dimensionnel à couche et tout ce qu'il évoque, et</p>
+</section>
 
 <section class="original">
 <p>(b) the presence of a defined number of different ports &#8211; two, three, or four (four is most I have encountered to date).</p>
 </section>
 
-p(google_trad). (b) la présence d'un nombre défini de ports différents - deux, trois, ou quatre (quatre est le plus que j'ai rencontré à ce jour).
-
-p(yahoo_trad). (b) la présence d'un nombre défini des différents ports - deux, trois, ou quatre (quatre est plus moi ont rencontré jusqu'ici).
+<section class="trad">
+<p>(b) la présence d'un nombre définit de ports -- deux, trois, ou quatre (quatre est le maximum que j'ai rencontré jusqu'à présent).</p>
+</section>
 
 <section class="original">
 <p>The hexagon is not a hexagon because the number six is important, but rather to allow the people doing the drawing to have room to insert ports and adapters as they need, not being constrained by a one-dimensional layered drawing. The term &#8216;&#8217;hexagonal architecture&#8217;&#8217; comes from this visual effect.</p>
 </section>
 
-p(google_trad). L'hexagone n'est pas un hexagone car le nombre six est important, mais plutôt de permettre aux gens qui font du dessin à avoir de la place pour insérer les ports et les adaptateurs car ils ont besoin, ne pas être contraint par un dessin unidimensionnelle couches. Le terme''''l'architecture hexagonale vient de cet effet visuel.
-
-p(yahoo_trad). L'hexagone n'est pas un hexagone parce que le numéro six est important, mais permettre plutôt les personnes faisant le schéma pour avoir la pièce d'insérer des ports et des adapteurs car ils ont besoin, non contraint par un schéma posé unidimensionnel. L'architecture'hexagonal du `de limite 'vient de cet effet visuel.
+<section class="trad">
+<p>L'hexagone n'est pas un hexagone car le nombre six est important, mais parce qu'il permet aux personnes qui le dessinent d'avoir de la place pour insérer les ports et les adaptateurs selon leurs besoins, sans être contraint par un schéma monodimensionnel en couche. Le terme “architecture hexagonale” trouve son origine dans cet effet visuel.</p></section>
 
 <section class="original">
 <p>The term &#8220;port and adapters&#8221; picks up the &#8216;&#8217;purposes&#8217;&#8217; of the parts of the drawing. A port identifies a purposeful conversation. There will typically be multiple adapters for any one port, for various technologies that may plug into that port. Typically, these might include a phone answering machine, a human voice, a touch-tone phone, a graphical human interface, a test harness, a batch driver, an http interface, a direct program-to-program interface, a mock (in-memory) database, a real database (perhaps different databases for development, test, and real use).</p>
 </section>
 
-p(google_trad). Le terme «port et adaptateurs" ramasse les fins''''des parties du dessin. Un port identifie une conversation réfléchie. Il sera généralement plusieurs adaptateurs pour tout un seul port, pour les différentes technologies qui peuvent brancher dans ce port. Typiquement, ces mesures peuvent inclure un téléphone répondeur, une voix humaine, un téléphone à clavier, une interface graphique homme, un harnais de test, un chauffeur de lot, une interface HTTP, un programme directement à l'interface du programme, une maquette (en -mémoire) base de données, une véritable base de données (bases de données peut-être différentes pour le développement, de test et l'utilisation réelle).
+<p class="google_trad"> Le terme «port et adaptateurs" ramasse les fins''''des parties du dessin. Un port identifie une conversation réfléchie. Il sera généralement plusieurs adaptateurs pour tout un seul port, pour les différentes technologies qui peuvent brancher dans ce port. Typiquement, ces mesures peuvent inclure un téléphone répondeur, une voix humaine, un téléphone à clavier, une interface graphique homme, un harnais de test, un chauffeur de lot, une interface HTTP, un programme directement à l'interface du programme, une maquette (en -mémoire) base de données, une véritable base de données (bases de données peut-être différentes pour le développement, de test et l'utilisation réelle).</p>
 
-p(yahoo_trad). Le « port et adapteurs » du terme purposes'prend `'des parties du schéma. Un port identifie une conversation utile. Il y aura typiquement les adapteurs multiples pour n'importe quel un port, pour différentes technologies qui peuvent brancher à ce port. Typiquement, ceux-ci pourraient inclure un répondeur de téléphone, une voix humaine, un téléphone par boutons-poussoirs, une interface humaine graphique, un logiciel de validation, un conducteur en lots, une interface de HTTP, une interface program-to-program directe, une fausse base de données (de dans-mémoire), une vraie base de données (bases de données peut-être différentes pour le développement, l'essai, et le vrai usage).
+<p class="yahoo_trad"> Le « port et adapteurs » du terme purposes'prend `'des parties du schéma. Un port identifie une conversation utile. Il y aura typiquement les adapteurs multiples pour n'importe quel un port, pour différentes technologies qui peuvent brancher à ce port. Typiquement, ceux-ci pourraient inclure un répondeur de téléphone, une voix humaine, un téléphone par boutons-poussoirs, une interface humaine graphique, un logiciel de validation, un conducteur en lots, une interface de HTTP, une interface program-to-program directe, une fausse base de données (de dans-mémoire), une vraie base de données (bases de données peut-être différentes pour le développement, l'essai, et le vrai usage).</p>
 
 
 <section class="original">
 <p>In the Application Notes, the left-right asymmetry will be brought up again. However, the primary purpose of this pattern is to focus on the inside-outside asymmetry, pretending briefly that all external items are identical from the perspective of the application.</p>
 </section>
 
-p(google_trad). Dans les notes d'application, l'asymétrie gauche-droite sera à nouveau évoquée. Cependant, le but principal de ce modèle est de se concentrer sur l'asymétrie dedans-dehors, semblant brièvement que tous les éléments extérieurs sont identiques du point de vue de l'application.
+<p class="google_trad"> Dans les notes d'application, l'asymétrie gauche-droite sera à nouveau évoquée. Cependant, le but principal de ce modèle est de se concentrer sur l'asymétrie dedans-dehors, semblant brièvement que tous les éléments extérieurs sont identiques du point de vue de l'application.</p>
 
-p(yahoo_trad). Dans les notes d'application, l'asymétrie de gauche à droite sera évoquée encore. Cependant, le but primaire de ce modèle est de se concentrer sur l'asymétrie d'à l'intérieur-extérieur, feignant brièvement que tous les articles externes sont identiques de la perspective de l'application.
+<p class="yahoo_trad"> Dans les notes d'application, l'asymétrie de gauche à droite sera évoquée encore. Cependant, le but primaire de ce modèle est de se concentrer sur l'asymétrie d'à l'intérieur-extérieur, feignant brièvement que tous les articles externes sont identiques de la perspective de l'application.</p>
 
 <section class="original">
 <h3>Structure </h3>
@@ -333,9 +392,9 @@ p(yahoo_trad). Dans les notes d'application, l'asymétrie de gauche à droite se
 <p>Figure 2 shows an application having two active ports and several adapters for each port. The two ports are the application-controlling side and the data-retrieval side. This drawing shows that the application can be equally driven by an automated, system-level regression test suite, by a human user, by a remote http application, or by another local application. On the data side, the application can be configured to run decoupled from external databases using an in-memory oracle, or &#8216;&#8217;mock&#8217;&#8217;, database replacement; or it can run against the test- or run-time database. The functional specification of the application, perhaps in use cases, is made against the inner hexagon&#8217;s interface and not against any one of the external technologies that might be used.</p>
 </section>
 
-p(google_trad). La figure 2 montre une application possédant deux ports actifs et plusieurs adaptateurs pour chaque port. Les deux ports sont du côté de l'application sans contrôle et le côté d'extraction de données. Ce dessin montre que l'application peut être également piloté par un système automatisé de niveau suite de tests de régression, par un utilisateur humain, par une application distante http, ou par une autre application locale. Sur le côté des données, l'application peut être configurée pour fonctionner découplée de bases de données externes en utilisant un en mémoire oracle, ou''maquette''de remplacement de bases de données, ou il peut courir contre la base de données de test ou de l'exécution. La spécification fonctionnelle de l'application, peut-être en cas d'utilisation, l'interface est faite contre l'hexagone intérieur et non pas contre l'une des technologies externes qui pourraient être utilisés.
+<p class="google_trad"> La figure 2 montre une application possédant deux ports actifs et plusieurs adaptateurs pour chaque port. Les deux ports sont du côté de l'application sans contrôle et le côté d'extraction de données. Ce dessin montre que l'application peut être également piloté par un système automatisé de niveau suite de tests de régression, par un utilisateur humain, par une application distante http, ou par une autre application locale. Sur le côté des données, l'application peut être configurée pour fonctionner découplée de bases de données externes en utilisant un en mémoire oracle, ou''maquette''de remplacement de bases de données, ou il peut courir contre la base de données de test ou de l'exécution. La spécification fonctionnelle de l'application, peut-être en cas d'utilisation, l'interface est faite contre l'hexagone intérieur et non pas contre l'une des technologies externes qui pourraient être utilisés.</p>
 
-p(yahoo_trad). Le schéma 2 montre une application ayant deux ports actifs et plusieurs adapteurs pour chaque port. Les deux ports sont le côté de application-contrôle et le côté de donnée-récupération. Ce schéma prouve que l'application peut être également conduite par automatisé, suite d'essai au niveau système de régression, par un utilisateur humain, par une application à distance de HTTP, ou par une autre application locale. Du côté de données, l'application peut être configurée à la course découplée des bases de données externes utilisant un oracle de dans-mémoire, ou mock'de `au ', remplacement de base de données ; ou elle peut fonctionner contre la base de données d'essai ou d'exécution. Les spécifications fonctionnelles de l'application, peut-être en service des cas, sont faites contre l'interface de l'hexagone intérieur et pas contre des n'importe quelles des technologies externes qui pourraient être employées.
+<p class="yahoo_trad"> Le schéma 2 montre une application ayant deux ports actifs et plusieurs adapteurs pour chaque port. Les deux ports sont le côté de application-contrôle et le côté de donnée-récupération. Ce schéma prouve que l'application peut être également conduite par automatisé, suite d'essai au niveau système de régression, par un utilisateur humain, par une application à distance de HTTP, ou par une autre application locale. Du côté de données, l'application peut être configurée à la course découplée des bases de données externes utilisant un oracle de dans-mémoire, ou mock'de `au ', remplacement de base de données ; ou elle peut fonctionner contre la base de données d'essai ou d'exécution. Les spécifications fonctionnelles de l'application, peut-être en service des cas, sont faites contre l'interface de l'hexagone intérieur et pas contre des n'importe quelles des technologies externes qui pourraient être employées.</p>
 
 <section class="original">
 <p><img src='/images/hexagonal-architecture/2303' alt='Hexagonal architecture barn door image.gif' title='Hexagonal architecture barn door image.gif' /><br /><br />
@@ -346,9 +405,9 @@ p(yahoo_trad). Le schéma 2 montre une application ayant deux ports actifs et pl
 <p>Figure 3 shows the same application mapped to a three-layer architectural drawing. To simplify the drawing only two adapters are shown for each port. This drawing is intended to show how multiple adapters fit in the top and bottom layers, and the sequence in which the various adapters are used during system development. The numbered arrows show the order in which a team might develop and use the application:</p>
 </section>
 
-p(google_trad). La figure 3 montre la même application mappée sur un dessin à trois couches architecturales. Pour simplifier le dessin que deux adaptateurs sont présentés pour chaque port. Ce dessin est destiné à montrer comment de multiples adaptateurs ajustement dans les couches supérieures et inférieures, et la séquence dans laquelle les différents adaptateurs sont utilisés pendant le développement du système. Les flèches numérotées indiquent l'ordre dans lequel une équipe peut développer et utiliser l'application:
+<p class="google_trad"> La figure 3 montre la même application mappée sur un dessin à trois couches architecturales. Pour simplifier le dessin que deux adaptateurs sont présentés pour chaque port. Ce dessin est destiné à montrer comment de multiples adaptateurs ajustement dans les couches supérieures et inférieures, et la séquence dans laquelle les différents adaptateurs sont utilisés pendant le développement du système. Les flèches numérotées indiquent l'ordre dans lequel une équipe peut développer et utiliser l'application:</p>
 
-p(yahoo_trad). Le schéma 3 montre la même application tracée à un schéma architectural de trois-couche. Pour simplifier le schéma seulement deux adapteurs sont montrés pour chaque port. Ce schéma est prévu pour montrer comment les adapteurs multiples adaptés dans les couches de dessus et de bas, et l'ordre dans lequel les divers adapteurs sont utilisés pendant le développement de système. Les flèches numérotées montrent l'ordre dans lequel une équipe pourrait se développer et emploient l'application :
+<p class="yahoo_trad"> Le schéma 3 montre la même application tracée à un schéma architectural de trois-couche. Pour simplifier le schéma seulement deux adapteurs sont montrés pour chaque port. Ce schéma est prévu pour montrer comment les adapteurs multiples adaptés dans les couches de dessus et de bas, et l'ordre dans lequel les divers adapteurs sont utilisés pendant le développement de système. Les flèches numérotées montrent l'ordre dans lequel une équipe pourrait se développer et emploient l'application :</p>
 
 
 <section class="original">
@@ -360,17 +419,19 @@ p(yahoo_trad). Le schéma 3 montre la même application tracée à un schéma ar
 </ol>
 </section>
 
-p(google_trad). 
+<p class="google_trad"> 
 # Avec un harnais de test FIT conduire à l'application et l'utilisation de la maquette (en mémoire) base de données substituant à la base de données réelles;
 # Ajout d'une interface graphique à l'application, encore en cours au large de la base de données se moquer;
 # Dans les tests d'intégration, avec des scripts de test automatisés (par exemple, de Cruise Control) de conduire l'application contre une véritable base de données contenant les données d'essai;
 # En utilisation réelle, avec une personne utilisant l'application pour accéder à une base de données en direct.
+</p>
 
-p(yahoo_trad). 
+<p class="yahoo_trad"> 
 # Avec un logiciel de validation d'AJUSTEMENT conduisant l'application et employant la fausse base de données (de dans-mémoire) remplaçant la vraie base de données ;
 # Ajouter un GUI à l'application, coulant toujours de la fausse base de données ;
 # Dans l'essai d'intégration, avec les manuscrits automatisés d'essai (par exemple, de la commande de croisière) conduisant l'application contre une vraie base de données contenant des essais ;
 # Dans la vraie utilisation, avec une personne employant l'application pour accéder à une base de données de phase.
+</p>
 
 <section class="original">
 <h3>Sample Code </h3>
