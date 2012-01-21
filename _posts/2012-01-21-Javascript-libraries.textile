@@ -10,34 +10,76 @@ comments: true
 
 Javascript Libraries that would require some attention:
 
+<notextile><style>
+.col {
+	float: left;
+	width: 18em;
+	padding: 0.5em;
+	border-radius: 6px;
+	border-color: #EFEFEF;
+	border-width: 1px;
+	border-style: solid;
+	margin: 0.5em;
+	box-shadow: 4px 4px 3px #aaa;
+}
+.clear {
+	clear: both;
+}
+</style></notextile>
+
+
+<div class="col">
+
 h2. "Backbone.js":http://documentcloud.github.com/backbone/
 
 <blockquote><p>Backbone supplies structure to JavaScript-heavy applications by providing models with key-value binding and custom events, collections with a rich API of enumerable functions, views with declarative event handling, and connects it all to your existing application over a RESTful JSON interface.</p><small>"Backbone.js":http://documentcloud.github.com/backbone/</small></blockquote>
+</div>
 
-h2. "underscore.js":http://documentcloud.github.com/underscore/
-
-<blockquote><p>Underscore is a utility-belt library for JavaScript that provides a lot of the functional programming support...</p><small>"underscore.js":http://documentcloud.github.com/underscore/</small></blockquote>
-
-h2. "Require.js":http://requirejs.org/
-
-<blockquote><p>RequireJS is a JavaScript file and module loader.</p><small>"Require.js":http://requirejs.org/</small></blockquote>
-
+<div class="col">
 h2. "Modernizr":http://www.modernizr.com/
 
 <blockquote><p>Modernizr is a small JavaScript library that detects the availability of native implementations for next-generation web technologies, i.e. features that stem from the HTML5 and CSS3 specifications.</p><small>"Modernizr":http://www.modernizr.com/docs/</small></blockquote>
+</div>
 
+<div class="clear"/>
+
+<div class="col">
+h2. "underscore.js":http://documentcloud.github.com/underscore/
+
+<blockquote><p>Underscore is a utility-belt library for JavaScript that provides a lot of the functional programming support...</p><small>"underscore.js":http://documentcloud.github.com/underscore/</small></blockquote>
+</div>
+
+<div class="col">
+h2. "Require.js":http://requirejs.org/
+
+<blockquote><p>RequireJS is a JavaScript file and module loader.</p><small>"Require.js":http://requirejs.org/</small></blockquote>
+</div>
+
+<div class="clear"/>
+
+<div class="col">
 h2. "EMBER.JS":http://emberjs.com/
 
 <blockquote><p>Ember is a JavaScript framework for creating ambitious web applications by eliminating boilerplate and providing a standard application architecture.</p><small>"EMBER.JS":http://emberjs.com/</small></blockquote>
+</div>
 
+
+<div class="col">
 h2. "{less}":http://lesscss.org/
 
 <blockquote><p>The dynamic stylesheet language.
 LESS extends CSS with dynamic behavior such as variables, mixins, operations and functions. </p><small>"{less}":http://lesscss.org/</small></blockquote>
+</div>
 
+<div class="clear"/>
+
+<div class="col">
 h2. "Bootstrap - Twitter":http://twitter.github.com/bootstrap/
 
 <blockquote><p>Bootstrap is a toolkit from Twitter designed to kickstart development of webapps and sites.
 It includes base CSS and HTML for typography, forms, buttons, tables, grids, navigation, and more.</p><small>"Bootstrap":http://twitter.github.com/bootstrap/</small></blockquote>
+</div>
+
+<div class="clear"/>
 
 "Building a single page app with Backbone.js, underscore.js and jQuery":http://andyet.net/blog/2010/oct/29/building-a-single-page-app-with-backbonejs-undersc/
