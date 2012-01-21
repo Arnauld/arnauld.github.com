@@ -13,7 +13,53 @@ excerpt: |
 
 ---
 
+notextile.. <style>
+	.collapsible .content {
+		display:none;
+	}
+
+	.collapsible h3 a {
+		color:gray;
+		font-style:italic;
+	}
+
+	.collapsible h3 {
+		line-height:12px;
+		font-size:8px;
+		padding: 0px; 
+		cursor:pointer; 
+		background-color: #eee;
+		display:block; 
+		text-decoration:none; 
+		margin:0; 
+		margin-top:10px;
+	}
+	.collapsible h3:after {
+		content:" (click to open/close)";
+		color:slategray;
+		letter-spacing:.2em;
+		font-size:6pt;
+	}
+	.active {
+		background-color: #ddd;  
+	}
+
+</style>
+<script type="text/javascript">
+	$(function() {
+		$("section.original").wrap('<div class="collapsible" />');
+		$("section.original").parent().prepend("<h3>Original</h3>");
+		$(".collapsible").collapse({
+			group: "div,ul,section"
+		});
+	});
+</script>
+
 <span class="label warning">In Progress // Incubation</span><br/>
+
+<div class="collapsible">
+<h3>Notes</h3>
+<div class="content">
 
 http://matteo.vaccari.name/blog/archives/154
 
@@ -66,6 +112,9 @@ L'architecture hexagonale de Alistair Cockburn est une référence intéressante
 </p><small>"Pyxis - Conception pilotée par le domaine (DDD)":http://pyxis-tech.com/fr/expertise/conception-pilotee-par-le-domaine-ddd
 </small></blockquote>
 
+</div> <!-- content -->
+</div> <!-- collapsible -->
+
 h1. The Pattern: Ports and Adapters ("Object Structural") ("Source":http://alistair.cockburn.us/Hexagonal+architecture)
 
 __Cet article se veux une tentative de traduction en français de l'article de Alistair Cockburn.__
@@ -115,16 +164,18 @@ notextile.. <style>
 
 </style>
 
-<section class="original">
+<div class="collapsible">
+<h3>Original</h3>
+<div class="content original">
 <h2>The Pattern: Ports and Adapters (&#8216;&#8217;Object Structural&#8217;&#8217;) </h2>
-</section>
+</div>
+</div>
 
 <section class="trad">
 
 h2. Le Motif: Ports[1] et Adaptateurs[2] (&#8216;&#8216;Motif Structurel&#8217;&#8217;) </h2>
 
 <div class="sidenote">
-
 fn1. <b>Un port</b> est un point d'entrée/sortie vers un autre dispositif, permettant à un client d'utiliser une application (ou un service).
 
 fn2. <b>Adaptateur</b> est un patron de conception de type structure. <small>Il permet de convertir l'interface d'une classe en une autre interface que le client attend. L' Adaptateur fait fonctionner un ensemble des classes qui n'auraient pas pu fonctionner sans lui, à cause d'une incompatibilité d'interfaces.</small>
@@ -171,12 +222,14 @@ fn2. <b>Adaptateur</b> est un patron de conception de type structure. <small>Il 
 <p>Comme les évènements arrivent de l'exterieur via un point d'entrée (__port__[1]), un adaptateur[2] spécifique les transforme en des appels de fonction ou des messages exploitables avant de les transmettre à l'application. L'application est, et ce avec un grand bonheur, complétement ignorante de la nature du dispositif qui la sollicite. Lorsque l'application a quelque chose à emettre, elle l'envoie à travers un point de sortie (__port__[1]) à un adaptateur[2] qui créé le signal approprié requis par la technologie qui va le receptionner (humain ou automate). L'application a ainsi une interaction sémantiquement saine avec les adaptateurs de part et d'autre, sans connaître réellement la nature des choses qui se trouvent de l'autre côtés des adaptateurs.</p>
 </section>
 
-<section class="original">
 <p><img src='/images/hexagonal-architecture/2301' alt='Image176.gif' title='Image176.gif' /><br /><br />
  Figure 1</p>
-</section>
 
 <section class="original">
+<h3>Motivation </h3>
+</section>
+
+<section class="trad">
 <h3>Motivation </h3>
 </section>
 
@@ -191,16 +244,14 @@ fn2. <b>Adaptateur</b> est un patron de conception de type structure. <small>Il 
 </section>
 
 <section class="trad">
+<div class="sidenote">
+fn3. <quote>Bugaboo: An imaginary monster used to frighten children.</quote> <small>traduit en “Croque-mitaines”</small>
+</div>
 <p>L'un des plus terribles Croque-mitaines[3] des applications logicielles au fil des années a été l'infiltration de la logique métier dans le code de l'interface utilisateur. Les problèmes que cela cause sont triples: <br/>
 <li>Premièrement, le système ne peux pas être complètement testé avec des tests automatisés puisqu'une partie de la logique, devant être testée, dépend généralement de modification de détails visuels comme la taille d'un champ ou l'emplacement d'un bouton.</li>
 <li>Pour la même raison, il devient impossible de passer d'un fonctionement basé sur une interaction humains à une interaction scriptée.</li>
 <li>Et pour la même raison encore, il devient difficile, voir impossible, de permettre à ce programme d'être piloté par un autre programme lorsque cela pourra s'averer utile.</li>
 </p>
-
-<div class="sidenote">
-
-fn3. <quote>Bugaboo: An imaginary monster used to frighten children.</quote> <small>traduit en “Croque-mitaines”</small>
-</div>
 
 </section>
 
@@ -220,7 +271,6 @@ fn3. <quote>Bugaboo: An imaginary monster used to frighten children.</quote> <sm
 <p>Imaginez maintenant que &#8216;&#8216;chaque&#8217;&#8217; morceau de fonctionalité, que l'application met à disposition, soit disponible à travers une API (Interface de programmation) ou un appel de fonction. Dans ce cas, le département de tests ou de QA (assurance qualité) peux executer des scripts de tests automatisés sur l'application pour détecter si un nouveau développement a cassé un comportement qui marchait précédement. Les experts métiers peuvent créer des cas de tests automatisé, alors que l'interface utilisateur (GUI) n'est pas encore finalisée, et indiquer si les développeurs ont correctement fait leur travail (et ces tests deviennent par la suite ceux utilisés par les départements de tests). L'application peux être deployée en mode &#8216;&#8216;sans interface graphique&#8217;&#8217; et n'être accessible que par appel API, et les autres programmes peuvent encore se servir de ces fonctionnalités -- Cela simplifie la conception globale d'une suite d'applications complexes et permet aussi à des applications de services inter-entreprises d'interagir entre elles sans intervention humaine. Enfin, les tests automatisés de non-régression sur ces API permettent de détecter toute rupture du contrat si une partie de la logique métier a été déplacé dans la couche de présentation[4]. L'organisation peux détecter, et corriger, la fuite de cette logique.</p>
 
 <div class="sidenote">
-
 fn4. La logique métier fait alors défaut dans la couche API. <small>Ceci ne permet pas de detecter qu'aucune logique métier n'est présente dans la couche de présentation. Cela permet de vérifier que s'il y a une logique métier et qu'elle est exprimée au travers de tests, ces tests doivent être satisfait au niveau API. Il est donc important que les tests de la couche API traitent l'ensemble des rêgles métiers.</small>
 </div>
 
@@ -249,7 +299,7 @@ fn4. La logique métier fait alors défaut dans la couche API. <small>Ceci ne pe
 </section>
 
 
-<section class="original">
+<section class="trad">
 <h3>Nature de la solution</h3>
 </section>
 
@@ -259,16 +309,16 @@ fn4. La logique métier fait alors défaut dans la couche API. <small>Ceci ne pe
 </section>
 
 <section class="trad">
-<p>Tant du côté utilisateur que du côté serveur, les problèmes sont provoqués par la même erreur dans la conception et le développement -- l'enchevêtrement entre la logique métier et les interactions avec les entités externes.[5]
-L'asymétrie a exploiter n'est pas entre la partie “gauche" et la partie “droite“ de l'application, mais entre son “interieur" et son “exterieur”. La rêgle à suivre est que le code se rapportant à la partie “interieure” de l'application ne doit pas fuir dans la partie “exterieur”[6].
-</p>
-
 <div class="sidenote">
-
 fn5. On peux considérer que “ces interactions” correspondent aux solliçations externes comme celles d'un utilisateur via une interface utilisateur, ou un programme via une API. L'auteur évoque donc l'enchevêtrement de cette couche de saisie avec les rêgles métier. 
 
 fn6. Il faut imaginer la séparation comme faisant partie de l'application; la frontière a une épaisseur que l'on peux séparer en deux couches: une couche interieure et une couche exterieure comme un oignon -- voir "jeffreypalermo - L'architecture en oignon":http://jeffreypalermo.com/blog/the-onion-architecture-part-1/
 </div>
+
+<p>Tant du côté utilisateur que du côté serveur, les problèmes sont provoqués par la même erreur dans la conception et le développement -- l'enchevêtrement entre la logique métier et les interactions avec les entités externes.[5]
+L'asymétrie a exploiter n'est pas entre la partie “gauche" et la partie “droite“ de l'application, mais entre son “interieur" et son “exterieur”. La rêgle à suivre est que le code se rapportant à la partie “interieure” de l'application ne doit pas fuir dans la partie “exterieur”[6].
+</p>
+
 </section>
 
 <section class="original">
@@ -285,12 +335,15 @@ fn6. Il faut imaginer la séparation comme faisant partie de l'application; la f
 
 <section class="trad">
 <p>Pour chaque périphérique externe, il y a un “adaptateur” qui convertit la définition de l'API en signaux requis par ce périphérique et réciproquement. Une interface graphique utilisateur ou GUI est un exemple d'adaptateur qui fait correspondre les mouvements d'une personne à l'API du port. Il existe d'autres adaptateurs qui s'adaptent au même port, tels que les harnais de tests automatisés comme FIT ou Fitnesse[7], les pilotes[8] de scripts, et tout autre code nécessaire pour la communication entre applications dans l'entreprise ou le réseau.</p>
-
 <div class="sidenote">
-
 fn7. "FitNesse":http://fitnesse.org/FitNesse.UserGuide.OneMinuteDescription (basé sur "Framework for Integrated Test -- FIT":http://fitnesse.org/FitNesse.UserGuide.FitFramework) est un environement collaboratif permettant l'écriture de tests fonctionnels à travers un wiki.
 
 fn8. Un pilote (ou driver) est un programme, destiné à permettre à un autre programme (souvent un système d'exploitation) d'interagir avec un périphérique. ; par extension ce mot est aussi utilisé pour décrire un adaptateur.
+
+fn9. La traduction de “mock” en “bouchon” ne reflète pas toujours l'idée sous-jacente qu'il transmet, d'autant plus qu'il existe plusieurs definitions et plusieurs concepts qui y sont liés: mock, stub... Je conseille la lecture de "Mocks Aren't Stubs - Martin Fowler":http://martinfowler.com/articles/mocksArentStubs.html afin de mieux cerner les différences qui existent. J'ai donc opter pour “simulacre” qui, selon wikipedia, <quote>désigne une apparence qui ne renvoie à aucune réalité sous-jacente, et prétend valoir pour cette réalité elle-même.</quote>
+
+fn10. On retrouve généralement les couches: sécurité, présentation, application ou service, domaine ou métier, infrastructure, données... Il s'agit d'une architecture mono-dimensionelle puisqu'une couche n'interagit qu'avec les couches qui l'entourent: une couche au-dessus et une couche en-dessous façon sandwich.
+
 </div>
 </section>
 
@@ -300,13 +353,6 @@ fn8. Un pilote (ou driver) est un programme, destiné à permettre à un autre p
 
 <section class="trad">
 <p>Une autre partie de l'application, quant a elle, communique avec une entité externe pour obtenir des données. Le protocole correspond généralement à celui d'une base de données. D'un point de vue de l'application, si la source de données passe d'une base de données SQL à un fichier plat ou n'importe quel autre type de base de données, la conversation à travers l'API ne devrait pas changer. Les adaptateurs pour ce port incluent donc: un adaptateur SQL, un adaptateur pour fichier plat, et plus important encore, un adaptateur pour un “simulacre”[9] de base de données, qui réside en mémoire et ne dépend pas de la présence de la véritable base de données.</p>
-
-<div class="sidenote">
-fn9. La traduction de “mock” en “bouchon” ne reflète pas toujours l'idée sous-jacente qu'il transmet, d'autant plus qu'il existe plusieurs definitions et plusieurs concepts qui y sont liés: mock, stub... Je conseille la lecture de "Mocks Aren't Stubs - Martin Fowler":http://martinfowler.com/articles/mocksArentStubs.html afin de mieux cerner les différences qui existent. J'ai donc opter pour “simulacre” qui, selon wikipedia, <quote>désigne une apparence qui ne renvoie à aucune réalité sous-jacente, et prétend valoir pour cette réalité elle-même.</quote>
-
-fn10. On retrouve généralement les couches: sécurité, présentation, application ou service, domaine ou métier, infrastructure, données... Il s'agit d'une architecture mono-dimensionelle puisqu'une couche n'interagit qu'avec les couches qui l'entourent: une couche au-dessus et une couche en-dessous façon sandwich.
-</div>
-
 </section>
 
 <section class="original">
@@ -330,7 +376,11 @@ fn10. On retrouve généralement les couches: sécurité, présentation, applica
 </section>
 
 <section class="trad">
-<p>L'architecture hexagonale, ou ports et adaptateurs, résout ces problématiques en prenant en compte la symétrie de la situation: il y a une application à l'interieur communiquant via plusieurs ports avec des choses à l'exterieur. Les choses à l'exterieur peuvent être traitées de la même façon par symétrie.</p>
+<p>L'architecture hexagonale, ou ports et adaptateurs, résout ces problématiques en prenant en compte la symétrie de la situation: il y a une application à l'interieur communiquant via plusieurs ports avec des choses à l'exterieur. Les choses à l'exterieur peuvent être traitées de la même façon par symétrie.[11]</p>
+
+<div class="sidenote">
+fn11. En regardant les figures 1 et 2, l'espace entre l'hexagone "Application" et l'hexagone extérieur sert à adapter l'application avec son environement. La face de l'hexagone correspond au ”port”, l'adaptateur relie alors cette face avec le périphérique externe.
+</div>
 </section>
 
 <section class="original">
@@ -360,16 +410,15 @@ fn10. On retrouve généralement les couches: sécurité, présentation, applica
 </section>
 
 <section class="trad">
-<p>L'hexagone n'est pas un hexagone car le nombre six est important, mais parce qu'il permet aux personnes qui le dessinent d'avoir de la place pour insérer les ports et les adaptateurs selon leurs besoins, sans être contraint par un schéma monodimensionnel en couche. Le terme “architecture hexagonale” trouve son origine dans cet effet visuel.</p></section>
+<p>L'hexagone n'est pas un hexagone car le nombre six est important, mais parce qu'il permet aux personnes qui le dessinent d'avoir de la place pour insérer les ports et les adaptateurs selon leurs besoins, sans être contraint par une representation monodimensionnelle en couche. Le terme “architecture hexagonale” trouve son origine dans cet effet visuel.</p></section>
 
 <section class="original">
 <p>The term &#8220;port and adapters&#8221; picks up the &#8216;&#8217;purposes&#8217;&#8217; of the parts of the drawing. A port identifies a purposeful conversation. There will typically be multiple adapters for any one port, for various technologies that may plug into that port. Typically, these might include a phone answering machine, a human voice, a touch-tone phone, a graphical human interface, a test harness, a batch driver, an http interface, a direct program-to-program interface, a mock (in-memory) database, a real database (perhaps different databases for development, test, and real use).</p>
 </section>
 
-<p class="google_trad"> Le terme «port et adaptateurs" ramasse les fins''''des parties du dessin. Un port identifie une conversation réfléchie. Il sera généralement plusieurs adaptateurs pour tout un seul port, pour les différentes technologies qui peuvent brancher dans ce port. Typiquement, ces mesures peuvent inclure un téléphone répondeur, une voix humaine, un téléphone à clavier, une interface graphique homme, un harnais de test, un chauffeur de lot, une interface HTTP, un programme directement à l'interface du programme, une maquette (en -mémoire) base de données, une véritable base de données (bases de données peut-être différentes pour le développement, de test et l'utilisation réelle).</p>
-
-<p class="yahoo_trad"> Le « port et adapteurs » du terme purposes'prend `'des parties du schéma. Un port identifie une conversation utile. Il y aura typiquement les adapteurs multiples pour n'importe quel un port, pour différentes technologies qui peuvent brancher à ce port. Typiquement, ceux-ci pourraient inclure un répondeur de téléphone, une voix humaine, un téléphone par boutons-poussoirs, une interface humaine graphique, un logiciel de validation, un conducteur en lots, une interface de HTTP, une interface program-to-program directe, une fausse base de données (de dans-mémoire), une vraie base de données (bases de données peut-être différentes pour le développement, l'essai, et le vrai usage).</p>
-
+<section class="trad">
+<p>Le terme “port et adaptateurs” prend son sens dans les différentes parties du schéma. Un port identifie une conversation bien définie. Il y a généralement plusieurs adapatateurs pour un seul port, et ce, pour les différentes technologies qui peuvent se brancher sur ce port. Typiquement, cela peux inclure un répondeur téléphonique, une voix humaine, un clavier de téléphone, une interface graphique, un logiciel de validation, un traitement par lot, une interface HTTP, une connexion directe programme à programme, un simulacre[9] (en mêmoire) de base de données, une véritable base de données (pouvant être différentes pour les phases de développement, de tests, et d'utilisation réelle).</p>
+</section>
 
 <section class="original">
 <p>In the Application Notes, the left-right asymmetry will be brought up again. However, the primary purpose of this pattern is to focus on the inside-outside asymmetry, pretending briefly that all external items are identical from the perspective of the application.</p>
@@ -383,10 +432,8 @@ fn10. On retrouve généralement les couches: sécurité, présentation, applica
 <h3>Structure </h3>
 </section>
 
-<section class="original">
 <p><img src='/images/hexagonal-architecture/2302' alt='Image177.gif' title='Image177.gif' /><br /><br />
  Figure 2</p>
-</section>
 
 <section class="original">
 <p>Figure 2 shows an application having two active ports and several adapters for each port. The two ports are the application-controlling side and the data-retrieval side. This drawing shows that the application can be equally driven by an automated, system-level regression test suite, by a human user, by a remote http application, or by another local application. On the data side, the application can be configured to run decoupled from external databases using an in-memory oracle, or &#8216;&#8217;mock&#8217;&#8217;, database replacement; or it can run against the test- or run-time database. The functional specification of the application, perhaps in use cases, is made against the inner hexagon&#8217;s interface and not against any one of the external technologies that might be used.</p>
