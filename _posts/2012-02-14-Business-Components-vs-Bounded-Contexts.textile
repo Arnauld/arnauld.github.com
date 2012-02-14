@@ -25,6 +25,8 @@ excerpt: |
 
 </style></notextile>
 
+h2. thinkb4coding / jeppec
+
 <blockquote lang="fr"><p>@<a href="https://twitter.com/thinkb4coding">thinkb4coding</a> Seems you have the hands down on Business Components versus Bounded Contexts. Can you clarify on <a href="http://t.co/Q51As20I" title="http://www.udidahan.com/2012/02/10/udi-greg-reach-cqrs-agreement/comment-page-1/#comment-38422">udidahan.com/2012/02/10/udi…</a> <span class="small">&mdash; (<a href="https://twitter.com/jeppec/status/168691529794330625" data-datetime="2012-02-12T13:42:49+00:00">tweet</a>)</span></p>
 <small><a href="https://twitter.com/jeppec">@jeppec</a></small></blockquote>
 
@@ -47,3 +49,13 @@ excerpt: |
 <small><a href="https://twitter.com/thinkb4coding">@thinkb4coding</a></small>
 </blockquote>
 
+h2. Udi Dahan
+
+<blockquote class="twitter-tweet" data-in-reply-to="169505742771068930" lang="fr"><p>@<a href="https://twitter.com/UdiDahan">UdiDahan</a> Subdomain is already used in problem space when doing domain assessment. Why not stick with that and not introduce ambiguous term?</p>&mdash; Vaughn Vernon (@VaughnVernon) <a href="https://twitter.com/VaughnVernon/status/169510145720729603" data-datetime="2012-02-14T19:55:42+00:00">Février 14, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" data-in-reply-to="169505923788836865" lang="fr"><p>@<a href="https://twitter.com/UdiDahan">UdiDahan</a> Are you saying that problem domain exists inside a Bounded Context? Thought you said Biz Component was inside, sounds solution-y.</p>&mdash; Vaughn Vernon (@VaughnVernon) <a href="https://twitter.com/VaughnVernon/status/169515128000221185" data-datetime="2012-02-14T20:15:30+00:00">Février 14, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" data-in-reply-to="169506092123041792" lang="fr"><p>@<a href="https://twitter.com/UdiDahan">UdiDahan</a> a particular form of good design is supported by aligning Bounded Context 1:1 with Subdomain. But also supports less good design.</p>&mdash; Vaughn Vernon (@VaughnVernon) <a href="https://twitter.com/VaughnVernon/status/169512611585601536" data-datetime="2012-02-14T20:05:30+00:00">Février 14, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
