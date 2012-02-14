@@ -1,0 +1,8 @@
+testng
+
+@Factory is limited to the Test (search for reference) and not to the suite
+thus it is not possible to nest factory into an other factory, i.e. that a factory
+creates tests that are themselves Factory...
+
+
+To create nested tests program

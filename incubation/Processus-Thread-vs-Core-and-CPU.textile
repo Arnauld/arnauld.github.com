@@ -1,0 +1,23 @@
+---
+layout: post
+title: "Processus, Thread vs Core et CPU"
+category: tbd-in-practice
+tags:
+  - processus
+  - thread
+  - core
+  - parallelism
+published: false
+comments: true
+excerpt: |
+
+---
+
+{{page.excerpt | markdownify }}
+
+<blockquote><p>A thread is a basic unit for execution: a thread is scheduled by operating system and executed by CPU. A process is a sort of container that holds multiple threads.</p>
+<small></small>
+</blockquote>
+
+
+

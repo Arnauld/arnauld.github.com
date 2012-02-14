@@ -1,0 +1,49 @@
+---
+layout: post
+title: "Twitter quotes: Business Components versus Bounded Contexts"
+category: DDD
+tags:
+  - cqrs
+  - ddd
+published: true
+comments: true
+excerpt: |
+  Twitter exchange on "Business Components versus Bounded Contexts" after the blog post: <a href="http://www.udidahan.com/2012/02/10/udi-greg-reach-cqrs-agreement" title="Udi &amp; Greg Reach CQRS Agreement">Udi & Greg Reach CQRS Agreement</a>
+
+---
+
+{{page.excerpt | markdownify }}
+
+<notextile><style>
+.small,
+.small a,
+.small a:visited {
+  font-size: 10px;
+  font-weight: 300;
+  color: #BFBFBF;
+}
+
+</style></notextile>
+
+<blockquote lang="fr"><p>@<a href="https://twitter.com/thinkb4coding">thinkb4coding</a> Seems you have the hands down on Business Components versus Bounded Contexts. Can you clarify on <a href="http://t.co/Q51As20I" title="http://www.udidahan.com/2012/02/10/udi-greg-reach-cqrs-agreement/comment-page-1/#comment-38422">udidahan.com/2012/02/10/udi…</a> <span class="small">&mdash; (<a href="https://twitter.com/jeppec/status/168691529794330625" data-datetime="2012-02-12T13:42:49+00:00">tweet</a>)</span></p>
+<small><a href="https://twitter.com/jeppec">@jeppec</a></small></blockquote>
+
+<blockquote lang="fr">
+<p>@<a href="https://twitter.com/jeppec">jeppec</a> it's true Thar there's few words about bizcomp on the blogs for now <span class="small">&mdash; (<a href="https://twitter.com/thinkb4coding/status/168821102229991424" data-datetime="2012-02-12T22:17:41+00:00">tweet</a>)</span></p>
+<p>@<a href="https://twitter.com/jeppec">jeppec</a> from my experience BCtx contains several smaller services that represent Business units that are impl separately <span class="small">&mdash; (<a href="https://twitter.com/thinkb4coding/status/168821518577569792" data-datetime="2012-02-12T22:19:21+00:00">tweet</a>)</span></p>
+<p>@<a href="https://twitter.com/jeppec">jeppec</a> this are the business components, that have different users, dev/deployment lifecycles.. <span class="small">&mdash; (<a href="https://twitter.com/thinkb4coding/status/168821871729586176" data-datetime="2012-02-12T22:20:45+00:00">tweet</a>)</span></p>
+<p>@<a href="https://twitter.com/jeppec">jeppec</a> it's a level between bounded context and aggregates. They group services that work together to provide a business unit <span class="small">&mdash; (<a href="https://twitter.com/thinkb4coding/status/168822285174718464" data-datetime="2012-02-12T22:22:24+00:00">tweet</a>)</span></p>
+<p>@<a href="https://twitter.com/jeppec">jeppec</a> the c/q segregation happens at this level. Neither at the top level, neither at the bounded ctx level. It's too large <span class="small">&mdash; (<a href="https://twitter.com/thinkb4coding/status/168822830685884416" data-datetime="2012-02-12T22:24:34+00:00">tweet</a>)</span></p>
+<small><a href="https://twitter.com/thinkb4coding">@thinkb4coding</a></small>
+</blockquote>
+
+<blockquote>
+<p>@<a href="https://twitter.com/thinkb4coding">thinkb4coding</a> that sounds reasonable and I think most CQRS users do this. But when did the business component term get defined? <span class="small">&mdash; (<a href="https://twitter.com/jeppec/status/168949042188009472" data-datetime="2012-02-13T06:46:05+00:00">tweet</a>)</span></p>
+<p>@<a href="https://twitter.com/thinkb4coding">thinkb4coding</a> Such as Usecase specific services (eg. different clients/users might have special needs/flows). Makes sense? <span class="small">&mdash; (<a href="https://twitter.com/jeppec/status/168951843509112832" data-datetime="2012-02-13T06:57:13+00:00">tweet</a>)</span></p>
+<small><a href="https://twitter.com/jeppec">@jeppec</a></small>
+</blockquote>
+
+<blockquote lang="fr"><p>@<a href="https://twitter.com/jeppec">jeppec</a> yep. I think udi talks about it in his course. <span class="small">&mdash; (<a href="https://twitter.com/thinkb4coding/status/168957230048231424" data-datetime="2012-02-13T07:18:37+00:00">tweet</a>)</span></p>
+<small><a href="https://twitter.com/thinkb4coding">@thinkb4coding</a></small>
+</blockquote>
+

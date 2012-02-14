@@ -63,6 +63,11 @@ notextile.. <style>
 
 http://matteo.vaccari.name/blog/archives/154
 
+"Alistair Cockburns - Lightning Talk on CQRS":http://www.slashdotdash.net/2010/09/27/alistair-cockburns-lightning-talk-on-cqrs-recorded-at-the-mountain-west-ruby-conference-2010/
+
+<blockquote><p>Here’s Alistair Cockburn’s lightning talk on “Command Event DTO Architecture” recorded at the <a href="http://mtnwestrubyconf.org/2010/">Mountain West Ruby Conference 2010</a> by <a href="http://confreaks.net/">confreaks.net</a>. He talks about how his <a href="http://alistair.cockburn.us/Hexagonal+architecture">Hexagonal Architecture</a> has been extended by <a href="http://codebetter.com/blogs/gregyoung/">Greg Young</a> to form a Command-Event Architecture (aka CQRS).</p><small></small></blockquote>
+
+
 <blockquote><p>La conception pilotée par le domaine (Domain-driven design, DDD) est une approche de développement logiciel adaptée aux besoins complexes dont l'idée est de connecter fortement l'implémentation d'un modèle aux concepts métiers associés. L'approche est basée sur les principes suivants :
 
 <ul>
