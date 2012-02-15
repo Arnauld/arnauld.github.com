@@ -8,6 +8,8 @@ tags:
 published: true
 comments: true
 excerpt: |
+  *&mdash; Last updated 2012/02/15*
+
   Twitter exchange on "Business Components versus Bounded Contexts" after the blog post: <a href="http://www.udidahan.com/2012/02/10/udi-greg-reach-cqrs-agreement" title="Udi &amp; Greg Reach CQRS Agreement">Udi & Greg Reach CQRS Agreement</a>
 
 ---
@@ -24,6 +26,15 @@ excerpt: |
 }
 
 </style></notextile>
+
+h2. Eric Evans
+
+<blockquote class="twitter-tweet" lang="fr"><p>Fundamentally, in <a href="https://twitter.com/search/%2523DDD">#DDD</a>, a Bounded Context is linguistic: a part of the system/project where language is consistent and rules agree.</p>&mdash; Eric Evans (@ericevans0) <a href="https://twitter.com/ericevans0/status/168423757696872448" data-datetime="2012-02-11T19:58:47+00:00">Février 11, 2012</a></blockquote>
+
+<blockquote class="twitter-tweet" lang="fr"><p><a href="http://t.co/4Rt01ljt" title="http://bit.ly/udigreg">bit.ly/udigreg</a> says 'Business Component' is in 1 Bounded Context. Def of B Ctxt doesn't say this IS so. In good design SHOULD be so</p>&mdash; Eric Evans (@ericevans0) <a href="https://twitter.com/ericevans0/status/168430221442297856" data-datetime="2012-02-11T20:24:28+00:00">Février 11, 2012</a></blockquote>
+
+<blockquote class="twitter-tweet" data-in-reply-to="168433580450656256" lang="fr"><p>@<a href="https://twitter.com/Bemafred">Bemafred</a> Distinct concepts. Good separation of concerns allows you to deal with diff concerns in diff contexts. Must see contexts as-is</p>&mdash; Eric Evans (@ericevans0) <a href="https://twitter.com/ericevans0/status/168435813489704960" data-datetime="2012-02-11T20:46:41+00:00">Février 11, 2012</a></blockquote>
+
 
 h2. thinkb4coding / jeppec
 
@@ -51,11 +62,18 @@ h2. thinkb4coding / jeppec
 
 h2. Udi Dahan
 
+<blockquote class="twitter-tweet"><p>Confusion around Bounded Context / Business Component is influenced by the first being solution domain, second being problem domain...</p>&mdash; UdiDahan (@UdiDahan) <a href="https://twitter.com/UdiDahan/status/169505742771068930" data-datetime="2012-02-14T19:38:13+00:00">February 14, 2012</a></blockquote>
+
 <blockquote class="twitter-tweet" data-in-reply-to="169505742771068930" lang="fr"><p>@<a href="https://twitter.com/UdiDahan">UdiDahan</a> Subdomain is already used in problem space when doing domain assessment. Why not stick with that and not introduce ambiguous term?</p>&mdash; Vaughn Vernon (@VaughnVernon) <a href="https://twitter.com/VaughnVernon/status/169510145720729603" data-datetime="2012-02-14T19:55:42+00:00">Février 14, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet"><p>DDD doesn't try to enforce alignment between solution and problem domains</p>&mdash; UdiDahan (@UdiDahan) <a href="https://twitter.com/UdiDahan/status/169505923788836865" data-datetime="2012-02-14T19:38:56+00:00">February 14, 2012</a></blockquote>
 
 <blockquote class="twitter-tweet" data-in-reply-to="169505923788836865" lang="fr"><p>@<a href="https://twitter.com/UdiDahan">UdiDahan</a> Are you saying that problem domain exists inside a Bounded Context? Thought you said Biz Component was inside, sounds solution-y.</p>&mdash; Vaughn Vernon (@VaughnVernon) <a href="https://twitter.com/VaughnVernon/status/169515128000221185" data-datetime="2012-02-14T20:15:30+00:00">Février 14, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet"><p>That's where we get into trouble using DDD terminology to describe a specific form of *good* design that enforces alignment</p>&mdash; UdiDahan (@UdiDahan) <a href="https://twitter.com/UdiDahan/status/169506092123041792" data-datetime="2012-02-14T19:39:36+00:00">February 14, 2012</a></blockquote>
 
 <blockquote class="twitter-tweet" data-in-reply-to="169506092123041792" lang="fr"><p>@<a href="https://twitter.com/UdiDahan">UdiDahan</a> a particular form of good design is supported by aligning Bounded Context 1:1 with Subdomain. But also supports less good design.</p>&mdash; Vaughn Vernon (@VaughnVernon) <a href="https://twitter.com/VaughnVernon/status/169512611585601536" data-datetime="2012-02-14T20:05:30+00:00">Février 14, 2012</a></blockquote>
+
+<blockquote class="twitter-tweet"><p>It turns out that I didn't represent @<a href="https://twitter.com/ericevans0">ericevans0</a> Bounded Context correctly. He allows for them to be a problem or solution domain construct.</p>&mdash; UdiDahan (@UdiDahan) <a href="https://twitter.com/UdiDahan/status/169794825862914049" data-datetime="2012-02-15T14:46:55+00:00">February 15, 2012</a></blockquote>
+
 <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
