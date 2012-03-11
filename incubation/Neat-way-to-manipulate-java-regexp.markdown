@@ -99,10 +99,10 @@ public void uuidMatcher_namedCapture() throws PatternMatchException {
 Suppose now you want to mix literal with regex, how many times did you forget to escape special characters... or quote the content using `Pattern.quote(String)`
 
 {% highlight java %}
-    private static PatternMatcher testTitleMatcher() {
-        PatternComponent digit = anyCharacterInCategory("Digit");
-        return new PatternMatcher(sequence("Test Quizz #", oneOrMore(digit)));
-    }
+private static PatternMatcher testTitleMatcher() {
+    PatternComponent digit = anyCharacterInCategory("Digit");
+    return new PatternMatcher(sequence("Test Quizz #", oneOrMore(digit)));
+}
 {% endhighlight %}
 
 ## What's wrong with the library
