@@ -1,0 +1,5 @@
+
+"Java en Production – Les fichiers de logs (Xebia)":http://blog.xebia.fr/2010/07/07/java-en-production-les-fichiers-de-logs/
+"github/xebia-spring-security-extras (Xebia)":https://github.com/xebia-france/xebia-spring-security-extras
+
+Q: thread safe support in aspect (e.g. "SimpleDateFormat":http://docs.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html in "AuditAspect":https://github.com/xebia-france/xebia-spring-security-extras/blob/master/src/main/java/fr/xebia/audit/AuditAspect.java#L178)
