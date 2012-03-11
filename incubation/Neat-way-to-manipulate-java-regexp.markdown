@@ -15,15 +15,19 @@ Even if `hamcrest` is mainly used through test, the provided matchers can be use
 Suppose one wants to verify a string is a valid uuid, i.e. similar to `eb880ab6-2b7a-46c0-8a12-71120da869b8`
 Corresponding java regex can be written:
 
-    "[a-hA-H0-9]{8}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{12}"
-
-With `HEXA=[a-hA-H0-9]` it becomes:
-
-    HEXA + "{8}\\-" + HEXA + "{4}\\-" + HEXA + "{4}" + "\\-" + HEXA + "{4}" + "\\-" + HEXA + "{12}"
+    "[a-hA-H0-9]{8}"
+      + "\\-" + "[a-hA-H0-9]{4}" 
+      + "\\-" + "[a-hA-H0-9]{4}"
+      + "\\-" + "[a-hA-H0-9]{4}"
+      + "\\-" + "[a-hA-H0-9]{12}"
 
 With capturing groups it becomes:
 
-    "([a-hA-H0-9]{8})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{12})"
+    "([a-hA-H0-9]{8})"
+      + "\\-" + "([a-hA-H0-9]{4})"
+      + "\\-" + "([a-hA-H0-9]{4})"
+      + "\\-" + "([a-hA-H0-9]{4})"
+      + "\\-" + ([a-hA-H0-9]{12})"
 
 Let's write it now using the [hamcrest-text-patterns](http://code.google.com/p/hamcrest-text-patterns/)
 
@@ -36,13 +40,8 @@ Let's write it now using the [hamcrest-text-patterns](http://code.google.com/p/h
 
 
 {% highlight java %}
-import static org.hamcrest.text.pattern.Patterns.anyCharacterInCategory;
-import static org.hamcrest.text.pattern.Patterns.capture;
-import static org.hamcrest.text.pattern.Patterns.exactly;
-import static org.hamcrest.text.pattern.Patterns.separatedBy;
-
-import org.hamcrest.text.pattern.PatternComponent;
-import org.hamcrest.text.pattern.PatternMatcher;
+import static org.hamcrest.text.pattern.Patterns.*;
+import org.hamcrest.text.pattern.*;
 
 public class StringMatchers {
 
