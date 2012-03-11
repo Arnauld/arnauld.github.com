@@ -27,7 +27,7 @@ With capturing groups it becomes:
       + "\\-" + "([a-hA-H0-9]{4})"
       + "\\-" + "([a-hA-H0-9]{4})"
       + "\\-" + "([a-hA-H0-9]{4})"
-      + "\\-" + ([a-hA-H0-9]{12})"
+      + "\\-" + "([a-hA-H0-9]{12})"
 
 Let's write it now using the [hamcrest-text-patterns](http://code.google.com/p/hamcrest-text-patterns/)
 
@@ -69,7 +69,7 @@ Within test to assert input is a valid uuid:
     @Test(dataProvider = "invalidUUIDs")
     public void uuidMatcher_doesntMatch_invalidEntry(String input) {
         PatternMatcher validUUID = uuidMatcher();
-        assertThat("gb880ab6-2b7a-46c0-8a12-71120da869b8", is(not(validUUID)));
+        assertThat(input, is(not(validUUID)));
     }
 
     @DataProvider(name = "invalidUUIDs")
