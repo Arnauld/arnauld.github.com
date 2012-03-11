@@ -60,40 +60,40 @@ public class StringMatchers {
 Within test to assert input is a valid uuid:
 
 {% highlight java %}
-    @Test
-    public void uuidMatcher_matches_validEntries() {
-        PatternMatcher validUUID = uuidMatcher();
-        assertThat("eb880ab6-2b7a-46c0-8a12-71120da869b8", is(validUUID));
-    }
+@Test
+public void uuidMatcher_matches_validEntries() {
+    PatternMatcher validUUID = uuidMatcher();
+    assertThat("eb880ab6-2b7a-46c0-8a12-71120da869b8", is(validUUID));
+}
 
-    @Test(dataProvider = "invalidUUIDs")
-    public void uuidMatcher_doesntMatch_invalidEntry(String input) {
-        PatternMatcher validUUID = uuidMatcher();
-        assertThat(input, is(not(validUUID)));
-    }
+@Test(dataProvider = "invalidUUIDs")
+public void uuidMatcher_doesntMatch_invalidEntry(String input) {
+    PatternMatcher validUUID = uuidMatcher();
+    assertThat(input, is(not(validUUID)));
+}
 
-    @DataProvider(name = "invalidUUIDs")
-    public Object[][] invalidUUIDs() {
-        return new Object[][] { //
-        { "gb880ab6-2b7a-46c0-8a12-71120da869b8" }, //
-                { "0" }, //
-                { "a-a-a-a" }, //
-                { "ab880ab6-2b7a-46c0-8a12" } };
-    }
+@DataProvider(name = "invalidUUIDs")
+public Object[][] invalidUUIDs() {
+    return new Object[][] { //
+    { "gb880ab6-2b7a-46c0-8a12-71120da869b8" }, //
+            { "0" }, //
+            { "a-a-a-a" }, //
+            { "ab880ab6-2b7a-46c0-8a12" } };
+}
 {% endhighlight %}
 
 Retrieve the captures using theirs names:
 
 {% highlight java %}
-    @Test
-    public void uuidMatcher_namedCapture() throws PatternMatchException {
-        Parse parse = uuidMatcher().parse("eb880ab6-2b7a-46c0-8a12-71120da869b8");
-        assertThat(parse.get("block1"), equalTo("eb880ab6"));
-        assertThat(parse.get("block2"), equalTo("2b7a"));
-        assertThat(parse.get("block3"), equalTo("46c0"));
-        assertThat(parse.get("block4"), equalTo("8a12"));
-        assertThat(parse.get("block5"), equalTo("71120da869b8"));
-    }
+@Test
+public void uuidMatcher_namedCapture() throws PatternMatchException {
+    Parse parse = uuidMatcher().parse("eb880ab6-2b7a-46c0-8a12-71120da869b8");
+    assertThat(parse.get("block1"), equalTo("eb880ab6"));
+    assertThat(parse.get("block2"), equalTo("2b7a"));
+    assertThat(parse.get("block3"), equalTo("46c0"));
+    assertThat(parse.get("block4"), equalTo("8a12"));
+    assertThat(parse.get("block5"), equalTo("71120da869b8"));
+}
 {% endhighlight %}
 
 Suppose now you want to mix literal with regex, how many times did you forget to escape special characters... or quote the content using `Pattern.quote(String)`
