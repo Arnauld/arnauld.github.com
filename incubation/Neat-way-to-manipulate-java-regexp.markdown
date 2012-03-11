@@ -15,15 +15,15 @@ Even if `hamcrest` is mainly used through test, the provided matchers can be use
 Suppose one wants to verify a string is a valid uuid, i.e. similar to `eb880ab6-2b7a-46c0-8a12-71120da869b8`
 Corresponding java regex can be written:
 
-`"[a-hA-H0-9]{8}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{12}"`
+    "[a-hA-H0-9]{8}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{4}\\-[a-hA-H0-9]{12}"
 
 With `HEXA=[a-hA-H0-9]` it becomes:
 
-`HEXA + "{8}\\-" + HEXA + "{4}\\-" + HEXA + "{4}" + "\\-" + HEXA + "{4}" + "\\-" + HEXA + "{12}"`
+    HEXA + "{8}\\-" + HEXA + "{4}\\-" + HEXA + "{4}" + "\\-" + HEXA + "{4}" + "\\-" + HEXA + "{12}"
 
 With capturing groups it becomes:
 
-`"([a-hA-H0-9]{8})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{12})"`
+    "([a-hA-H0-9]{8})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{4})\\-([a-hA-H0-9]{12})"
 
 Let's write it now using the [hamcrest-text-patterns](http://code.google.com/p/hamcrest-text-patterns/)
 
@@ -35,7 +35,7 @@ Let's write it now using the [hamcrest-text-patterns](http://code.google.com/p/h
 > * Refactoring friendly: patterns can be refactored with your favourite IDE.
 
 
-```java
+{% highlight java %}
 import static org.hamcrest.text.pattern.Patterns.anyCharacterInCategory;
 import static org.hamcrest.text.pattern.Patterns.capture;
 import static org.hamcrest.text.pattern.Patterns.exactly;
@@ -56,11 +56,11 @@ public class StringMatchers {
                 capture("block5", exactly(12, hexa))));
     }
 }
-```
+{% endhighlight %}
 
 Within test to assert input is a valid uuid:
 
-```java
+{% highlight java %}
     @Test
     public void uuidMatcher_matches_validEntries() {
         PatternMatcher validUUID = uuidMatcher();
@@ -81,11 +81,11 @@ Within test to assert input is a valid uuid:
                 { "a-a-a-a" }, //
                 { "ab880ab6-2b7a-46c0-8a12" } };
     }
-```
+{% endhighlight %}
 
 Retrieve the captures using theirs names:
 
-```java
+{% highlight java %}
     @Test
     public void uuidMatcher_namedCapture() throws PatternMatchException {
         Parse parse = uuidMatcher().parse("eb880ab6-2b7a-46c0-8a12-71120da869b8");
@@ -95,16 +95,16 @@ Retrieve the captures using theirs names:
         assertThat(parse.get("block4"), equalTo("8a12"));
         assertThat(parse.get("block5"), equalTo("71120da869b8"));
     }
-```
+{% endhighlight %}
 
 Suppose now you want to mix literal with regex, how many times did you forget to escape special characters... or quote the content using `Pattern.quote(String)`
 
-```java
+{% highlight java %}
     private static PatternMatcher testTitleMatcher() {
         PatternComponent digit = anyCharacterInCategory("Digit");
         return new PatternMatcher(sequence("Test Quizz #", oneOrMore(digit)));
     }
-```
+{% endhighlight %}
 
 ## What's wrong with the library
 
