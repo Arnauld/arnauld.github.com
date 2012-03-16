@@ -80,6 +80,13 @@ h2. "Bootstrap - Twitter":http://twitter.github.com/bootstrap/
 It includes base CSS and HTML for typography, forms, buttons, tables, grids, navigation, and more.</p><small>"Bootstrap":http://twitter.github.com/bootstrap/</small></blockquote>
 </div>
 
+<div class="col">
+h2. "D3.js":http://mbostock.github.com/d3/
+
+<blockquote><p>Data-Driven Documents.
+D3.js is a small, free JavaScript library for manipulating documents based on data.</p><small>"D3.js":http://mbostock.github.com/d3/</small></blockquote>
+</div>
+
 <div class="clear"/>
 
 "Building a single page app with Backbone.js, underscore.js and jQuery":http://andyet.net/blog/2010/oct/29/building-a-single-page-app-with-backbonejs-undersc/
