@@ -572,7 +572,7 @@ Effect<Either<Throwable, QuizCollection>> callback =
 {% endhighlight %}
 
 
-Tout d'abord qu'est-ce qu'on a voulu exprimer:
+Tout d'abord qu'est-ce que l'on a voulu exprimer:
 
 * soit on envoie une erreur par le biais de notre `pipeline`: `sendError(pipeline)` - alternative `Left` de l'objet passé à notre fonction de rappel.
 * soit on continue notre traitement `orContinueWith(...)` en envoyant notre résultat de type `QuizCollection` - alternative `Right` (le rappel du type est essentiellement pour facilité l'utilisation des générique)
@@ -731,7 +731,7 @@ post("/api/create-flow-data", new PipelineTargetHandler() {
 });
 {% endhighlight %}
 
-Quelques explications: l'idée est de créer 100 quizzes à partir d'un seul appel. Les quizze sont créés un par un. Chaque création étant asynchrone, il est nécessaire de mettre en place un mécanisme qui enverra la réponse lorsque les 100 quizzes auront été effectivement créés: l'appel à `create` déclenche la création mais le retour de la méthode n'implique pas que le quiz a été créé, la fonction de rappel sera invoquée lorsque ce sera fait.
+Quelques explications: l'idée est de créer 100 quizzes à partir d'un seul appel. Les quizze sont créés un par un. Chaque création étant asynchrone, il est nécessaire de mettre en place un mécanisme qui enverra la réponse lorsque les 100 quizzes auront été effectivement créés: l'appel à `create` déclenche la création mais le retour de la méthode n'implique pas que le quiz ait été créé, la fonction de rappel sera invoquée lorsque ce sera fait.
 La boucle `for` génére (ligne ) donc les 100 
 
 
