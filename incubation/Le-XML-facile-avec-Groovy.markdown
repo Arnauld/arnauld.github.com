@@ -15,5 +15,7 @@ excerpt: |
 
 {{ page.excerpt | markdownify }}
 
+On a tous une tendance naturelle à utiliser principalement ce qu'on connait.
+
 http://www.torrefacteurjava.fr/content/g%C3%A9n%C3%A9rer-analyser-et-ingurgiter-du-xml
 http://code.google.com/p/xml-matchers/wiki/Tutorial
