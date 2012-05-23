@@ -18,11 +18,12 @@ excerpt: |
 
 ## Beginner
 
+![Agile Java(TM): Crafting Code with Test-Driven Development](reading-list/AgileJava.jpg)
 [Agile Java(TM): Crafting Code with Test-Driven Development](http://www.amazon.com/Agile-Java-Crafting-Test-Driven-Development/dp/0131482394) ~ Jeff Langr <span class="label notice">EN</span>
 
 ### Polyglot
 
-[Programming Groovy: Dynamic Productivity for the Java Developer](http://pragprog.com/book/vslg/programming-groovy) <span class="label notice">EN</span>
+[Programming Groovy: Dynamic Productivity for the Java Developer](http://pragprog.com/book/vslg/programming-groovy) ~ Venkat Subramaniam <span class="label notice">EN</span>
 
 ## Intermediate
 
@@ -37,6 +38,8 @@ excerpt: |
 [Java Concurrency in Practice](http://www.amazon.fr/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601) ~ Brian Goetz and Co. <span class="label notice">EN</span> <span class="label notice">FR</span>
 
 [Restful Web Services](http://www.amazon.fr/Restful-Web-Services-Leonard-Richardson/dp/0596529260) ~ Leonard Richardson, Sam Ruby <span class="label notice">EN</span> <span class="label notice">FR</span> ([Servives Web RESTful](http://www.amazon.fr/Servives-Web-RESTful-Leonard-Richardson/dp/2841774481))
+
+[Web Development Recipes](http://pragprog.com/book/wbdev/web-development-recipes) ~ Brian P. Hogan, Chris Warren, Mike Weber, Chris Johnson, Aaron Godin <span class="label notice">EN</span>
 
 [Working Effectively with Legacy Code](http://www.amazon.fr/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052) ~ Michael Feathers <span class="label notice">EN</span>
 
@@ -78,7 +81,7 @@ excerpt: |
 
 [Lean Software Development: An Agile Toolkit](http://www.amazon.fr/Lean-Software-Development-Agile-Toolkit/dp/0321150783) ~  Mary and Tom Poppendieck <span class="label notice">EN</span>
 
-[Extreme Programming](http://www.amazon.fr/Extreme-Programming-Explained-Embrace-Change/dp/0321278658) ~ Kent Beck <span class="label notice">EN</span>
+[Extreme Programming](http://www.amazon.fr/Extreme-Programming-Explained-Embrace-Change/dp/0321278658) ~ Kent Beck <span class="label notice">EN</span> <span class="label notice">FR</span> ([Extreme Programming](http://www.amazon.fr/Extreme-Programming-Kent-Beck/dp/2744014338))
 
 [The Mythical Man-Month](http://www.amazon.fr/The-Mythical-Man-Month-Engineering-Anniversary/dp/0201835959) ~ Frederick P. Brooks <span class="label notice">EN</span> <span class="label notice">FR</span> ([Le mythe du mois-homme](http://livre.fnac.com/a126153/Frederick-P-Brooks-Le-mythe-du-mois-homme))
 

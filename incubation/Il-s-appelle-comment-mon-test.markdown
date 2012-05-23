@@ -71,6 +71,18 @@ Et les accronymes:
 * **TDD** (Test Driven Developpment): contrairement à beaucoup d'idées reçues, le TDD ne désigne pas uniquement la pratique d'écrire les tests avant de coder, mais consiste plus en une méthode de conception: comment écrire une application testable et minimale.
 * **BDD**
 * **ATDD** Acceptance Test Driven Development (ATDD)
+* **TDR** (Test Driven Requirements)
+
+
+BDD vs TDD:
+
+* BDD parle un langage du métier, écrit en texte
+* TDD parle un langage technique, écrit en code
+
+BDD vs ATDD
+
+* BDD permet d'automatiser les tests, en mettant l'accent sur la communication
+* ATDD est un paradigme générique d'automatisation des tests, pas toujours communicative
 
 Revenons maintenant sur notre **typage**: pourquoi un test ne peux pas appartenir à plusieurs catégories? Rappellez-vous les dangers de tous catégoriser:
 
