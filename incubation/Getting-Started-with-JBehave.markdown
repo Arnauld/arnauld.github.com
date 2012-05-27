@@ -46,28 +46,28 @@ Avant d'illustrer cela par quelques exemples, voyons le formalisme standard util
 Tout d'abord le préambule à un ensemble de scénario, il permet de placer le contexte général et de decrire très brievement les fonctionnalités qui vont être présenté.
 
 <table>
-	<tr>
-		<td>
-			As a [role],<br/>
-			I want [behavior] <br/>
-			In order to [outcome] <br/>
-		</td>
-		<td>
-			En tant que [role ou personne],<br/>
-			Je veux [fonctionalité] <br/>
-			Afin de [but, bénéfice ou valeur de la fonctionnalité] <br/>
-		</td>
-	</tr>
+    <tr>
+        <td>
+            As a [role],<br/>
+            I want [behavior] <br/>
+            In order to [outcome] <br/>
+        </td>
+        <td>
+            En tant que [role ou personne],<br/>
+            Je veux [fonctionalité] <br/>
+            Afin de [but, bénéfice ou valeur de la fonctionnalité] <br/>
+        </td>
+    </tr>
 </table>
 
 Viens ensuite la description sommaire du scénario qui va être déroulé (le titre):
 
 <table>
-	<tr>
-		<td>
-			Scenario: [scenario]
-		</td>
-	</tr>
+    <tr>
+        <td>
+            Scenario: [scenario]
+        </td>
+    </tr>
 </table>
 
 Enfin le contenu de scenario. Le scenario est une succession d'étape (`Step`) permettant 
@@ -76,192 +76,195 @@ Enfin le contenu de scenario. Le scenario est une succession d'étape (`Step`) p
 * soit de vérifier que le comportement attendu a bien eu lieu
 
 <table>
-	<tr>
-		<td>
-			Given [context]
-			When [action]
-			Then [expected result]
-		</td>
-		<td>
-			Etant donné [un contexte initial (les acquis)]
-  			Lorsqu'[un événement survient]
-  			Alors [on s'assure de l'obtention de certains résultats]
-  		</td>
-  	</tr>
+    <tr>
+        <td>
+            Given [context]
+            When [action]
+            Then [expected result]
+        </td>
+        <td>
+            Etant donné [un contexte initial (les acquis)]
+            Lorsqu'[un événement survient]
+            Alors [on s'assure de l'obtention de certains résultats]
+          </td>
+      </tr>
 </table>
 
 # Allez on code!
 
+## Mise en place de notre environement
+
 Commençons par créér un nouveau projet Maven dans Eclipse et ajoutons les dépendances nécessaires dans notre descripteur de projet (pom.xml):
 
 {% highlight xml %}
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>jbehave-get-started</groupId>
-	<artifactId>bdd101</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jbehave-get-started</groupId>
+  <artifactId>bdd101</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
-	<!-- ************************************************ -->
-	<!-- *~~~~~~~~~~~~~~~~~PROPERTIES~~~~~~~~~~~~~~~~~~~* -->
-	<!-- ************************************************ -->
-	<properties>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <!-- ************************************************ -->
+  <!-- *~~~~~~~~~~~~~~~~~PROPERTIES~~~~~~~~~~~~~~~~~~~* -->
+  <!-- ************************************************ -->
+  <properties>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- lib versions -->
-		<hamcrest.version>1.2</hamcrest.version>
-		<spring.version>3.1.1.RELEASE</spring.version>
-		<slf4j.version>1.6.4</slf4j.version>
-		<jbehave.version>3.6.6</jbehave.version>
-	</properties>
+    <!-- lib versions -->
+    <hamcrest.version>1.2</hamcrest.version>
+    <spring.version>3.1.1.RELEASE</spring.version>
+    <slf4j.version>1.6.4</slf4j.version>
+    <jbehave.version>3.6.6</jbehave.version>
+  </properties>
 
-	<!-- ************************************************ -->
-	<!-- *~~~~~~~~~~~~~~~~DEPENDENCIES~~~~~~~~~~~~~~~~~~* -->
-	<!-- ************************************************ -->
-	<dependencies>
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~Commons~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
-		</dependency>
+  <!-- ************************************************ -->
+  <!-- *~~~~~~~~~~~~~~~~DEPENDENCIES~~~~~~~~~~~~~~~~~~* -->
+  <!-- ************************************************ -->
+  <dependencies>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~Commons~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.1</version>
+    </dependency>
 
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~~Spring~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~Spring~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
 
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~~~~Log~~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~Log~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.0.0</version>
+    </dependency>
 
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~JBehave~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<dependency>
-			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-core</artifactId>
-			<version>${jbehave.version}</version>
-		</dependency>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~JBehave~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-core</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-spring</artifactId>
-			<version>${jbehave.version}</version>
-		</dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-spring</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
 
-		<dependency>
-		    <groupId>de.codecentric</groupId>
-		    <artifactId>jbehave-junit-runner</artifactId>
-		    <version>1.0.0</version>
-		</dependency>
+    <dependency>
+      <groupId>de.codecentric</groupId>
+      <artifactId>jbehave-junit-runner</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
 
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~~~Test~~~~~~~~~~~~~~~~ -->
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit-dep</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-core</artifactId>
-		</dependency>
-	</dependencies>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~Test~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit-dep</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+    </dependency>
+  </dependencies>
 
-	<!-- ************************************************ -->
-	<!-- *~~~~~~~~~~~DEPENDENCY MANAGEMENT~~~~~~~~~~~~~~* -->
-	<!-- ************************************************ -->
-	<dependencyManagement>
-		<dependencies>
-			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-			<!-- ~~~~~~~~~~~~~~Spring~~~~~~~~~~~~~~~ -->
-			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
+  <!-- ************************************************ -->
+  <!-- *~~~~~~~~~~~DEPENDENCY MANAGEMENT~~~~~~~~~~~~~~* -->
+  <!-- ************************************************ -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~Spring~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
 
-			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-			<!-- ~~~~~~~~~~~~~~~Test~~~~~~~~~~~~~~~~ -->
-			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit-dep</artifactId>
-				<version>4.10</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-library</artifactId>
-				<version>${hamcrest.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-core</artifactId>
-				<version>${hamcrest.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~~Test~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit-dep</artifactId>
+        <version>4.10</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>${hamcrest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-core</artifactId>
+        <version>${hamcrest.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-	<!-- ************************************************ -->
-	<!-- *~~~~~~~~~~~~~~~~REPOSITORIES~~~~~~~~~~~~~~~~~* -->
-	<!-- ************************************************ -->
-	<repositories>
-		<repository>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>codehaus-releases</id>
-			<name>Codehaus Nexus Repository Manager</name>
-			<url>https://nexus.codehaus.org/content/repositories/releases/</url>
-		</repository>
-	</repositories>
+  <!-- ************************************************ -->
+  <!-- *~~~~~~~~~~~~~~~~REPOSITORIES~~~~~~~~~~~~~~~~~* -->
+  <!-- ************************************************ -->
+  <repositories>
+    <repository>
+      <id>codehaus-releases</id>
+      <name>Codehaus Nexus Repository Manager</name>
+      <url>https://nexus.codehaus.org/content/repositories/releases/</url>
+    </repository>
+    <repository>
+      <id>sonatype-snapshots</id>
+      <name>Sonatype Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+
 </project>
-`{% endhighlight %}
+{% endhighlight %}
 
 
 On notera les dépendances à JBehave et à quelques utilitaires dont `jbehave-junit-runner` qui permet une intégration encore plus riche avec eclipse en utilisant un lanceur Junit spécial: `de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner`.
-Ce lanceur permet de visualiser chaque étape de chaque scénario comme un test spécifique dans la vue eclipse JUnit.
+Ce lanceur permet de visualiser chaque étape de chaque scénario comme un test spécifique dans la vue eclipse JUnit. La page du projet correspondant peux être trouvée ici [Code Centric ~ jbehave-junit-runner](https://github.com/codecentric/jbehave-junit-runner)
 
-Comme nous nous baserons essentiellement sur les annotations Spring pour les injections de dépendances, notre fichier de description de contexte sera simplement (`src/test/applicationContext-test.xml`):
+Comme nous nous baserons uniquement sur les annotations Spring pour les injections de dépendances, nous passerons de fichier de configuration spring, le contexte sera directement initialisé comme suit:
 
-{% highlight xml %}
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-  <context:component-scan base-package="bdd101" />
-</beans>
+{% highlight java %}
+public static AnnotationConfigApplicationContext 
+            createContextFromBasePackages(String... basePackages) {
+        AnnotationConfigApplicationContext applicationContext = 
+            new AnnotationConfigApplicationContext();
+        applicationContext.scan(basePackages);
+        applicationContext.refresh();
+        return applicationContext;
+}
 {% endhighlight %}
 
 Voila pour l'infrastructure, il nous reste à définir la classe qui lancera nos scénarios. Nous nous baserons pour cela sur le framework junit pour lequel jbehave fournit les adaptateurs nécessaires:
@@ -270,6 +273,10 @@ Au risque de faire un peu peur au début, nous opterons tout de suite pour une d
 
 {% highlight java linenos %}
 ...
+
+import bdd101.util.Springs;
+import bdd101.util.UTF8StoryLoader;
+import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
 
 @RunWith(JUnitReportingRunner.class)
 public class AllStoriesTest extends JUnitStories {
@@ -285,37 +292,340 @@ public class AllStoriesTest extends JUnitStories {
                 .doVerboseFailures(true)//
                 .useThreads(2)//
                 .useStoryTimeoutInSecs(60);
-        // configuredEmbedder().useEmbedderControls(new PropertyBasedEmbedderControls());
     }
 
     @Override
     public Configuration configuration() {
         Class<? extends Embeddable> embeddableClass = this.getClass();
-        return new MostUsefulConfiguration()
-                .useStoryLoader(new UTF8StoryLoader(embeddableClass))
-                .useStoryReporterBuilder(
-                        new StoryReporterBuilder()
-                                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
-                                .withDefaultFormats()
-                                .withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
-                                .withFailureTraceCompression(true).withCrossReference(xref))
-                .useStepMonitor(xref.getStepMonitor());
+        URL codeLocation = codeLocationFromClass(embeddableClass);
+        StoryReporterBuilder storyReporter = //
+        new StoryReporterBuilder() //
+                .withCodeLocation(codeLocation) //
+                .withDefaultFormats() //
+                .withFormats(CONSOLE, //
+                        TXT, //
+                        HTML_TEMPLATE, //
+                        XML_TEMPLATE) //
+                .withFailureTrace(true) //
+                .withFailureTraceCompression(true) //
+                .withCrossReference(xref)
+                ;
+        return new MostUsefulConfiguration() //
+                .useStoryLoader(new UTF8StoryLoader(embeddableClass)) //
+                .useStoryReporterBuilder(storyReporter) //
+                .useStepMonitor(xref.getStepMonitor())//
+                ;
     }
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+        URL searchInURL = codeLocationFromClass(this.getClass());
+        return new StoryFinder().findPaths(searchInURL, "**/*.story", "");
     }
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new SpringStepsFactory(configuration(), 
-                Springs.createContextFromClassPath("spring/applicationContext-test.xml"));
+        return new SpringStepsFactory(configuration(),
+                Springs.createAnnotatedContextFromBasePackages("bdd101"));
     }
 }
 {% endhighlight %}
+
+Quelques explications:
+
+* L'annotation `@RunWith(JUnitReportingRunner.class)` indique à Junit le lanceur qui doit utilisé pour executer notre test.
+* Le nom de notre classe fini par `Test` afin de suivre les conventions usuelles et étend la classe JBehave: `JUnitStories` afin de faciliter l'intégration JUnit/JBehave.
+* Notre constructeur définit l'`Embedder` JBehave (c'est à dire l'environement global d'execution des tests JBehave) qui sera utilisé. Nous verons les options activées au fur et à mesure de notre article. Ce qu'il faut retenir, c'est que ces paramètres permettent de contrôler l'execution des tests (`useStoryTimeoutInSecs`, `useThreads`) et la perception globale des tests (`doVerboseFailures`) : un test en échec arrête-t-il l'execution (`doIgnoreFailureInStories`) ou est-ce lors de la génération du rapport consolidé (`doGenerateViewAfterStories`) que l'on considérera que l'execution est en échec (`doIgnoreFailureInView`)
+* Vient ensuite la seconde partie de la configuration de notre environement d'execution. On retiendra pour le moment deux paramètres important: 
+  * les type de rapport qui seront générés, avec notament la sortie `CONSOLE` qui nous facilitera la phase de développement dans notre IDE, et la sortie `HTML_TEMPLATE` qui nous verrons plus tard qui permet d'avoir un joli rapport html.
+  * L'utilisation d'une classe spéciale `UTF8StoryLoader` qui nous permettra de nous affranchir des problèmatiques d'encoding qui peuvent apparaître dans le cas de développement multi-plateforme. On impose ici l'utilisation systématique de l'UTF8, ce qui correspond au choix que nous avons fait dans notre fichier `pom.xml` de maven.
+ * On trouve ensuite la méthode permettant de récupérer la liste des fichiers story à dérouler. Il y (au moins) deux pièges dans cette déclaration:
+   * Le premier (qui est aussi directement lié à l'utilisation de notre classe `UTF8StoryLoader`) c'est que les fichiers seront chargés comme resources Java, il convient donc d'indiquer des chemins relatifs à notre classpath. Ce qui nous amène au second piège:
+   * La méthode utilisée ici se base sur l'emplacement de notre classe de test, il est donc important de placer nos fichiers *.story dans les resources maven correspondantes: `src/test/resources` (copié dans `target/test-classes`) si notre lanceur est dans un package de `src/test/java`, ou `src/main/resources` (copié dans `target/classes`) si notre lanceur est dans un package de `src/main/java`.
+
+## Notre premier scénario
+
+Commençons simplement par le développement d'une petite calculatrice.
+
+Ecrivons notre premier scénario `src/test/resources/stories/calculator.story`:
+
+{% highlight Gherkin %}
+Scenario: 2+2
+
+Given a variable x with value 2
+When I add 2 to x
+Then x should equal to 4
+{% endhighlight %}
+
+<img src="/incubation/jbehave-get-started/000-calculator-no-step-def.png" alt="Editeur Eclipse de scenario"/>
+
+<img style="float:left; margin:5px;" width="110px" src="/incubation/jbehave-get-started/plugin-astuce.png" alt="Astuce du plugin JBehave"/> On peux constater que toutes nos étapes sont soulignées en rouge pour indiquer que notre éditeur n'est pas parvenu à les associer au code java correspondant.
+
+Executons notre lanceur de scénario: `Run as / JUnit Test` sur la classe `AllStoriesTest`.
+
+<img src="/incubation/jbehave-get-started/000-junit-runner.png" alt="Vue JUnit Eclipse"/>
+
+La console Eclipse (la sortie console est activée grâce à l'option `CONSOLE` [DRAFT]) affiche alors la sortie suivante:
+
+{% highlight bash %}
+(stories/calculator.story)
+Scenario: 2+2
+Given a variable x with value 2 (PENDING)
+When I add 2 to x (PENDING)
+Then x should equal to 4 (PENDING)
+
+@Given("a variable x with value 2")
+@Pending
+public void givenAVariableXWithValue2() {
+  // PENDING
+}
+
+@When("I add 2 to x")
+@Pending
+public void whenIAdd2ToX() {
+  // PENDING
+}
+
+@Then("x should equal to 4")
+@Pending
+public void thenXShouldEqual4() {
+  // PENDING
+}
+{% endhighlight %}
+
+Faisons un petit point du résultat obtenu et qui peut être confus au premier abord:
+
+* Notre test JUnit est vert!
+* Grâce au lanceur JUnit (`de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner`) la vue JUnit nous affiche l'intégralité des étapes qui ont été jouées: `BeforeStories`, notre scénario et les étapes `AfterStories`
+* Toutes les étapes de notre scénario sont marquées `PENDING` et ont été ignorées lors de l'execution du test.
+* `PENDING` signifie que les étapes présentes dans notre fichier `story` n'ont pas leurs correspondant dans le code java, où les méthodes qui doivent être invoquées sont annotées avec le texte du step correspondant. C'est ce qui est d'ailleurs proposé par JBehave en suggestion d'implementation dans la console.
+
+Crééons donc une classe `bdd101.calculator.CalculatorSteps` qui contiendra nos premières définitions de steps basé en partie sur les propositions faites par JBehave dans la console:
+
+{% highlight java linenos %}
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
+
+import bdd101.util.StepsDefinition;
+
+@StepsDefinition
+public class CalculatorSteps {
+
+    @Given("a variable $variable with value $value")
+    public void defineNamedVariableWithValue(String variable, int value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @When("I add $value to $variable")
+    public void addValueToVariable(@Named("variable") String variable, 
+                                   @Named("value")int value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Then("$variable should equal to $expected")
+    public void assertVariableEqualTo(String variable, int expectedValue) {
+        throw new UnsupportedOperationException();
+    }
+}
+{% endhighlight %}
+
+Relisons cette classe ligne par ligne:
+
+* `@StepsDefinition` est une annotation personnelle qui permet à la fois de marquer cette classe comme contenant des définitions d'étapes (ce qui est purement informatif) et qui permet à Spring de la détecter au moment ou il va parcourir les classes pour la construction de son contexte (`<context:component-scan base-package="bdd101" />` dans le fichier `applicationContext-test.xml`); pour plus d'information voir la documentation de spring sur l'utilisation des annotations ([TODO: add ref.]).
+
+{% highlight java %}
+import java.lang.annotation.Documented;
+import org.springframework.stereotype.Component;
+
+@Documented
+@Component
+public @interface StepsDefinition {}
+{% endhighlight %}
+
+* Les étapes sont définies grâce à des annotations spécifiques: `@Given`, `@When` et `@Then`.
+* La valeur de chaque annotation correspond à la phrase dans le scénario. Nous avons garder la configuration par défaut qui spécifie que dans ces phrases, les mots commençant par `$` désigne les variables. Ainsi la première annotation permet de supporter les phrases suivantes:
+  * `Given a variable x with value 2`
+  * `Given a variable y with value 17`
+  * ...
+* Les variables sont passées en paramètre dans le même ordre qu'elles sont définies dans la phrase. Si cet ordre n'est pas satisfaisant, il est possible d'annoter chaque paramètre, `@Named`, pour indiquer la variable qu'il référence.
+* La conversion d'une variable dans le type du paramètre se fait automatiquement à l'aide des converteurs prédéfinis. Il est tout à fait possible d'ajouter de nouveaux converteurs ([TODO: add ref.]).
+* Toutes nos étapes génèrent une exception dans notre implémentation initiale.
+
+
+<img src="/incubation/jbehave-get-started/001-calculator-unsupported-step-def.png" alt="Editeur Eclipse de scenario"/>
+
+<img style="float:left; margin:5px;" width="110px" src="/incubation/jbehave-get-started/plugin-astuce.png" alt="Astuce du plugin JBehave"/> On peux constater qu'une fois ces étapes enregistrées, notre éditeur d'histoire nous indique que toutes nos étapes sont bien définies ainsi que l'emplacement des variables.
+
+Executons à nouveau notre test:
+
+<img src="/incubation/jbehave-get-started/001-junit-runner.png" alt="Vue JUnit Eclipse"/>
+
+{% highlight bash %}
+(stories/calculator.story)
+Scenario: 2+2
+Given a variable x with value 2 (FAILED)
+(java.lang.UnsupportedOperationException)
+When I add 2 to x (NOT PERFORMED)
+Then x should equal to 4 (NOT PERFORMED)
+
+java.lang.UnsupportedOperationException
+    at bdd101.calculator.CalculatorSteps.defineNamedVariableWithValue(CalculatorSteps.java:14)
+    (reflection-invoke)
+{% endhighlight %}
+
+On constate désormais que notre test est en échec, que seule la première étape à été executée mais qu'elle a échoué `FAILED` en générant une exception. La suite du scénario n'a pas été executée: `NOT PERFORMED`
+
+<img width="400px" src="/incubation/jbehave-get-started/bdd-cycle-around-tdd-cycles.png" alt="Cycle BDD et Cycles TDD"/>
+
+Passons rapidement sur le développement de notre calculatrice (par une approche de type TDD par exemple) pour arriver à une implementation fonctionnelle:
+
+{% highlight java %}
+import java.util.HashMap;
+import java.util.Map;
+
+public class Calculator {
+    private final Map<String, Integer> context = new HashMap<String, Integer>();
+
+    public void defineVariable(String variable, int value) {
+        context.put(variable, value);
+    }
+    
+    public void addToVariable(String variable, int value) {
+        int existing = getVariableValueOrFail(variable);
+        context.put(variable, value + existing);
+    }
+    
+    public int getVariableValue(String variable) {
+        return getVariableValueOrFail(variable);
+    }
+
+    protected int getVariableValueOrFail(String variable) {
+        Integer existing = context.get(variable);
+        if(existing==null)
+            throw new IllegalStateException("Variable <" + variable + "> is not defined");
+        return existing;
+    }
+}
+{% endhighlight %}
+
+Il est désormais nécessaire de faire le lien entre notre calculateur et la définition de nos étapes.
+
+<img style="float:left; margin:5px;" width="110px" src="/incubation/jbehave-get-started/plugin-astuce.png" alt="Astuce du plugin JBehave"/> Dans notre éditeur de scénario, il est possible d'accéder directement à la méthode correspondante soit par Ctrl+Clic sur l'étape concernée soit en ayant le curseur sur la ligne correspondante et en appuyant sur Ctrl+G (GO!).
+
+{% highlight java %}
+public class CalculatorSteps {
+    private Calculator calculator = new Calculator ();
+
+    @Given("a variable $variable with value $value")
+    public void defineNamedVariableWithValue(String variable, int value) {
+        calculator.defineVariable(variable, value);
+    }
+
+    ...
+}
+{% endhighlight %}
+
+En relançant notre test nous obtenons cette fois:
+
+<img src="/incubation/jbehave-get-started/001-junit-runner.png" alt="Vue JUnit Eclipse"/>
+
+Bon! à ce stade vous devriez avoir un bon aperçu du fonctionement, faisons un petit saut dans le temps pour arriver à l'implémentation finale de nos étapes:
+
+{% highlight java %}
+...
+
+@When("I add $value to $variable")
+public void addValueToVariable(@Named("variable") String variable, 
+                               @Named("value")int value) {
+    calculator.addToVariable(variable, value);
+}
+
+@Then("$variable should equal to $expected")
+public void assertVariableEqualTo(String variable, int expectedValue) {
+    assertThat(calculator.getVariableValue(variable), equalTo(expectedValue));
+}
+{% endhighlight %}
+
+Avant de faire un petit point avec notre client, enrichissons un peu notre histoire en lui ajoutant de nouveaux scénario.
+
+On commencera par un petit copié/collé pour vérifier qu'on peux utiliser d'autres noms de variable et d'autres valeurs que 2.
+
+{% highlight Gherkin %}
+Scenario: 2+2 avec une variable y
+
+Given a variable y with value 2
+When I add 2 to y
+Then y should equal to 4
+
+Scenario: 37+5 avec une variable UnBienJoli_Nom
+
+Given a variable UnBienJoli_Nom with value 37
+When I add 5 to UnBienJoli_Nom
+Then UnBienJoli_Nom should equal to 42
+{% endhighlight %}
+
+Hummm et si on utilise une variable qui n'existe pas ? Eh bien la réponse est à voir avec le client! Faisons un petit point avec notre client. Qui nous dit que ça serai bien si on pouvait faire plusieurs additions sur la même variable.
+
+{% highlight Gherkin linenos %}
+Scenario: 37+5+6+17 
+
+Given a variable x with value 37
+When I add 5 to y
+And I add 6 to x
+And I add 17 to x
+Then x should equal to 65
+{% endhighlight %}
+
+<img style="float:left; margin:5px;" width="110px" src="/incubation/jbehave-get-started/plugin-astuce.png" alt="Astuce du plugin JBehave"/> Dans notre éditeur de scénario, il est possible d'obtenir une complétion automatique parmi les étapes disponibles par `Ctrl+Espace`. Il est aussi possible de faire une recherche parmis toutes les étapes disponible en pressant `Ctrl+J`
+
+<img src="/incubation/jbehave-get-started/plugin-quick-search-001.png" alt="Plugin JBehave recherche rapide"/>
+
+<img src="/incubation/jbehave-get-started/plugin-quick-search-002-filter.png" alt="Plugin JBehave recherche rapide avec filtre"/>
+
+Relançons notre test:
+
+{% highlight bash %}
+Scenario: 37+5+6+17
+Given a variable x with value 37
+When I add 5 to y
+And I add 6 to x
+And I add 17 to x
+Then x should equal to 65 (FAILED)
+(java.lang.AssertionError: 
+Expected: <65>
+     got: <60>
+)
+{% endhighlight %}
+
+Humpf! ça c'était pas prévu! Que c'est-il passé? En regardant de plus près, on peux voir qu'on c'est trompé ligne 4, on ajoute 5 à la variable `y` au lieu de la variable `x`...
+Ce qui soulève deux problèmes: comment se fait-il que la variable `y` existe et pourquoi n'a-t-on pas eu d'erreur? Ce qui nous permet au passage de voir avec notre client comment souhaite-t-il prendre en compte l'utilisation de variable non définie. Ensemble nous definissons de nouveaux scénarios:
+
+{% highlight Gherkin %}
+Scenario: Undefined variable displays error message
+
+When I add 5 to y
+Then the calculator should display the message 'Variable y is not defined'
+{% endhighlight %}
+
+{% highlight Gherkin %}
+Scenario: Variable can be added to an other variable
+
+Given a variable x with value 37
+Given a variable y with value 5
+When I add y to x
+Then x should equal to 42
+{% endhighlight %}
+
+
+
 
 # Références
 
 * [JBehave](http://jbehave.org/)
 * [Dan North: Introduction to BDD](http://dannorth.net/introducing-bdd/) (traduction française par [Philippe Poumaroux](http://philippe.poumaroux.free.fr/index.php?post/2012/02/06/Introduction-au-Behaviour-Driven-Developement))
+* [Code Centric ~ jbehave-junit-runner](https://github.com/codecentric/jbehave-junit-runner)
+* [JBehave Eclipse plugin]()
+
+* [Meteo Icons](http://www.alessioatzeni.com/meteocons/)
