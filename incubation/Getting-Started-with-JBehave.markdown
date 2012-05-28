@@ -600,32 +600,158 @@ Expected: <65>
 {% endhighlight %}
 
 Humpf! ça c'était pas prévu! Que c'est-il passé? En regardant de plus près, on peux voir qu'on c'est trompé ligne 4, on ajoute 5 à la variable `y` au lieu de la variable `x`...
-Ce qui soulève deux problèmes: comment se fait-il que la variable `y` existe et pourquoi n'a-t-on pas eu d'erreur? Ce qui nous permet au passage de voir avec notre client comment souhaite-t-il prendre en compte l'utilisation de variable non définie. Ensemble nous definissons de nouveaux scénarios:
+Ce qui soulève deux problèmes: comment se fait-il que la variable `y` existe et pourquoi n'a-t-on pas eu d'erreur? Ce qui nous permet au passage de voir avec notre client comment souhaite-t-il prendre en compte l'utilisation de variable non définie. Ensemble nous definissons alors un nouveau scénario:
 
 {% highlight Gherkin %}
 Scenario: Undefined variable displays error message
 
 When I add 5 to y
-Then the calculator should display the message 'Variable y is not defined'
+Then the calculator should display the message 'Variable <y> is not defined'
 {% endhighlight %}
 
-{% highlight Gherkin %}
-Scenario: Variable can be added to an other variable
+Maintenant, interessons-nous à notre erreur précédente: comment se fait-il que nous n'ayons pas eu d'erreur (`throw new IllegalStateException("Variable <" + variable + "> is not defined");`). Et bien, tout simplement parce que l'un des scénarios précédent a définit cette variable, et que les classes définissant les étapes ne sont pas réinstanciées à chaque test: nous utilisons donc la même instance de `Calculator` pour chaque scénario. 
+Cela nous amène à présenter quelques bonnes pratiques: 
 
-Given a variable x with value 37
-Given a variable y with value 5
-When I add y to x
-Then x should equal to 42
+* ne pas stocker d'états dans les classes définissant les étapes
+* utiliser les annotations `@BeforeStories`, `@BeforeStory`, `@BeforeScenario` pour réinitialiser les états entre chaque scénario. Dans le cas de tests unitaire, on pourra se contenter de réinitialiser uniquement le contexte du test avant chaque scénario `@BeforeScenario`. Tandis que dans le cas des tests d'intégration, on pourra par exemple démarrer le serveur Sélenium au tout début des tests dans une méthode annotée `@BeforeStories`, réinitialiser la base de données avant chaque histoire `@BeforeStory` et réinitializer le contexte du test avant chaque scénatio `@BeforeScenario`. 
+* utiliser les annotations `@AfterStories`, `@AfterStory` et `@AfterScenario` pour fermer et nettoyer les ressources correspondantes.
+
+Afin de garder une infrastructure de test simple qui nous permettra de travailler en environement concurrent, nous obterons pour l'utilisation de variable `ThreadLocal` pour maintenir l'état de chaque scénario. Ainsi, deux scénarios s'executant en parallèle (chacun dans leur thread) disposeront chacun de leur propre contexte.
+
+{% highlight java linenos %}
+public class CalculatorContext {
+
+    private static ThreadLocal<CalculatorContext> threadContext = 
+            new ThreadLocal<CalculatorContext>();
+    
+    public static CalculatorContext context() {
+        return threadContext.get();
+    }
+    
+    public static Calculator calculator() {
+        return context().getCalculator();
+    }
+    
+    public static void initialize() {
+        // one does not rely on ThreadLocal#initialValue()
+        // so that one is sure only initialize create a new
+        // instance
+        threadContext.set(new CalculatorContext());
+    }
+    public static void dispose () {
+        threadContext.remove();
+    }
+    
+    private Calculator calculator;
+    private Exception lastError;
+    
+    public CalculatorContext() {
+        calculator = new Calculator();
+    }
+    
+    public Calculator getCalculator() {
+        return calculator;
+    }
+    
+    public void setLastError(Exception lastError) {
+        this.lastError = lastError;
+    }
+    
+    public Exception getLastError() {
+        return lastError;
+    }
+}
 {% endhighlight %}
 
+Modifions enfin notre classe `CalculatorSteps`:
 
+{% highlight java %}
+package bdd101.calculator;
 
+import static bdd101.calculator.CalculatorContext.calculator;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
+
+import bdd101.util.StepsDefinition;
+
+@StepsDefinition
+public class CalculatorSteps {
+    
+    @BeforeScenario
+    public void inializeScenario() {
+        CalculatorContext.initialize();
+    }
+
+    @AfterScenario
+    public void disposeScenario() {
+        CalculatorContext.dispose();
+    }
+    
+    @Given("a variable $variable with value $value")
+    public void defineNamedVariableWithValue(String variable, int value) {
+        calculator().defineVariable(variable, value);
+    }
+
+    @When("I add $value to $variable")
+    public void addValueToVariable(@Named("variable") String variable, 
+                                   @Named("value")int value) {
+        calculator().addToVariable(variable, value);
+    }
+}
+{% endhighlight %}
+
+Relançons les tests, et cette fois nous obtenons bien l'exception souhaitée:
+
+{% highlight bash %}
+...
+
+Scenario: Undefined variable displays error message
+When I add 5 to y (FAILED)
+(java.lang.IllegalStateException: Variable <y> is not defined)
+Then the calculator should display the message 'Variable y is not defined' (PENDING)
+@Then("the calculator should display the message 'Variable y is not defined'")
+@Pending
+public void thenTheCalculatorShouldDisplayTheMessageVariableYIsNotDefined() {
+  // PENDING
+}
+{% endhighlight %}
+
+Modifions légèrement notre classe de définitions d'étapes pour gérer l'exception:
+
+{% highlight java %}
+...
+    @When("I add $value to $variable")
+    public void addValueToVariable(@Named("variable") String variable, 
+                                   @Named("value")int value) {
+        try {
+            calculator().addToVariable(variable, value);
+        } catch (Exception e) {
+            context().setLastError(e);
+        }
+    }
+...
+    @Then("the calculator should display the message '$errorMessage'")
+    public void assertErrorMessageIsDisplayed(String errorMessage) {
+        Exception lastError = context().getLastError();
+        assertThat("Not in error situtation", lastError, notNullValue());
+        assertThat("Wrong error message", lastError.getMessage(), equalTo(errorMessage));
+    }
+
+{% endhighlight %}
+
+Le code complet est disponible ici: []()
 
 # Références
 
 * [JBehave](http://jbehave.org/)
 * [Dan North: Introduction to BDD](http://dannorth.net/introducing-bdd/) (traduction française par [Philippe Poumaroux](http://philippe.poumaroux.free.fr/index.php?post/2012/02/06/Introduction-au-Behaviour-Driven-Developement))
-* [Code Centric ~ jbehave-junit-runner](https://github.com/codecentric/jbehave-junit-runner)
-* [JBehave Eclipse plugin]()
+* [Code Centric ~ jbehave-junit-runner](http://github.com/codecentric/jbehave-junit-runner)
+* [JBehave Eclipse plugin](http://github.com/Arnauld/jbehave-eclipse-plugin)
 
-* [Meteo Icons](http://www.alessioatzeni.com/meteocons/)

@@ -6,7 +6,7 @@ DDD
 * mapping/dozer à tout va: dto <-> domaine <-> hibernate <-> rdbms...
 * Allier TDD et DDD? TDD guide un design qui n'est pas forcément celui qui aurait été pensé lors d'une phase de conception "DDD" ?...
 
-
+# http://java.dzone.com/articles/bad-code-too-many-object
 
 # DAO vs Repository
 
@@ -46,4 +46,28 @@ http://www.martinfowler.com/eaaCatalog/repository.html
 > http://debasishg.blogspot.com/2007/02/domain-driven-design-use-orm-backed.html
 
 ## http://in.relation.to/Bloggers/RepositoryPatternVsTransparentPersistence
+
+## http://techblog.bozho.net/?p=180
+
+## http://www.infoq.com/articles/ddd-in-practice
+
+## http://stochastyk.blogspot.fr/2008/05/series-on-domain-driven-design.html
+
+## http://stochastyk.blogspot.fr/2008/05/entities-in-ddd.html
+
+## http://stochastyk.blogspot.fr/2008/05/layers-in-ddd.html
+
+## http://stochastyk.blogspot.fr/2008/05/value-objects-in-domain-driven-design.html
+
+## http://stochastyk.blogspot.fr/2008/05/value-objects-in-ddd-part-2-creating.html
+
+## http://stochastyk.blogspot.fr/2008/05/domain-services-in-domain-driven-design.html
+
+## http://stochastyk.blogspot.fr/2008/06/associations-in-domain-driven-design.html
+
+## http://stochastyk.blogspot.fr/2008/06/domain-driven-design-without-aop.html
+
+## [Domain Driven Design with Spring and Hibernate](http://jblewitt.com/blog/?p=129)
+
+## [How Anaemic Domain Models Cause Bad Software](http://jblewitt.com/blog/?p=241)
 
