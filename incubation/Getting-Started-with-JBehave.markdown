@@ -15,35 +15,56 @@ excerpt: |
 
   ** BDD quézako!? **
 
-  Tout d'abord un peu d'histoire, le BDD encore un accronyme du type **xDD**? Et bien oui, encore un! Le BDD (Behavior Driven Development) est présenté comme une évolution du TDD (Test Driven Development). 
-  Proposé par Dan North (qui fut aussi l'un des initiateurs du projet JBehave), le BDD consiste étendre le TDD en écrivant non plus du code compréhensible uniquement par des développeurs, mais sous forme de scénario compréhensible par toutes les personnes impliquées dans le projet.
+  Tout d'abord un peu d'histoire: Le BDD encore un accronyme du type **xDD**? Et bien oui, encore un! Le BDD (Behavior Driven Development) est présenté comme une évolution du TDD (Test Driven Development). 
+  Proposé par Dan North (qui fut aussi l'un des initiateurs du projet JBehave), le BDD consiste à étendre le TDD en écrivant non plus du code compréhensible uniquement par des développeurs, mais sous forme de scénario compréhensible par toutes les personnes impliquées dans le projet.
 
   Autrement dit, il s'agit d'écrire des tests qui décrivent le comportement attendu du système et que tout le monde peux comprendre. 
 
-  Et le rapport avec le TDD? Eh bien généralement, ces scénarios sont écrits et définis avant que l'implémentation ne commence. Ils servent à la fois à définir le besoin mais vont guider le développement en le focalisant sur la fonctionnalité décrite.
+  Et le rapport avec le TDD? Eh bien généralement, ces scénarios sont écrits et définis avant que l'implémentation ne commence. Ils servent à la fois à définir le besoin mais vont guider le développement en le focalisant sur la fonctionnalité décrite. Dans l'absolu, on continue à faire du TDD mais on remplace l'expression du besoin en langage naturel.
 
 ---
 
 {{ page.excerpt | markdownify }}
 
-Les avantages d'une tel pratique sont multiples:
+<img src="/incubation/jbehave-get-started/bdd-overview.png" alt="BDD apperçu général"/>
 
-* En ecrivant des tests que tous peuvent comprendre, les clients peuvent s'assurer que les développeurs ont bien compris les besoins métiers, et que les deux parties avancent ensemble dans la même direction. Il constitue un véritable outils de communication rapprochant développeurs et personnes du métiers. Cela restaure la confiance du client en rendant le comportement explicite et visible.
-* Les tests unitaires sont généralement très riche sur le comportement d'une application, mais ils restent très hermétiques à des non-developpeurs (parfois même aux autres developpeurs et aux nouveaux arrivant), en les rendant plus accessibles et plus lisibles, ils constituent une réelle une source d'information sur le comportement de l'application, et sont généralement toujours à jour.
+Les avantages d'une tel pratique sont multiples (voir figure ci-dessus):
+
+**Point (1):**
+
+* L'écriture des scénarios se fait de manière collective: développeurs, client, équipe support, ...; tout le monde peux participer à l'expression du besoin, puisque celui-ci ce fait en langage naturel. Toutes les questions soulevées, par le client ou par le développeur, peuvent faire l'objet de scénarios dédiés. Les scénarios décrivent alors le fontionement réel de l'application, et le traitement des cas aux limites.
+* En ecrivant des tests que tout le monde peut comprendre, les clients s'assurent que les développeurs ont bien compris les besoins métiers, les développeurs sortent de leur “Autisme” ([]()) et se rapprochent du métier. Les deux parties avancent ensemble dans la même direction. Il constitue un véritable outils de communication rapprochant développeurs et personnes du métiers. Cela restaure la confiance du client en rendant le comportement explicite et visible.
+* A chaque fois qu'une nouvelle spécification est écrite, son utilisation est illustrée par plusieurs cas de tests, cela force à réflechir sur la fonctionalité et son utilisation. Il est possible de communiquer avec tout le monde et pas seulement les développeurs, il est ainsi plus facile d'inciter les gens à s'impliquer sur ce qui est fait: d'avoir des fonctionnalités mieux décrites et plus challengées. Celapermet aussi de rassurer le développeur sur l'interêt de ce développement.
 * En utilisant le contexte métier pour décrire les fonctionnalités souhaitées, il y a moins de disgression et de considération techniques dans l'expression des besoins: a-t-on besoins de savoir qu'un message d'erreur sur une interface Web est un élement HTML avec la classe 'error'? Non, on souhaite seulement s'assurer qu'en cas de saisie erronée, un message d'erreur est présent et ce dans le contexte d'une page web. Le contexte métier sert alors de filtre dans l'expression des besoins, libérant le développeur et les personnes du métiers de détails techniques et d'implémentation.
 * Le scenario sert à focaliser les discussions et la réalisation sur les attentes du client. En guidant, l'écriture du code, celui-ci devient plus fonctionnel et plus imprégné du métier.
 * La structuration (et formalisation) du scénario permet de formaliser l'expression des besoins avec un langages communs et facilement interprétable. L'utilisation de mots clé et d'expression....
 
-Si l'on devait résumer en une phrase: Il s'agit d'une méthodologie de travail, permettant d'écrire des tests compréhensibles à la fois par le client et par le développeur.
+**Point (2):**
+
+* Le besoin fonctionnel guide le développment de l'application: on développe ce dont on a besoin; et on limite les eccueils de cathédrale technologique.
+* Les comportements  deviennent documenté: même si la javadoc ou les commentaires permettent de documenter le code, il existe rarement de documentation sur le comportement réel de l'application; on dispose ainsi d'exemples concrets.
+* Les tests unitaires sont généralement très riche sur le comportement d'une application, mais ils restent très hermétiques à des non-developpeurs (parfois même aux autres developpeurs et aux nouveaux arrivant), en les rendant plus accessibles et plus lisibles, **ils constituent une réelle une source d'information sur le comportement de l'application**, et sont toujours à jour.
+
+**Point (3):**
+
+* En étant directement executables, les histoires intègrent directement la base de code: elles sont archivées avec le code qui les executent. Les histoires et leurs modifications évoluent donc naturellement en même temps que la base de code. Avec un *astucieux* jeu de tag et de branche, on peux donc facilement documenter les évolutions fonctionnelles du code.
+
+**Point (4):**
+
+* Ce point rejoint très fortement les points précédents: l'environement d'intégration continue teste en permanence les comportements fonctionnels réels et à jour au fil des modifications du code.
+
+Si l'on devait résumer en une phrase: Il s'agit d'une méthodologie de travail, permettant d'écrire des tests compréhensibles à la fois par le client et par le développeur et s'intégrant directement dans la base de code.
 
 On notera que l'on parle bien de tests au sens général! Cette méthodologie peux en effet aussi bien s'appliquer à des tests unitaires, des tests fonctionnels, des tests d'intégrations, des tests de bout en bout, etc. 
 Il s'agit d'ailleurs d'un travers que l'on rencontre souvent: associer systématique cette méthodologie avec l'écriture de tests d'intégration. Si l'on évoque JBehave, pour beaucoup le rapprochement est rapidement fait avec [Selenium]() et l'écriture de tests d'intégration d'interface Web.
 
-Eh bien non! Tout type de tests peux s'écrire avec les principes évoqués. **En fait, la plupart des outils de BDD (JBehave, Cucumber, Easyb, ...) ne font "que" la traduction d'un scénario en langage naturel en appel séquentiel de méthodes. Ce que les méthodes pilotent réellement tient uniquement de leur comportement que de l'outil utilisé pour faire le lien.
+Eh bien non! Tout type de tests peux s'écrire avec les principes évoqués. **En fait, la plupart des outils de BDD (JBehave, Cucumber, Easyb, ...) ne font "que" la traduction d'un scénario en langage naturel en appel séquentiel de méthodes. Ce que les méthodes pilotent réellement tient uniquement de leur comportement que de l'outil utilisé pour faire le lien. Les outils définissent une grammaire permettant de faire correspondre le scénario avec le code qui sera appellé. Chaque étape est généralement reliée à une fonction ou une méthode particulière qui pilote un changement d'état ou une action.
+
+**De plus, il est tout à fait possible (et même fortement conseillé) d'utiliser ce type de tests même si ceux-ci ne guident pas le développement et sont écrits à posteriori: la source documentaire qu'ils procurent est presque aussi riche que le code qu'ils manipulent**
 
 Avant d'illustrer cela par quelques exemples, voyons le formalisme standard utilisé pour écrire ces scénarios.
 
-Tout d'abord le préambule à un ensemble de scénario, il permet de placer le contexte général et de decrire très brievement les fonctionnalités qui vont être présenté.
+Tout d'abord le préambule à un ensemble de scénario, il permet de placer le contexte général et de decrire très brievement les fonctionnalités qui vont être présenté. En général, ce préambule n'est qu'illustratif et ne pilote pas de code.
 
 <table>
     <tr>
@@ -89,6 +110,10 @@ Enfin le contenu de scenario. Le scenario est une succession d'étape (`Step`) p
           </td>
       </tr>
 </table>
+
+
+[TODO: figure mapping étape <----> steps]
+
 
 # Allez on code!
 
@@ -737,6 +762,13 @@ Modifions légèrement notre classe de définitions d'étapes pour gérer l'exce
         }
     }
 ...
+{% endhighlight %}
+
+Puis enfin, ajoutons l'étape de vérification:
+
+{% highlight java %}
+...
+
     @Then("the calculator should display the message '$errorMessage'")
     public void assertErrorMessageIsDisplayed(String errorMessage) {
         Exception lastError = context().getLastError();

@@ -57,6 +57,15 @@ notextile.. <style>
 
 <span class="label warning">In Progress // Incubation</span><br/>
 
+
+Key idea: isolate application Domain
+
+@[Application Domain]---[Adapter]---[Port]@
+
+What is a Port? An interface to Technical Infrastructure
+
+What is an Adapter? An interface to translate Domain into Technical
+
 <div class="collapsible">
 <h3>Notes</h3>
 <div class="content">
