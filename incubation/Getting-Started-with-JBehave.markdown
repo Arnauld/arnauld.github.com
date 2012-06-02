@@ -33,6 +33,7 @@ Les avantages d'une tel pratique sont multiples (voir figure ci-dessus):
 **Point (1):**
 
 * L'écriture des scénarios se fait de manière collective: développeurs, client, équipe support, ...; tout le monde peux participer à l'expression du besoin, puisque celui-ci ce fait en langage naturel. Toutes les questions soulevées, par le client ou par le développeur, peuvent faire l'objet de scénarios dédiés. Les scénarios décrivent alors le fontionement réel de l'application, et le traitement des cas aux limites.
+* En illustrant chaque cas d'utilisation par des exemples concrets, les rêgles métiers sont moins abstraites et mieux comprises.
 * En ecrivant des tests que tout le monde peut comprendre, les clients s'assurent que les développeurs ont bien compris les besoins métiers, les développeurs sortent de leur “Autisme” ([]()) et se rapprochent du métier. Les deux parties avancent ensemble dans la même direction. Il constitue un véritable outils de communication rapprochant développeurs et personnes du métiers. Cela restaure la confiance du client en rendant le comportement explicite et visible.
 * A chaque fois qu'une nouvelle spécification est écrite, son utilisation est illustrée par plusieurs cas de tests, cela force à réflechir sur la fonctionalité et son utilisation. Il est possible de communiquer avec tout le monde et pas seulement les développeurs, il est ainsi plus facile d'inciter les gens à s'impliquer sur ce qui est fait: d'avoir des fonctionnalités mieux décrites et plus challengées. Celapermet aussi de rassurer le développeur sur l'interêt de ce développement.
 * En utilisant le contexte métier pour décrire les fonctionnalités souhaitées, il y a moins de disgression et de considération techniques dans l'expression des besoins: a-t-on besoins de savoir qu'un message d'erreur sur une interface Web est un élement HTML avec la classe 'error'? Non, on souhaite seulement s'assurer qu'en cas de saisie erronée, un message d'erreur est présent et ce dans le contexte d'une page web. Le contexte métier sert alors de filtre dans l'expression des besoins, libérant le développeur et les personnes du métiers de détails techniques et d'implémentation.
@@ -56,7 +57,7 @@ Les avantages d'une tel pratique sont multiples (voir figure ci-dessus):
 Si l'on devait résumer en une phrase: Il s'agit d'une méthodologie de travail, permettant d'écrire des tests compréhensibles à la fois par le client et par le développeur et s'intégrant directement dans la base de code.
 
 On notera que l'on parle bien de tests au sens général! Cette méthodologie peux en effet aussi bien s'appliquer à des tests unitaires, des tests fonctionnels, des tests d'intégrations, des tests de bout en bout, etc. 
-Il s'agit d'ailleurs d'un travers que l'on rencontre souvent: associer systématique cette méthodologie avec l'écriture de tests d'intégration. Si l'on évoque JBehave, pour beaucoup le rapprochement est rapidement fait avec [Selenium]() et l'écriture de tests d'intégration d'interface Web.
+Il s'agit d'ailleurs d'un travers que l'on rencontre souvent: associer systématique cette méthodologie avec l'écriture de tests d'intégration. Si l'on évoque JBehave, pour beaucoup le rapprochement est rapidement fait avec [Selenium](http://code.google.com/p/selenium/wiki/GettingStarted) et l'écriture de tests d'intégration d'interface Web.
 
 Eh bien non! Tout type de tests peux s'écrire avec les principes évoqués. **En fait, la plupart des outils de BDD (JBehave, Cucumber, Easyb, ...) ne font "que" la traduction d'un scénario en langage naturel en appel séquentiel de méthodes. Ce que les méthodes pilotent réellement tient uniquement de leur comportement que de l'outil utilisé pour faire le lien. Les outils définissent une grammaire permettant de faire correspondre le scénario avec le code qui sera appellé. Chaque étape est généralement reliée à une fonction ou une méthode particulière qui pilote un changement d'état ou une action.
 
@@ -111,6 +112,17 @@ Enfin le contenu de scenario. Le scenario est une succession d'étape (`Step`) p
       </tr>
 </table>
 
+## Quelques tweets d'actualités
+
+<blockquote class="twitter-tweet" data-in-reply-to="207170550093709313"><p>. @<a href="https://twitter.com/mgrimes">mgrimes</a> BDD does not mean UI testing!Far from it.Cucumber users have got to get this straight!</p>&mdash; Uncle Bob Martin (@unclebobmartin) <a href="https://twitter.com/unclebobmartin/status/207183252950224896" data-datetime="2012-05-28T18:55:11+00:00">May 28, 2012</a></blockquote>
+
+<blockquote class="twitter-tweet" data-in-reply-to="207184163701399553"><p>. @<a href="https://twitter.com/angelaharms">angelaharms</a> BDD is TDD with good naming conventions. The ideas are good. The name is confusing. It's really just TDD.</p>&mdash; Uncle Bob Martin (@unclebobmartin) <a href="https://twitter.com/unclebobmartin/status/207281653582802944" data-datetime="2012-05-29T01:26:11+00:00">May 29, 2012</a></blockquote>
+
+<blockquote class="twitter-tweet" data-in-reply-to="207283383393464320"><p>@<a href="https://twitter.com/glanotte">glanotte</a> No. BDD _not_ equal acceptance tests. BDD just better worded tests.</p>&mdash; Uncle Bob Martin (@unclebobmartin) <a href="https://twitter.com/unclebobmartin/status/207323686880022528" data-datetime="2012-05-29T04:13:13+00:00">May 29, 2012</a></blockquote>
+
+
+
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 [TODO: figure mapping étape <----> steps]
 
@@ -778,12 +790,18 @@ Puis enfin, ajoutons l'étape de vérification:
 
 {% endhighlight %}
 
-Le code complet est disponible ici: []()
+Le code complet est disponible ici: [jbehave-get-started](https://github.com/Arnauld/jbehave-get-started).
 
 # Références
 
+* [Dan North - Introduction to BDD](http://dannorth.net/introducing-bdd/) (traduction française par [Philippe Poumaroux](http://philippe.poumaroux.free.fr/index.php?post/2012/02/06/Introduction-au-Behaviour-Driven-Developement))
+* [Liz Keogh - Translating TDD to BDD](http://lizkeogh.com/2009/11/06/translating-tdd-to-bdd/)
+* [Gojko Adzic - Specification by Example: How successful teams deliver the right software](http://specificationbyexample.com/)
+
 * [JBehave](http://jbehave.org/)
-* [Dan North: Introduction to BDD](http://dannorth.net/introducing-bdd/) (traduction française par [Philippe Poumaroux](http://philippe.poumaroux.free.fr/index.php?post/2012/02/06/Introduction-au-Behaviour-Driven-Developement))
 * [Code Centric ~ jbehave-junit-runner](http://github.com/codecentric/jbehave-junit-runner)
 * [JBehave Eclipse plugin](http://github.com/Arnauld/jbehave-eclipse-plugin)
+
+* [Selenium](http://code.google.com/p/selenium/wiki/GettingStarted)
+* [FluentLenium](https://github.com/FluentLenium/FluentLenium)
 
