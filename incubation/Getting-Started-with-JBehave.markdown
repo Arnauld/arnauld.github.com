@@ -61,9 +61,14 @@ Si l'on devait résumer en une phrase: Il s'agit d'une méthodologie de travail,
 On notera que l'on parle bien de tests au sens général! Cette méthodologie peux en effet aussi bien s'appliquer à des tests unitaires, des tests fonctionnels, des tests d'intégrations, des tests de bout en bout, etc. 
 Il s'agit d'ailleurs d'un travers que l'on rencontre souvent: associer systématique cette méthodologie avec l'écriture de tests d'intégration. Si l'on évoque JBehave, pour beaucoup le rapprochement est rapidement fait avec [Selenium](http://code.google.com/p/selenium/wiki/GettingStarted) et l'écriture de tests d'intégration d'interface Web.
 
-Eh bien non! Tout type de tests peux s'écrire avec les principes évoqués. **En fait, la plupart des outils de BDD (JBehave, Cucumber, Easyb, ...) ne font "que" la traduction d'un scénario en langage naturel en appel séquentiel de méthodes. Ce que les méthodes pilotent réellement tient uniquement de leur comportement que de l'outil utilisé pour faire le lien. Les outils définissent une grammaire permettant de faire correspondre le scénario avec le code qui sera appellé. Chaque étape est généralement reliée à une fonction ou une méthode particulière qui pilote un changement d'état ou une action.
+
+<img src="/incubation/jbehave-get-started/bdd-fmk-traduction.png" alt="BDD la traduction d'une story en appel de code"/>
+
+<img style="float:left; margin:5px;" width="150px" src="/incubation/jbehave-get-started/C-est-dit.png" /> *Eh bien non! Tout type de tests peux s'écrire avec les principes évoqués. En fait, la plupart des outils de BDD (JBehave, Cucumber, Easyb, ...) ne font **"que"** la traduction d'un scénario en langage naturel en appel de méthodes*. Ce que les méthodes pilotent réellement tient uniquement de leur contenu et non de l'outil utilisé pour faire le lien. Les outils définissent une grammaire permettant de faire correspondre le scénario avec le code qui sera appellé. Chaque étape est généralement reliée à une fonction ou une méthode particulière qui pilote un changement d'état ou une action.
 
 **De plus, il est tout à fait possible (et même fortement conseillé) d'utiliser ce type de tests même si ceux-ci ne guident pas le développement et sont écrits à posteriori: la source documentaire qu'ils procurent est presque aussi riche que le code qu'ils manipulent**
+
+## Formalisme d'écriture
 
 Avant d'illustrer cela par quelques exemples, voyons le formalisme standard utilisé pour écrire ces scénarios.
 
@@ -71,16 +76,13 @@ Tout d'abord le préambule à un ensemble de scénario, il permet de placer le c
 
 <table>
     <tr>
-        <td>
-            As a [role],<br/>
-            I want [behavior] <br/>
-            In order to [outcome] <br/>
-        </td>
-        <td>
-            En tant que [role ou personne],<br/>
-            Je veux [fonctionalité] <br/>
-            Afin de [but, bénéfice ou valeur de la fonctionnalité] <br/>
-        </td>
+        <td>As a [role],</td><td>En tant que [role ou personne],</td>
+    </tr>
+    <tr>
+        <td>I want [behavior]</td><td>Je veux [fonctionalité]</td>
+    </tr>
+    <tr>
+        <td>In order to [outcome]</td><td>Afin de [but, bénéfice ou valeur de la fonctionnalité]</td>
     </tr>
 </table>
 
@@ -101,18 +103,17 @@ Enfin le contenu de scenario. Le scenario est une succession d'étape (`Step`) p
 
 <table>
     <tr>
-        <td>
-            Given [context]
-            When [action]
-            Then [expected result]
-        </td>
-        <td>
-            Etant donné [un contexte initial (les acquis)]
-            Lorsqu'[un événement survient]
-            Alors [on s'assure de l'obtention de certains résultats]
-          </td>
-      </tr>
+        <td>Given [context]</td><td>Etant donné [un contexte initial (les acquis)]</td>
+    </tr>
+    <tr>
+        <td>When [action]</td><td>Lorsqu'[un événement survient]</td>
+    </tr>
+    <tr>
+        <td>Then [expected result]</td><td>Alors [on s'assure de l'obtention de certains résultats]</td>
+    </tr>
 </table>
+
+Illustrons cela par un exemple très simple
 
 ## Quelques tweets d'actualités
 
@@ -122,12 +123,7 @@ Enfin le contenu de scenario. Le scenario est une succession d'étape (`Step`) p
 
 <blockquote class="twitter-tweet" data-in-reply-to="207283383393464320"><p>@<a href="https://twitter.com/glanotte">glanotte</a> No. BDD _not_ equal acceptance tests. BDD just better worded tests.</p>&mdash; Uncle Bob Martin (@unclebobmartin) <a href="https://twitter.com/unclebobmartin/status/207323686880022528" data-datetime="2012-05-29T04:13:13+00:00">May 29, 2012</a></blockquote>
 
-
-
 <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-[TODO: figure mapping étape <----> steps]
-
 
 # Allez on code!
 
@@ -470,9 +466,25 @@ public class CalculatorSteps {
 }
 {% endhighlight %}
 
+{% highlight java %}
+public class CalculatorSteps {
+  public void defineNamedVariableWithValue(String variable, int value) {
+    ...
+  }
+
+  public void addValueToVariable(String variable, int value) {
+    ...
+  }
+
+  public void assertVariableEqualTo(String variable, int expectedValue) {
+    ...
+  }
+}
+{% endhighlight %}
+
 Relisons cette classe ligne par ligne:
 
-* `@StepsDefinition` est une annotation personnelle qui permet à la fois de marquer cette classe comme contenant des définitions d'étapes (ce qui est purement informatif) et qui permet à Spring de la détecter au moment ou il va parcourir les classes pour la construction de son contexte (`<context:component-scan base-package="bdd101" />` dans le fichier `applicationContext-test.xml`); pour plus d'information voir la documentation de spring sur l'utilisation des annotations ([TODO: add ref.]).
+* `@StepsDefinition` est une annotation personnelle qui permet à la fois de marquer cette classe comme contenant des définitions d'étapes (ce qui est purement informatif) et qui permet à Spring de la détecter au moment ou il va parcourir les classes pour la construction de son contexte; pour plus d'information voir la documentation de spring sur l'utilisation des annotations ([Spring - Using filters to customize scanning](http://static.springsource.org/spring/docs/3.0.0.M3/spring-framework-reference/html/ch04s12.html#beans-scanning-filters)).
 
 {% highlight java %}
 import java.lang.annotation.Documented;
@@ -800,10 +812,11 @@ Le code complet est disponible ici: [jbehave-get-started](https://github.com/Arn
 * [Liz Keogh - Translating TDD to BDD](http://lizkeogh.com/2009/11/06/translating-tdd-to-bdd/)
 * [Gojko Adzic - Specification by Example: How successful teams deliver the right software](http://specificationbyexample.com/)
 
+
 * [JBehave](http://jbehave.org/)
 * [Code Centric ~ jbehave-junit-runner](http://github.com/codecentric/jbehave-junit-runner)
 * [JBehave Eclipse plugin](http://github.com/Arnauld/jbehave-eclipse-plugin)
 
+
 * [Selenium](http://code.google.com/p/selenium/wiki/GettingStarted)
 * [FluentLenium](https://github.com/FluentLenium/FluentLenium)
-
