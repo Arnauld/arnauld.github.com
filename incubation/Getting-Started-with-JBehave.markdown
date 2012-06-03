@@ -26,7 +26,7 @@ excerpt: |
 
 {{ page.excerpt | markdownify }}
 
-<img src="/incubation/jbehave-get-started/bdd-overview.png" alt="BDD apperçu général"/>
+<img src="/incubation/jbehave-get-started/bdd-dialogue.png" alt="BDD un dialogue"/>
 
 Les avantages d'une tel pratique sont multiples (voir figure ci-dessus):
 
@@ -45,6 +45,8 @@ Les avantages d'une tel pratique sont multiples (voir figure ci-dessus):
 * Le besoin fonctionnel guide le développment de l'application: on développe ce dont on a besoin; et on limite les eccueils de cathédrale technologique.
 * Les comportements  deviennent documenté: même si la javadoc ou les commentaires permettent de documenter le code, il existe rarement de documentation sur le comportement réel de l'application; on dispose ainsi d'exemples concrets.
 * Les tests unitaires sont généralement très riche sur le comportement d'une application, mais ils restent très hermétiques à des non-developpeurs (parfois même aux autres developpeurs et aux nouveaux arrivant), en les rendant plus accessibles et plus lisibles, **ils constituent une réelle une source d'information sur le comportement de l'application**, et sont toujours à jour.
+
+<img src="/incubation/jbehave-get-started/bdd-overview.png" alt="BDD apperçu général"/>
 
 **Point (3):**
 
