@@ -1,0 +1,3 @@
+[There's an app for that!](http://www.modernanalyst.com/Resources/BusinessAnalystHumor/tabid/218/articleType/ArticleView/articleId/1231/Theres_an_app_for_that.aspx)
+
+[Humor: What do you call a requirements workshop that nobody wants to attend?](http://www.modernanalyst.com/Resources/BusinessAnalystHumor/tabid/218/articleType/ArticleView/articleId/2157/What_do_you_call_a_requirements_workshop_that_nobody_wants_to_attend.aspx)
