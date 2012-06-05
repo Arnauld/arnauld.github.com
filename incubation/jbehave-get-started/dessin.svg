@@ -9537,9 +9537,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.75455109"
-     inkscape:cx="2093.3753"
-     inkscape:cy="559.49922"
+     inkscape:zoom="0.83616414"
+     inkscape:cx="1175.3412"
+     inkscape:cy="721.99602"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -9556,7 +9556,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -26930,5 +26930,50 @@
          y="684.84039"
          id="tspan13412"
          style="font-size:28px;font-family:DejaVu Sans Mono;-inkscape-font-specification:DejaVu Sans Mono">K</tspan></text>
+    <text
+       transform="matrix(0.98906628,-0.1474717,0.1474717,0.98906628,0,0)"
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d45500;fill-opacity:1;stroke:none;font-family:Sans"
+       x="934.30042"
+       y="461.86542"
+       id="text7364"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/Users/arnauld/Projects/arnauld.github.com/incubation/jbehave-get-started/C-est-dit.png"
+       inkscape:export-xdpi="84.447517"
+       inkscape:export-ydpi="84.447517"><tspan
+         sodipodi:role="line"
+         id="tspan7366"
+         x="934.30042"
+         y="461.86542"
+         style="font-size:19.99999990999999966px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#d45500;fill-opacity:1;font-family:Top Secret;-inkscape-font-specification:Top Secret Bold">[DEMYSTHIFICATION]</tspan></text>
+    <text
+       transform="matrix(0.99331094,0.11547022,-0.11547022,0.99331094,0,0)"
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#008080;fill-opacity:1;stroke:none;font-family:Sans"
+       x="1016.904"
+       y="221.16248"
+       id="text7368"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/Users/arnauld/Projects/arnauld.github.com/incubation/jbehave-get-started/C-est-dit.png"
+       inkscape:export-xdpi="84.447517"
+       inkscape:export-ydpi="84.447517"><tspan
+         sodipodi:role="line"
+         id="tspan7370"
+         x="1016.904"
+         y="221.16248"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#008080;fill-opacity:1;font-family:Top Secret;-inkscape-font-specification:Top Secret Bold">[C'eST DIT!]</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#550000;fill-opacity:1;stroke:none;font-family:Capture it;-inkscape-font-specification:Capture it"
+       x="1296.3962"
+       y="3287.3367"
+       id="text7376"
+       sodipodi:linespacing="125%"
+       transform="translate(0,-3160.6301)"><tspan
+         sodipodi:role="line"
+         id="tspan7378"
+         x="1296.3962"
+         y="3287.3367"
+         style="-inkscape-font-specification:Capture it;font-family:Capture it;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;fill:#550000">Breaking News</tspan></text>
   </g>
 </svg>
