@@ -22,14 +22,14 @@ excerpt: |
 
   Autrement dit, il s'agit d'écrire des tests qui décrivent le comportement attendu du système et que tout le monde peux comprendre. 
 
-  Et le rapport avec le TDD? Eh bien généralement, ces scénarios sont écrits et définis avant que l'implémentation ne commence. Ils servent à la fois à définir le besoin mais vont guider le développement en le focalisant sur la fonctionnalité décrite. Dans l'absolu, on continue à faire du TDD mais on ajoute en plus  l'expression du besoin en langage naturel. De manière un peu caricatural, le BDD va guider le développement d'une fonctionalité, tandis que le TDD guidera son implementation.
+  Et le rapport avec le TDD? Eh bien généralement, ces scénarios sont écrits et définis avant que l'implémentation ne commence. Ils servent à la fois à définir le besoin mais vont guider le développement en le focalisant sur la fonctionnalité décrite. Dans l'absolu, on continue à faire du TDD mais on ajoute en plus l'expression du besoin en langage naturel. Alors que le TDD garantit d'une certaine façon la qualité technique d'une implémentation, il ne garantit pas la qualité fonctionnelle. Plusieurs éléments peuvent ainsi être techniquement valides mais une fois mis ensemble ne répondent pas du tout au besoin réellement exprimé par le client. De manière un peu caricatural, le BDD va guider le développement d'une fonctionalité, tandis que le TDD guidera son implementation.
 
 ---
 
 {{ page.excerpt | markdownify }}
 
 
-Les avantages d'une tel pratique sont multiples (Les différents "points" réferrent à la fichure ci-après):
+Les avantages d'une tel pratique sont multiples (Les différents "points" réfèrent à la figure ci-après):
 
 **Point (1): Un dialogue restauré**
 
@@ -100,9 +100,8 @@ Une histoire étant constituée d'un ou plusieurs scénarios, viens ensuite la *
 
 <table>
     <tr>
-        <td>
-            <td><b style="color: #008080;">Scenario:</b> [scenario]</td><td><b style="color: #008080;">Scénario:</b> [description]</td>
-        </td>
+        <td><b style="color: #008080;">Scenario:</b> [scenario]</td>
+        <td><b style="color: #008080;">Scénario:</b> [description]</td>
     </tr>
 </table>
 
@@ -114,7 +113,7 @@ Enfin **le contenu de scenario**. Le scenario est une succession d'étapes (`Ste
 
 <table>
     <tr>
-        <td><b style="color: #008080;">Given</b> [context]</td><td><b style="color: #008080;">Etant donné</b> [un contexte initial (les acquis)]</td>
+        <td><b style="color: #008080;">Given</b> [an initial context]</td><td><b style="color: #008080;">Etant donné</b> [un contexte initial (les acquis)]</td>
     </tr>
     <tr>
         <td><b style="color: #008080;">When</b> [action]</td><td><b style="color: #008080;">Quand</b> [un événement survient]</td>

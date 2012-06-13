@@ -26,7 +26,7 @@ Bien que cela paraisse plus compliqué à mettre en place au départ, cela perme
 <blockquote><h2>Des fonctions passées en paramètre</h2><p>
 (...) Un mécanisme puissant des langages fonctionnels est l'usage des fonctions d'ordre supérieur. Une fonction est dite d'ordre supérieur lorsqu'elle peut prendre des fonctions comme argument (aussi appelées callback) et/ou renvoyer une fonction comme résultat. On dit aussi que les fonctions sont des objets de première classe, ce qui signifie qu'elles sont manipulables aussi simplement que les types de base.</p><small><a href="http://fr.wikipedia.org/wiki/Programmation_fonctionnelle">Programmation fonctionnelle</a> ~ Wikipedia</small></blockquote>
 
-Nous allons voir décrire plusieurs techniques permettant de facilité l'intégration d'une approche fonctionnelle à un code orienté objet. Le but n'est pas de tout écrire dans un paradigme ou un autre, mais simplement de voir comment une approche peux completer et enrichir l'autre.
+Nous allons voir plusieurs techniques permettant de facilité l'intégration d'une approche fonctionnelle à un code orienté objet. Le but n'est pas de tout écrire dans un paradigme ou un autre, mais simplement de voir comment une approche peux compléter et enrichir l'autre.
 Après avoir définit nos techniques de bases, nous les appliquerons plus concrètement à différents cas d'utilisations.
 
 Prenons comme base de travail une application qui gère des questionnaires (Quiz).
@@ -65,7 +65,7 @@ Nous venons de voir notre première technique:
 <span class="label notice">Première technique</span> :
 **Ajouter une fonction supplémentaire comme paramètre lors de l'appel d'une méthode. Cette fonction pourra alors être appellée avec le résultat du calcul lorsque celui sera disponible.**
 
-Imaginons maintenant que la construction d'une nouvelle instance de quiz nécessite plusieurs vérifications: il est impératif qu'un `quiz` soit être unique (sinon il devient trop facile de tricher). Rajoutons pour cela un appel afin de verifier cet invariant:
+Imaginons maintenant que la construction d'une nouvelle instance de quiz nécessite plusieurs vérifications: il est impératif qu'un `quiz` soit unique (sinon il devient trop facile de tricher). Rajoutons pour cela un appel afin de verifier cet invariant:
 
 {% highlight java %}
 public class QuizService {
@@ -79,7 +79,9 @@ public class QuizService {
 {% endhighlight %}
 
 Bon rien de très fantastique, si ce n'est un nouveau soucis: que se passe-t-il si notre quiz n'est pas unique !?
-C'est là que notre deuxième technique intervient! 
+
+C'est là que notre deuxième technique intervient!
+
 Auparavant definissons une nouvelle interface générique permettant de décrire une alternative entre deux types de valeurs `L` et `R`. Il est de coutume d'appeller les différentes alternative "Left" et "Right" (toute ressemblance avec un context politique est purement fortuit). Une instance de cette interface peux donc soit contenir une instance de type `L` soit une instance de type `R`.
 
 {% highlight java %}
@@ -102,7 +104,7 @@ public class Eithers {
 L'implémentation "Left" correspondante peux alors s'écrire: 
 
 {% highlight java %}
-public final class Left<L,R> extends Either<L,R> {
+public final class Left<L,R> implements Either<L,R> {
   private final L value;
   public Left(L value)    { this.value = value; }
   public boolean isLeft() { return true;  }
@@ -115,7 +117,7 @@ public final class Left<L,R> extends Either<L,R> {
 On peux aisément en déduite l'implémentation "Right":
 
 {% highlight java %}
-public final class Right<L,R> extends Either<L,R> {
+public final class Right<L,R> implements Either<L,R> {
   private final R value;
   public Right(R value)   { this.value = value; }
   public boolean isLeft() { return false; }
@@ -188,6 +190,9 @@ quizService.create("<question4aChampion>...", new Effect<Either<Quiz,Failure>>()
 
 Lorsque la fonction de rappel est invoquée, soit l'alternative passée en paramètre contient un `quiz` (ligne 4) dans ce cas on affiche un beau message de retour avec de `quiz` créé. Sinon on affiche une notification d'erreur (ligne 9).
 
+Ah, quelqu'un au fond de la salle, a une remarque: "Comme il s'agit d'une erreur pourquoi ne pas lancer une exception au lieu de faire une alternative, soit on a le résultat soit on lance une exception?"
+Hummmm... eh bien sans trop anticiper sur la suite de l'article, il faut envisager que l'execution du code de la méthode puisse être asynchrone, dans ce cas il faudrait gérer un mécanisme du type `UncaughtExceptionHandler` qui se trouve n'être rien d'autre qu'une fonction de rappel appellée dans le cas d'erreur. En centralisant, les appels valides et invalides dans une unique fonction de rappel, le code est simplifié, ainsi que la vérification que notre fonction de rappel est appellée systématiquement.
+
 Ok et la troisième technique alors? Nous y sommes presque!
 Notre Quiz étant désormais créé, il faut le persister, et pour cela il nous faut une méthode pour le sauvegarder:
 
@@ -215,7 +220,7 @@ public class QuizService {
 }
 {% endhighlight %}
 
-Nous nous retrouvons dans le cas précédent d'une alternative mais qui n'a qu'une seule possibilité, autrement dit un résultat optionnel: on a une erreur ou pas! En s'inspirant de notre interface `Either` nous pouvons définir une nouvelle interface générique qui contient (ou pas!) quelque chose:
+Nous nous retrouvons dans le cas précédent d'une alternative mais qui n'a qu'une seule possibilité, autrement dit un résultat optionnel: on a une erreur ou pas! Si tout se passe bien, on a pas de résultat, sinon on a une erreur. En s'inspirant de notre interface `Either` nous pouvons définir une nouvelle interface générique qui contient (ou pas!) quelque chose:
 
 {% highlight java %}
 public interface Option<E> {
@@ -315,7 +320,7 @@ public class QuizService {
 <span class="label notice">Quatrième technique</span> :
 **La fonction de rappel est définit comme une fonction ne prenant aucun paramètre, elle est invoquée pour signaler que l'action désirée est effectuée**
 
-Pourquoi ne pas avoir parler de cette technique auparavant: et bien tout simplement parce qu'il n'est généralement pas souhaitable de l'utiliser. En effet cette technique créée une ambiguité: pourquoi notre fonction de rappel n'est pas appelée? la méthode a-t-elle oubliée d'appeller la fonction de rappel, une erreur a modifié le fil d'execution et le code n'appelle plus la fonction de rappel. En l'absence de retour, il n'est pas possible de réagir.
+Pourquoi ne pas avoir parler de cette technique auparavant: et bien tout simplement parce qu'il n'est généralement pas souhaitable de l'utiliser. En effet cette technique créée une ambiguité: **pourquoi notre fonction de rappel n'est pas appelée?** la méthode a-t-elle oublié d'appeller la fonction de rappel, une erreur a modifié le fil d'execution et le code n'appelle plus la fonction de rappel. **En l'absence de retour, il n'est pas possible de réagir**.
 
 * `Either`
   * [Either ~ Haskell](http://www.haskell.org/ghc/docs/latest/html/libraries/base/Data-Either.html)
@@ -422,7 +427,7 @@ Quelques explications: un proxy est créé et implémente l'interface de notre s
 
 L'appel de la méthode est transformée en un fragment executable (`new Callable<Object>() {...}`) qui est soumis à l'`Executor` correspondant. La méthode est alors invoquée de manière asynchrone (par rapport à l'appelant) sur l'instance de service qui a été transformé: `impl` (passée en paramètre ligne 18): l'appel effectif est déclaré ligne 52. Et là, soyons malin: 
 
-* soit la méthode invoquée ne renvoie rien `void`, dans ce cas le code appelant n'attend aucune valeur en retour, et il n'est pas nécessaire de rendre cet appel bloquant. On sort donc de la méthode (lign 57) même si notre `Callable` n'a pas encore été executé ou s'il est en cours d'execution.
+* soit la méthode invoquée ne renvoie rien `void`, dans ce cas le code appelant n'attend aucune valeur en retour, et il n'est pas nécessaire de rendre cet appel bloquant. On sort donc de la méthode (ligne 57) même si notre `Callable` n'a pas encore été executé ou s'il est en cours d'execution.
 * soit la méthode invoquée renvoie quelque chose, dans ce cas le code appelant s'attend à un retour... il faut lui renvoyé quelque chose: le code appelant va donc être suspendu (`future.get()`) jusqu'à ce que le resultat soit disponible (ligne 59).
 
 Bien entendu, nous nous arrangerons pour être toujours dans le premier cas si nous voulons que les appels soient toujours asynchrone.
@@ -430,7 +435,7 @@ Bien entendu, nous nous arrangerons pour être toujours dans le premier cas si n
 
 Exemple de code appelant:
 
-{% highlight java linenos %}
+{% highlight java %}
 quizService.create("<question4aChampion>...", new Effect<Quiz>() {
   public void e(Quiz quiz) {
     displayFlashFeedback(quiz);
@@ -441,7 +446,11 @@ quizService.create("<question4aChampion>...", new Effect<Quiz>() {
 displayWaitingFeedback();
 {% endhighlight %}
 
-Nous voyons que sans modifier le code appelant, notre méthode par continuation à permis de brancher une implementation asynchrone de notre service.
+**Nous voyons que sans modifier le code appelant, notre méthode par continuation à permis de brancher une implementation asynchrone de notre service.**
+
+(On peux alors regarder le gars du fond de la salle, et lui faire un petit hochement de tête complice!)
+
+·················8<-------------------------------
 
 # "Pas à pas on va loin" &mdash; <small>Proverbe italien</small>
 
@@ -460,7 +469,7 @@ get '/hi' do
 end
 {% endhighlight %}
 
-* [Webbit][webbit] est un serveur HTTP de type évènementiel et non-bloquant basé sur [Netty][netty]. Contrairement à [Spark][spark] qui se base sur les API java Servlet et assigne un Thread par requête HTTP, [Webbit][webbit] est basé sur un thread unique (comme [NodeJS][nodejs]) et une une boucle d'évènement. La citation ci-dessous reste rigoureusement exacte en remplaçant simplement `NodeJS` par `Webbit`
+* [Webbit][webbit] est un serveur HTTP de type évènementiel et non-bloquant basé sur [Netty][netty]. Contrairement à [Spark][spark] qui se base sur les API java Servlet et assigne un Thread par requête HTTP, [Webbit][webbit] est basé sur un thread unique (comme [NodeJS][nodejs]) et une boucle d'évènement. La citation ci-dessous reste rigoureusement exacte en remplaçant simplement `NodeJS` par `Webbit`
 
 <blockquote><p>Prenons l'exemple du serveur Apache. Chaque requête HTTP entrante se voit allouer un thread. Celui-ci est utilisé pendant toute la durée du traitement de la requête (...) Node et plus globalement les serveurs dits non bloquants (comme <a href="http://www.jboss.org/netty">Netty</a> ou <a href="https://github.com/rschildmeijer/deft">Deft</a> pour ceux qui tournent sur JVM) adoptent une autre approche. <b>Node n'utilise qu'un seul thread pour gérer les requêtes entrantes</b>. De plus, Node ne propose pas, dans ses API, de fonctions bloquantes. Ainsi, tout notre code est asynchrone. (...) <b>Concrètement, toutes les fonctions fournies par Node prennent en paramètre une fonction de rappel (callback). Une fois que la fonction aura terminé son traitement, elle sera appelée avec le résultat en paramètre et une éventuelle erreur</b>. Ainsi, pendant toute la durée du traitement, le thread sera relâché et pourra être donné à une autre requête pour effectuer un autre traitement. Nous sommes donc face à un système événementiel.
 </p><small><a href="http://www.web-tambouille.fr/2011/02/15/node-js-partie-1-tout-ce-que-vous-devez-savoir-sur-node-js.html">Débuter avec Node.js</a> ~ Romain Maton </small></blockquote>
@@ -472,11 +481,11 @@ end
 [spark]:   http://www.sparkjava.com/ "Spark"
 [nodejs]:  http://nodejs.org/ "NodeJs"
 
-* Enfin `Swoop` est une petite librarie qui ajoute une partie de la simplicité de [Sinatra][sinatra] à [Webbit][webbit] en modifiant légèrement les API. [Swoop][swoop] permet de définir les routes de manière analogue à Sinatra et s'assure que chaque invocation du chainon<sup><a href="#invokeNext">3</a></sup> suivant s'effectue dans le Thread Web:
+* Enfin `Swoop` est une petite librarie (expérimentale) qui ajoute une partie de la simplicité de [Sinatra][sinatra] à [Webbit][webbit] en modifiant légèrement les API. [Swoop][swoop] permet de définir les routes de manière analogue à Sinatra et s'assure que chaque invocation du chainon<sup><a href="#invokeNext">3</a></sup> suivant s'effectue dans le Thread Web (bien que la nécessité systématique de le faire reste discutable, mais ce n'est pas le sujet de notre article...):
 
 <blockquote><p>It's mandatory that anything that interacts with the request or response should execute on the main executor (<code>HttpControl.execute()</code>).</p><small><a href="https://groups.google.com/d/msg/webbit/Jy5wG7K80RQ/ozh9gejWlWYJ">Webbit Google Group</a> ~ Joe Walnes</small></blockquote>
 
-<a name="invokeNext">[3]</a> <small><a href="https://github.com/Arnauld/swoop">Swoop</a> est principalement basé sur l'utilisation du pattern intercepteur (Core J2EE Patterns [Intercepting Filter](http://www.corej2eepatterns.com/Patterns2ndEd/InterceptingFilter.htm)). Toutes les routes satisfaisant l'URI invoquée sont chainées jusqu'à ce que le dernier maillon de la chaine envoie la réponse au client. Chaque maillon s'execute dans le thread Web mais peut décider d'executer ses propres calculs de manières asynchrone. L'utilisation judicieuse des fonctions de rappels avec les techniques évoquées précédement permet alors d'invoquer le chainon suivant de la chaine d'intercepteurs.</small>
+<a name="invokeNext">[3]</a> <small><a href="https://github.com/Arnauld/swoop">Swoop</a> est principalement basé sur l'utilisation du pattern intercepteur (Core J2EE Patterns [Intercepting Filter](http://www.corej2eepatterns.com/Patterns2ndEd/InterceptingFilter.htm)). Toutes les routes satisfaisant l'URI invoquée sont chainées jusqu'à ce que le dernier maillon de la chaine envoie la réponse au client. Chaque maillon s'execute dans le thread Web mais peut décider d'executer ses propres calculs de manières asynchrones. L'utilisation judicieuse des fonctions de rappels avec les techniques évoquées précédement permet alors d'invoquer le chainon suivant de la chaine d'intercepteurs.</small>
 
 Trève de blabla, illustrons cela par un peu de code pour nous autre les barbus. Commençons par définir le squelette de notre application: une méthode `main`, un service rendu asynchrone et une première route permettant de traiter un appel de type REST sur la méthode HTTP `get` et le chemin `api/quizzes`
 
