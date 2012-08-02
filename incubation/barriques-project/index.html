@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>{{ page.title }}</title>
+   <meta name="author" content="Arnauld Loyer" />
+   <link href="http://feeds.feedburner.com/arnauld-github" rel="alternate" title="Arnauld Github" type="application/atom+xml" />
+
+   <script src="jquery-1.7.1.min.js"></script>
+  
+   <!-- SVG -->
+   <style type="text/css">@import "jquery.svg.css";</style> 
+   <script type="text/javascript" src="jquery.svg.js"></script>
+
+   <script type="text/javascript" src="interactive-svg.js"></script>
+   <script type="text/javascript" src="overall.js"></script>
+
+   <script type="text/javascript">
+      $(function() {
+      	  $('#svgload').svg({onLoad: function(svg) {
+      	  	  console.log(">> loading");
+	          svg.load("overall-clickable.svg", { 
+	          	addTo: true, 
+	          	changeSize: false, 
+	          	onLoad: function(svg) {
+	              resetSize(svg);
+	              initializeInteractivity(svg, overall_data);
+	            }
+	          });
+	      }});
+	      $("#toggle-all").attr('show', 'false').click(function() {
+	      	var $elem = $(this);
+	      	var svg = $("#svgload").svg('get');
+	      	if($elem.attr('show')==='false') {
+	      		showAll(svg, overall_data);
+	      		$elem.attr('show','true').html("Hide all");
+	      	}
+	      	else {
+	      		hideAll(svg, overall_data);
+	      		$elem.attr('show','false').html("Show all");
+	      	}
+	      });
+      });
+   </script>
+
+</head>
+<body>
+
+<section>
+	<a href="#" id="toggle-all">Show all</a>
+    <div id="svgload" style="width: 100%; height: 700px;"></div>
+</section>
+	
+<section>
+	<ul>
+		<li><a href="http://cmoulliard.blogspot.fr/2012/04/real-time-html5-application-with.html">Real Time HTML5 application with Websocket and ActiveMQ/camel</a>
+	</ul>
+</section>
+
+</body>
+</html>

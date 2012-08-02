@@ -193,6 +193,10 @@ Lorsque la fonction de rappel est invoquée, soit l'alternative passée en param
 Ah, quelqu'un au fond de la salle, a une remarque: "Comme il s'agit d'une erreur pourquoi ne pas lancer une exception au lieu de faire une alternative, soit on a le résultat soit on lance une exception?"
 Hummmm... eh bien sans trop anticiper sur la suite de l'article, il faut envisager que l'execution du code de la méthode puisse être asynchrone, dans ce cas il faudrait gérer un mécanisme du type `UncaughtExceptionHandler` qui se trouve n'être rien d'autre qu'une fonction de rappel appellée dans le cas d'erreur. En centralisant, les appels valides et invalides dans une unique fonction de rappel, le code est simplifié, ainsi que la vérification que notre fonction de rappel est appellée systématiquement.
 
+
+[REWORK] Scala `Try` class
+[Error handling with Scala's Try](http://blog.richdougherty.com/2012/06/error-handling-with-scalas-try.html)
+
 Ok et la troisième technique alors? Nous y sommes presque!
 Notre Quiz étant désormais créé, il faut le persister, et pour cela il nous faut une méthode pour le sauvegarder:
 

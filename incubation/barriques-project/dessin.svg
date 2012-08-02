@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg3846"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="Nouveau document 8">
+  <defs
+     id="defs3848" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.7213731"
+     inkscape:cx="337.82298"
+     inkscape:cy="630.14267"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1233"
+     inkscape:window-height="756"
+     inkscape:window-x="47"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3851">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g4386"
+       inkscape:export-filename="/Users/arnauld/Projects/reveal.js/2012-07-03-beforeWork-bdd/200px-Dialog-accept.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <path
+         inkscape:export-ydpi="96.82724"
+         inkscape:export-xdpi="96.82724"
+         inkscape:export-filename="/Users/arnauld/Projects/reveal.js/2012-07-03-beforeWork-bdd/200px-Dialog-accept.svg.png"
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path3854"
+         d="m 141.56337,431.80177 c 20.53903,13.14498 31.71862,13.26673 54.72234,62.56041 10.26951,-28.75465 63.28337,-106.48952 102.7475,-131.29442 -46.00743,19.71746 -94.26567,83.37591 -103.53346,97.88417 -5.58881,-10.59335 -20.05799,-19.56368 -53.93638,-29.15016 z"
+         style="fill:#00ca00;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1" />
+      <rect
+         inkscape:export-ydpi="96.82724"
+         inkscape:export-xdpi="96.82724"
+         inkscape:export-filename="/Users/arnauld/Projects/reveal.js/2012-07-03-beforeWork-bdd/200px-Dialog-accept.svg.png"
+         y="348.85403"
+         x="122.57656"
+         height="185.89812"
+         width="185.89812"
+         id="rect4378"
+         style="fill:none;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       id="g4394"
+       transform="translate(-2.904658,37.760554)"
+       inkscape:export-filename="/Users/arnauld/Projects/reveal.js/2012-07-03-beforeWork-bdd/200px-Dialog-error-round.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <rect
+         style="fill:none;stroke:none"
+         id="rect4384"
+         width="185.89812"
+         height="185.89812"
+         x="364.24411"
+         y="315.15314"
+         inkscape:export-filename="/Users/arnauld/Projects/reveal.js/2012-07-03-beforeWork-bdd/200px-Dialog-error-round.svg.png"
+         inkscape:export-xdpi="96.82724"
+         inkscape:export-ydpi="96.82724" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4390"
+         y="467.25253"
+         x="387.52719"
+         style="font-size:20.86432076px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.30402005;stroke-opacity:1;font-family:Handwriting -Dakota;-inkscape-font-specification:Handwriting -Dakota"
+         xml:space="preserve"><tspan
+           style="font-size:187.77888489px;fill:#ff0000;stroke:#000000;stroke-width:1.30402005;stroke-opacity:1"
+           y="467.25253"
+           x="387.52719"
+           id="tspan4392"
+           sodipodi:role="line">X</tspan></text>
+    </g>
+  </g>
+</svg>
