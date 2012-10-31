@@ -1,0 +1,243 @@
+---
+layout: post
+title: "AMQP 101 ~ Part 1"
+category: Blog
+tags:
+  - amqp
+  - messaging
+  - nodejs
+published: false
+comments: true
+---
+
+
+# AMQP
+
+A l'heure des architectures élastiques, des clusters de serveurs, de la répartitions de charges, de l'intégration de système tiers et de l'asynchronisme, il existe un composant essentiel: **le bus de message**. Véritable coordinateur de l'infrastructure et des différents systèmes, il permet aux différents composants de communiquer entre eux de manière totallement transparente et sans contraintes des technologies sous-jacentes de chacuns d'eux. Il facilite l'interopérabilité et le découplage de systèmes hétérogènes.
+
+On retrouve ainsi généralement (dans les grosses structures!) des files WebsphereMQ/MQseries (IBM) ou des broker Tibco, ... Des solutions relativement lourdes à mettre en place et très... propriétaires! On pourrait alors rétorquer la présence du standard JMS (Java Message Service), sauf que celui-ci ne définit pas un protocole d'échange mais un ensemble d'API ce qui ne facilite pas vraiment l'interopérabilité avec un autre langage.
+
+Alors qu'un mouvement de fond pousse à la simplicité, des solutions alternatives se mettent en place comme le pubsub de [Redis](http://redis.io/topics/pubsub) ou encore [ZeroMq](http://www.zeromq.org/).
+
+Bien que ces technologies soient utilisées par les plus grands du web, certains projets restent encore frileux à utiliser des protocoles spécifiques et non normé. Il existe cependant une alternative "industrielle", qui paradoxalement est très simple d'utilisation et à mettre en place: AMQP, hummmm encore un accronyme douteux? Jamais entendu parler? Et bien regarder de plus près le portefeuille d'application de VMWare (SpringSource): [RabbitMQ](http://www.rabbitmq.com/). Il s'agit d'une implémentation du broker de ce protocole.
+
+[Advanced Message Queueing Protocol (AMQP)](http://www.amqp.org/) a été créé (par JP Morgan en 2003) comme un standard ouvert (open standard) définissant un protocole "wire-level". Autrement dit il s'agit d'un protocole d'échange de données, il décrit un format de données permettant d'envoyer des données et des commandes à n'importe quel Broker implémentant ce protocole, quel que soit le langage utilisé par le client ou le broker.
+
+Avant de voir quelques exemples d'utilisation, présentons les principaux concepts/composants d'AMQP.
+
+# AMQP en 10min
+
+S'agissant d'un protocole d'échange de message on retrouve naturellement la notion de ... file (*Queue*)!
+Il s'agit grossièrement d'une liste FIFO (First In First Out) dans laquelle sont ajoutées les messages qui seront ensuite redistribués aux différents consommateurs connectés à cette file.
+
+Une différence fondamentale d'AMQP avec les autres protocoles est qu'**un message n'est jamais envoyé directement à une file!** Les producteurs publient (*publish*) les messages dans des zones d'échanges (*Exchange*). L'*Exchange* joue le rôle d'un aiguilleur, mais contrairement à la SNCF, il est possible d'aiguiller le même message sur plusieurs *Queue*. Les consommateurs s'inscrivent (*subscribe*) aux files pour recevoir les messages.
+
+Mais alors comment passe-t-on de l'*Exchange* à la *Queue*? Et bien en associant la *Queue* à l'*Exchange* par l'intermédiare d'une liaison (*Binding*). Humpffff ?!? Autrement dit chaque file s'enregistre (*declare_binding*) sur une zone d'échange en définissant un motif de routage (*pattern_key* généralement appellé *routing_key*) qui permettra à la zone d'échange de savoir si les messages qu'elle reçoit interessent ou non la file. Il s'agit d'une chaine de caractère qui sera utilisé par l'*Exchange* pour filtrer les messages qu'il reçoit.
+
+Un message est constitué d'une envelope, d'attributs et d'un contenu (*payload*).
+Les attributs contiendront par exemple le type de contenu (*ContentType*, ex. "application/json", "application/xml", "plain/text" ...) et la clé de routage que nous verrons un peu plus loin.
+
+Note: parmis les attributs certains sont optionnels et sont souvent appellés "en-tête" (*headers*).
+
+<img src="/incubation/amqp-101-part1/amqp-overview.png" alt="Aperçu général"/>
+
+En pseudo-code cela pourrait s'illustrer ainsi:
+
+    interface Sink {
+    	def dispatch(message:Message)
+    }
+    
+    class Queue extends Sink { ... }
+    
+    class Exchange extends Sink {
+        
+    	val connectedSinks = new ListBuffer[(RoutingKey,Sink)]
+        
+	    def declareBinding(patternKey:RoutingKey, sink:Sink) {
+			connectedSinks.add((patternKey, sink))
+	    }
+        
+    	def dispatch(Message message) {
+    		connectedSinks.foreach( (patternKey,sink) => 
+    			if(accepts(patternKey, message)) 
+    				sink.dispatch(message)
+    		)
+    	}
+    
+    	def accepts(patternKey:RoutingKey, message:Message):Boolean = ...
+    }
+
+Quels sont les critères qui font qu'un *Exchange* considére qu'une rêgle de routage est satisfaite par un message?
+
+Et bien cela dépend du type de l'*Exchange*. 
+Il faut tout d'abord que vous sachiez qu'il est possible d'associé à chaque message une clé de routage (*routing_key*). Il s'agit d'une chaine de caractère que l'on pourrait assimiler au `TO` d'un mail. 
+Il existe trois types d'*Exchange* principaux: *direct*, *fanout* et *topic*. Selon le broker utilisé (RabbitMQ par exemple), il est possible de déveloper sa propre implémentation (nous verrons cela dans un prochain article).
+
+## Tenez, Prenez tout! - Le type **Fanout**
+
+Il s'agit certainement du type le plus simple à comprendre:
+
+Un message envoyé à un *Exchange* de type *fanout* sera redistribué à **toutes** les files qui se seront enregistrées. Le motif de routage est tout simplement ignoré.
+
+    def accepts(patternKey:RoutingKey, message:Message):Boolean = true
+
+
+<img src="/incubation/amqp-101-part1/exchange-fanout.png" alt="Fanout Exchange"/>
+
+
+## Si t'as la même clé je te le donne - Le type **direct**
+
+Un message envoyé à un *Exchange* de type *direct* sera redistribué aux files dont le motif de routage correspond exactement à la clé de routage.
+
+    def accepts(patternKey:RoutingKey, message:Message):Boolean = 
+    	patternKey.equalTo(message.routingKey)
+
+Note: il est possible de déclarer plusieurs rêgles de routage pour une *Queue* sur le même *Exchange*.
+
+<img src="/incubation/amqp-101-part1/exchange-direct.png" alt="Direct Exchange"/>
+
+
+## Tu veux ou tu veux pas ? - type **topic**
+
+Il s'agit du type d'*Exchange* le plus évolué.
+
+Le motif de routage utilisé par la file pour s'enregistrer sur la zone d'échange est transformé en une sorte [Glob]() (un expression régulière simplifiée). Un message sera donc transféré à la file si sa clé de routage satisfait le motif de routage.
+
+    def accepts(patternKey:RoutingKey, message:Message):Boolean = 
+    	patternKey.isSatisfiedBy(message.routingKey)
+
+Les clés et motifs de routages doivent alors satisfaire des rêgles plus strictes:
+
+Une clé de routage doit être constituée d'un ou plusieurs mots délimités par un point (`.`). Chaque mot est constitué des lettes de `A` à `Z` et de `a` à `Z` ainsi que des chiffres de `0` à `9`: 'hal.shutdown', `kitt.feature.turboBoost`, ...
+
+Le motif de routage doit obéir aux mêmes rêgles à ceci près que `*` correspondra à n'importe quel mot et `#` correspondra à n'importe quelle séquence de mots.
+
+En pseudo-bnf:
+
+	routingKey: <word> ('.' <word>)*
+	word: ('a'..'z' | 'A'..'Z' | '0'..'9')*
+    
+	patternKey: <part> ('.' <part>)*
+	part: <word> | '*' | '#'
+
+Exemple de correspondance:
+
+    Routing key\Pattern | # | * |users.*.login | users.# | users.* | #.alert
+    --------------------┼---┼---┼--------------┼---------┼---------┼---------
+    users.bob.login     | X |   |      X       |    X    |         |         
+    users.alert.login   | X |   |      X       |    X    |         |         
+    users.dos.alert     | X |   |              |    X    |         |    X    
+    payment.alert       | X |   |              |         |         |    X    
+    users.alert         | X |   |              |    X    |    X    |    X    
+    users.updated       | X |   |              |    X    |    X    |         
+    shutdown            | X | X |              |         |         |         
+
+<img src="/incubation/amqp-101-part1/exchange-topic-before.png" alt="Topic Exchange"/>
+
+<img src="/incubation/amqp-101-part1/exchange-topic-distribution.png" alt="Topic Exchange"/>
+
+Remarque: il est possible de voir les types *fanout*  et *direct* comme des spécialisations du type *topic*:
+
+* Si toutes les *Queue* sont liées avec le motif `#`, l'*Exchange* aura le même comportement qu'un *Exchange* de type *fanout*. 
+* Si les motifs n'utilisent pas les caractères spéciaux `*` et `#`, l'*Exchange* aura le même comportemet qu'un *Exchange* de type *direct*.
+
+Bon, à moins de lire lentement, vous ne devriez pas être à beaucoup plus de 10min de lecture pour connaitre les principaux concepts de AMQP. Voyons désormais des cas d'utilisations.
+
+# Exemples d'utilisation
+
+## Centralisation des logs et Monitoring
+
+<img src="/incubation/amqp-101-part1/logging-monitoring.png" alt="Logging et Monitoring"/>
+
+
+## Un Loadbalancer
+
+Considérons que nous disposons d'un ensemble de machines identiques capables d'éxecuter un certain nombre de commande. Le temps de traitement de chaque commande est évidement suffisament long pour qu'il y ait un interêt à vouloir le répartir sur plusieurs machines.
+
+<img src="/incubation/amqp-101-part1/loadbalancing-before.png" alt="Load balancing: avant distribution"/>
+
+<img src="/incubation/amqp-101-part1/loadbalancing-inprogress.png" alt="Load balancing: traitement en cours"/>
+
+Le type de l'*Exchange* importe peu tant que l'*Exchange* redirige les messages à la *Queue*. 
+Une notion importante est qu'**un message est *consommé* d'une file**. Un message consommé n'est donc plus disponible et ne sera pas distribué aux autres consommateurs.
+
+
+## RPC (Remote Procedure Call)
+
+Maintenant que nous avons distribué nos tâches sur différentes machines comment obtenir le résulat?
+Eh bien les gars d'AMQP ont tous prévu, parmis les entêtes disponibles il existe un champ *reply-to*. Ce champs contient le nom de la *Queue* sur laquelle le résultat devra être envoyé. Cette *Queue* peut être une file existante ou une file créée spécialement pour cette occasion. Il est en effet possible de créer une *Queue* dont le nom sera généré aléatoirement par le Broker. Une fois cette *Queue* créée, son nom est récupérée et renseignée dans le champs `reply-to` du message qui sera soumis. Le producteur du message n'aura plus qu'à attendre (il pourra néanmoins continuer son petit train train) jusqu'à ce qu'il reçoive le résultat de son appel.
+
+<img src="/incubation/amqp-101-part1/reply-to.png" alt="Remote Procedure Call: entête reply-to"/>
+
+
+## Persistance et durabilité, il est passé où mon message?
+
+Un message qui survit à un crash du broker AMQP est appellé message persistant. Pour qu'un message soit persistant il faut:
+
+* qu'il soit marqué comme *persistant*
+* qu'il soit envoyé à un *Exchange* marqué comme *durable* (c'est à dire qui sera recréé au redemarrage du broker)
+* et qu'il arrive dans une *Queue* marquée comme *durable*
+
+Il est important de savoir que par défaut les *Exchanges* et les *Queues* ne sont pas marquées comme *durable*.
+
+Mettons de côté les éventuels crashs, et voyons maintenant un cas fréquent de déploiement:
+
+Il n'y a pas de *Queue* liée à l'*Exchange*. Les messages envoyés à l'*Exchange* sont ... perdus!
+En effet, l'*Exchange* n'a qu'un rôle d'aiguilleur, aucun message n'est persisté, c'est à la charge des *Queues* de conserver les messages jusqu'à ce qu'un éventuel consommateur commence à vider la file.
+
+Il est donc important:
+
+* soit d'être sûr que dans la séquence de mise en route de l'application, les *Queues* soient bien créées et associées avant que les messages ne commencent à être publiés.
+* soit de configurer les *Exchanges* et les *Queues* qui sont au coeur de l'application comme *durable*.
+
+On retrouve aussi souvent dans les (examples de) codes des producteurs de messages: la création aussi de la *Queue*, même si celle-ci n'est pas utilisée par le producteur. Le protocol prévoit en effet que si une *Queue* existe déjà l'appel à la création n'aura aucun effet si la *Queue* créée à la même configuration. Sinon, une erreur est retournée au dernier qui essaie de créer la *Queue*.
+
+Afin de "contrôler" encore plus ces créations, il est même possible de défnir sur le broker la configuration de chaque *Exchange* et chaque *Queue* afin de s'assurer qu'elle soit créées dans le respect de ces paramètres.
+
+
+## SEDA
+
+SEDA (Staged Event-Driven Architecture) est une proposition d'architecture qui a emergé de la thèse de Matt Welsh. Grossiérement, il s'agit de décomposer un traitement en une sucession d'étapes. Ces étapes peuvent alors être distribuées sur plusieurs unités de traitements permettant une plus grande montée en charge. Chaque étape communique avec la suivante par l'intermédiaire de file en y soumettant la prochaine requête à effectuer. On retrouve dans cette approche les concepts de l'architecture par évènement (EDA)
+
+<img src="/incubation/amqp-101-part1/seda.png" alt="SEDA"/>
+
+## Photo de groupe
+
+<img src="/incubation/amqp-101-part1/all-in-one.png" alt="Tout ensemble"/>
+
+Quelques explications?
+
+1. 
+
+# Webographie
+
+* [RabbitMQ ~ Amqp Concepts](http://www.rabbitmq.com/tutorials/amqp-concepts.html)
+* [Rabbits and warrens.](http://blogs.digitar.com/jjww/) (le lien direct ne marchant pas, il faut chercher l'article sur la page)
+
+* [Understanding AMQP, The Protocol used by RabbitMQ](http://blog.springsource.org/2010/06/14/understanding-amqp-the-protocol-used-by-rabbitmq/)
+* [Advanced Messaging & Routing with AMQP](http://www.igvita.com/2009/10/08/advanced-messaging-routing-with-amqp/)
+* [Using RabbitMQ Beyond Queueing](http://www.somic.org/2008/11/11/using-rabbitmq-beyond-queueing/)
+* [An Army of Zombie Minions for RabbitMQ](http://videlalvaro.github.com/2011/04/an-army-of-minions-for-rabbitmq.html)
+
+Perf.
+
+* [Routing Topologies for Performance and Scalability with RabbitMQ](http://blog.springsource.org/2011/04/01/routing-topologies-for-performance-and-scalability-with-rabbitmq/)
+* [Very fast and scalable topic routing – part 1](http://www.rabbitmq.com/blog/2010/09/14/very-fast-and-scalable-topic-routing-part-1/)
+* [Very fast and scalable topic routing – part 2](http://www.rabbitmq.com/blog/2011/03/28/very-fast-and-scalable-topic-routing-part-2/)
+
+SEDA
+
+* [SEDA](http://www.eecs.harvard.edu/~mdw/proj/seda)
+* [InfoQ ~ Using SEDA to Ensure Service Availability (2006)](http://www.infoq.com/articles/SEDA-Mule)
+* [Matt Welsh ~ A Retrospective on SEDA](http://matt-welsh.blogspot.fr/2010/07/retrospective-on-seda.html)
+
+NodeJS
+
+* [Node amqp](https://github.com/postwait/node-amqp)
+
+Custom Exchange
+
+* [RabbitMQ ~ Plugin Development Guide](http://www.rabbitmq.com/plugin-development.html)
+* [Plugin exchange types for RabbitMQ](http://www.lshift.net/blog/2010/01/22/plugin-exchange-types-for-rabbitmq)
+* [Erlang ~ Mnesia](http://www.erlang.org/doc/apps/mnesia/Mnesia_chap2.html)
+* [Erlang ~ qlc](http://www.erlang.org/doc/man/qlc.html)
