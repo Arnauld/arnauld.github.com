@@ -19,7 +19,7 @@ On retrouve ainsi généralement (dans les grosses structures!) des files Websph
 
 Alors qu'un mouvement de fond pousse à la simplicité, des solutions alternatives se mettent en place comme le pubsub de [Redis](http://redis.io/topics/pubsub) ou encore [ZeroMq](http://www.zeromq.org/).
 
-Bien que ces technologies soient utilisées par les plus grands du web, certains projets restent encore frileux à utiliser des protocoles spécifiques et non normé. Il existe cependant une alternative "industrielle", qui paradoxalement est très simple d'utilisation et à mettre en place: AMQP, hummmm encore un accronyme douteux? Jamais entendu parler? Et bien regarder de plus près le portefeuille d'application de VMWare (SpringSource): [RabbitMQ](http://www.rabbitmq.com/). Il s'agit d'une implémentation du broker de ce protocole.
+Bien que ces technologies soient utilisées par les plus grands du web, certains projets restent encore frileux à utiliser des protocoles spécifiques/propriétaires et non normés. Il existe cependant une alternative "industrielle", qui paradoxalement est très simple d'utilisation et à mettre en place: AMQP, hummmm encore un accronyme douteux? Jamais entendu parler? Et bien regardez de plus près le portefeuille d'application de VMWare (SpringSource): [RabbitMQ](http://www.rabbitmq.com/). Il s'agit d'une implémentation du broker de ce protocole.
 
 [Advanced Message Queueing Protocol (AMQP)](http://www.amqp.org/) a été créé (par JP Morgan en 2003) comme un standard ouvert (open standard) définissant un protocole "wire-level". Autrement dit il s'agit d'un protocole d'échange de données, il décrit un format de données permettant d'envoyer des données et des commandes à n'importe quel Broker implémentant ce protocole, quel que soit le langage utilisé par le client ou le broker.
 
@@ -27,12 +27,12 @@ Avant de voir quelques exemples d'utilisation, présentons les principaux concep
 
 # AMQP en 10min
 
-S'agissant d'un protocole d'échange de message on retrouve naturellement la notion de ... file (*Queue*)!
+S'agissant d'un protocole d'échange de message on retrouve naturellement la notion de ... file ou *Queue*!
 Il s'agit grossièrement d'une liste FIFO (First In First Out) dans laquelle sont ajoutées les messages qui seront ensuite redistribués aux différents consommateurs connectés à cette file.
 
-Une différence fondamentale d'AMQP avec les autres protocoles est qu'**un message n'est jamais envoyé directement à une file!** Les producteurs publient (*publish*) les messages dans des zones d'échanges (*Exchange*). L'*Exchange* joue le rôle d'un aiguilleur, mais contrairement à la SNCF, il est possible d'aiguiller le même message sur plusieurs *Queue*. Les consommateurs s'inscrivent (*subscribe*) aux files pour recevoir les messages.
+Une différence fondamentale d'AMQP avec les autres protocoles est qu'**un message n'est jamais envoyé directement à une file!** Les producteurs publient (*publish*) les messages dans des zones d'échanges ou *Exchange*. L'*Exchange* joue le rôle d'un aiguilleur, mais contrairement à la SNCF, il est possible d'aiguiller le même message sur plusieurs *Queue*. Les consommateurs s'inscrivent (*subscribe*) aux files pour recevoir les messages.
 
-Mais alors comment passe-t-on de l'*Exchange* à la *Queue*? Et bien en associant la *Queue* à l'*Exchange* par l'intermédiare d'une liaison (*Binding*). Humpffff ?!? Autrement dit chaque file s'enregistre (*declare_binding*) sur une zone d'échange en définissant un motif de routage (*pattern_key* généralement appellé *routing_key*) qui permettra à la zone d'échange de savoir si les messages qu'elle reçoit interessent ou non la file. Il s'agit d'une chaine de caractère qui sera utilisé par l'*Exchange* pour filtrer les messages qu'il reçoit.
+Mais alors comment passe-t-on de l'*Exchange* à la *Queue*? Et bien en définissant une liaison ou *Binding* entre la *Queue* et l'*Exchange*. Humpffff ?!? Autrement dit chaque file s'enregistre (*declare_binding*) sur une zone d'échange en définissant un motif de routage (*pattern_key* généralement appellé *routing_key*) qui permettra à la zone d'échange de savoir si les messages qu'elle reçoit interessent ou non la file. Il s'agit d'une chaine de caractère qui sera utilisé par l'*Exchange* pour filtrer les messages qu'il reçoit.
 
 Un message est constitué d'une envelope, d'attributs et d'un contenu (*payload*).
 Les attributs contiendront par exemple le type de contenu (*ContentType*, ex. "application/json", "application/xml", "plain/text" ...) et la clé de routage que nous verrons un peu plus loin.
@@ -43,29 +43,35 @@ Note: parmis les attributs certains sont optionnels et sont souvent appellés "e
 
 En pseudo-code cela pourrait s'illustrer ainsi:
 
-    interface Sink {
-    	def dispatch(message:Message)
+{% highlight scala linenos %}
+/**
+ * A source produces something. 
+ * A sink consumes something.
+ */
+interface Sink {
+    def consume(message:Message)
+}
+
+class Queue extends Sink { ... }
+
+class Exchange extends Sink {
+    
+    val connectedSinks = new ListBuffer[(RoutingKey,Sink)]
+    
+    def declareBinding(patternKey:RoutingKey, sink:Sink) {
+        connectedSinks.add((patternKey, sink))
     }
     
-    class Queue extends Sink { ... }
-    
-    class Exchange extends Sink {
-        
-    	val connectedSinks = new ListBuffer[(RoutingKey,Sink)]
-        
-	    def declareBinding(patternKey:RoutingKey, sink:Sink) {
-			connectedSinks.add((patternKey, sink))
-	    }
-        
-    	def dispatch(Message message) {
-    		connectedSinks.foreach( (patternKey,sink) => 
-    			if(accepts(patternKey, message)) 
-    				sink.dispatch(message)
-    		)
-    	}
-    
-    	def accepts(patternKey:RoutingKey, message:Message):Boolean = ...
+    def consume(Message message) {
+        connectedSinks.foreach( (patternKey,sink) => 
+            if(accepts(patternKey, message)) 
+                sink.consume(message)
+        )
     }
+
+    def accepts(patternKey:RoutingKey, message:Message):Boolean = ...
+}
+{% endhighlight %}
 
 Quels sont les critères qui font qu'un *Exchange* considére qu'une rêgle de routage est satisfaite par un message?
 
@@ -90,7 +96,7 @@ Un message envoyé à un *Exchange* de type *fanout* sera redistribué à **tout
 Un message envoyé à un *Exchange* de type *direct* sera redistribué aux files dont le motif de routage correspond exactement à la clé de routage.
 
     def accepts(patternKey:RoutingKey, message:Message):Boolean = 
-    	patternKey.equalTo(message.routingKey)
+        patternKey.equalTo(message.routingKey)
 
 Note: il est possible de déclarer plusieurs rêgles de routage pour une *Queue* sur le même *Exchange*.
 
@@ -104,7 +110,7 @@ Il s'agit du type d'*Exchange* le plus évolué.
 Le motif de routage utilisé par la file pour s'enregistrer sur la zone d'échange est transformé en une sorte [Glob]() (un expression régulière simplifiée). Un message sera donc transféré à la file si sa clé de routage satisfait le motif de routage.
 
     def accepts(patternKey:RoutingKey, message:Message):Boolean = 
-    	patternKey.isSatisfiedBy(message.routingKey)
+        patternKey.isSatisfiedBy(message.routingKey)
 
 Les clés et motifs de routages doivent alors satisfaire des rêgles plus strictes:
 
@@ -114,11 +120,11 @@ Le motif de routage doit obéir aux mêmes rêgles à ceci près que `*` corresp
 
 En pseudo-bnf:
 
-	routingKey: <word> ('.' <word>)*
-	word: ('a'..'z' | 'A'..'Z' | '0'..'9')*
+    routingKey: <word> ('.' <word>)*
+    word: ('a'..'z' | 'A'..'Z' | '0'..'9')*
     
-	patternKey: <part> ('.' <part>)*
-	part: <word> | '*' | '#'
+    patternKey: <part> ('.' <part>)*
+    part: <word> | '*' | '#'
 
 Exemple de correspondance:
 
@@ -156,10 +162,14 @@ Considérons que nous disposons d'un ensemble de machines identiques capables d'
 
 <img src="/incubation/amqp-101-part1/loadbalancing-before.png" alt="Load balancing: avant distribution"/>
 
+Remplissage pas à pas des différentes files:
+
 <img src="/incubation/amqp-101-part1/loadbalancing-inprogress.png" alt="Load balancing: traitement en cours"/>
 
 Le type de l'*Exchange* importe peu tant que l'*Exchange* redirige les messages à la *Queue*. 
 Une notion importante est qu'**un message est *consommé* d'une file**. Un message consommé n'est donc plus disponible et ne sera pas distribué aux autres consommateurs.
+Une fois qu'un consommateur a fini de traiter le message, il demandera le prochain message à traiter à la *Queue*.
+Les messages sont donc plus ou moins (en fonction des temps de traitement) redistribué en round-robin sur l'ensemble des consommateurs.
 
 
 ## RPC (Remote Procedure Call)
@@ -207,7 +217,21 @@ SEDA (Staged Event-Driven Architecture) est une proposition d'architecture qui a
 
 Quelques explications?
 
-1. 
+1. Le client envoie une requête d'authentification. 
+2. Le message est redistribué à un second *Exchange* qui est lié au premier avec le motif '#': tous les messages lui sont donc redistribués. La possibilité de lier un *Exchange* à un autre *Exchange* est une possibilité offerte (extension) par RabbitMQ qui n'est pas proposé dans AMQP.
+3. Le second *Exchange* a ainsi pour rôle de tracer les appels entrants: logger, monitorer, etc...
+4. Le message est aussi redistribué dans une file dédiée `auth.#` qui sera consommée par notre service d'authentification. Ce service peux lui aussi envoyer des informations/logs aux services de logging et monitoring en publiant sur l'*Exchange* correspondant.
+5. Une fois authentifié, le client peux consulter ses informations clientes en effectuant cette fois une requête (ie un message) avec une clé de routage correspondante, par exemple: `users.458e92ab3.infos` où 458e92ab3 correspond à son identifiant. Il est ainsi possible de rediriger la demande en fonction du serveur qui a en charge ce numero de client (sharding), où en loadbalacing sur les 3 machines qui ont été déployée pour faire face à cette charge. 
+6. Les informations demandées sont alors retournées via la *Queue* qui aura été définie en `reply-to`. Les informations vérifiées, notre client va commencer à effectuer ses achats. Comme il s'agit du service qui sera le plus sollicité dans notre application, nous décidons de démarrer 6 machines qui consommeront la file correspondante (liée avec le motif `orders.*`). 
+7. La réponse est ainsi retournée au client via websocket par exemple.
+8. Le traitement de la commande étant généralement asynchrone, lorsque celle-ci est acceptée nous décidons d'en informer le client en lui envoyant une notification: un mail par exemple et/ou...
+9. ...un message s'il est toujours en ligne.
+
+
+Si la charge continue d'augmenter, il nous suffit de rajouter de nouvelles machines qui consommeront nos différentes *Queues*.
+
+
+
 
 # Webographie
 
