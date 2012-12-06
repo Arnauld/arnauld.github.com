@@ -34,7 +34,7 @@ Prenons comme base de travail une application qui gère des questionnaires (Quiz
 ## "Sans technique, la puissance n'est rien" &mdash; <small>Aurait aussi pu dire le pneu</small>
 
 Notre application doit tout d'abord permettre de créer un questionnaire. 
-Afin de permettre la récupération du questionnaire créé, il est nécessaire de définir une fonction de rappel. Optons pour une approche générique et réutilisable (les noms des interfaces que nous définirons reprennent les noms standards que l'on retrouve en [Haskell](), [Scala]() ou encore la librairie [FunctionalJava](http://functionaljava.org)).
+Afin de permettre la récupération du questionnaire créé, il est nécessaire de définir une fonction de rappel. Optons pour une approche générique et réutilisable (les noms des interfaces que nous définirons reprennent les noms standards que l'on retrouve en [Haskell](http://www.haskell.org/haskellwiki/Haskell), [Scala](http://www.scala-lang.org/) ou encore la librairie [FunctionalJava](http://functionaljava.org)).
 
 {% highlight java %}
 public interface Effect< T> {
@@ -191,11 +191,9 @@ quizService.create("<question4aChampion>...", new Effect<Either<Quiz,Failure>>()
 Lorsque la fonction de rappel est invoquée, soit l'alternative passée en paramètre contient un `quiz` (ligne 4) dans ce cas on affiche un beau message de retour avec de `quiz` créé. Sinon on affiche une notification d'erreur (ligne 9).
 
 Ah, quelqu'un au fond de la salle, a une remarque: "Comme il s'agit d'une erreur pourquoi ne pas lancer une exception au lieu de faire une alternative, soit on a le résultat soit on lance une exception?"
-Hummmm... eh bien sans trop anticiper sur la suite de l'article, il faut envisager que l'execution du code de la méthode puisse être asynchrone, dans ce cas il faudrait gérer un mécanisme du type `UncaughtExceptionHandler` qui se trouve n'être rien d'autre qu'une fonction de rappel appellée dans le cas d'erreur. En centralisant, les appels valides et invalides dans une unique fonction de rappel, le code est simplifié, ainsi que la vérification que notre fonction de rappel est appellée systématiquement.
 
-
-[REWORK] Scala `Try` class
-[Error handling with Scala's Try](http://blog.richdougherty.com/2012/06/error-handling-with-scalas-try.html)
+Hummmm... eh bien sans trop anticiper sur la suite de l'article, il faut envisager que l'execution du code de la méthode puisse être asynchrone. 
+Le contenu de la méthode s'execute alors dans un autre fil d'execution que le code qui l'a invoqué. Le code qui l'a invoqué continue à vivre son petit bonhomme de chemin et peux même réinvoquer la même méthode, avant que la première execution soit terminée. Si la méthode génère une exception celle-ci sera dans le fil qui execute le contenu de la méthode, l'appelant originel ne sera donc jamais informé, sauf si ajoute un mécanisme du type `UncaughtExceptionHandler` qui se trouve n'être rien d'autre qu'une fonction de rappel appellée dans le cas d'erreur. En centralisant, les appels valides et invalides dans une unique fonction de rappel, le code est simplifié, ainsi que la vérification que notre fonction de rappel est appellée systématiquement.
 
 Ok et la troisième technique alors? Nous y sommes presque!
 Notre Quiz étant désormais créé, il faut le persister, et pour cela il nous faut une méthode pour le sauvegarder:
@@ -453,6 +451,12 @@ displayWaitingFeedback();
 **Nous voyons que sans modifier le code appelant, notre méthode par continuation à permis de brancher une implementation asynchrone de notre service.**
 
 (On peux alors regarder le gars du fond de la salle, et lui faire un petit hochement de tête complice!)
+
+# A voir aussi
+
+* [Error handling with Scala's Try](http://blog.richdougherty.com/2012/06/error-handling-with-scalas-try.html)
+* [Article de Nouhoum Traore]()
+
 
 ·················8<-------------------------------
 

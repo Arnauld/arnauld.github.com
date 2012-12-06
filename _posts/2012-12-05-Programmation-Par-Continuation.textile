@@ -1,0 +1,19 @@
+---
+layout: post
+title: "Il y a peut être une option pour continuer ¡¿ (réflexion sur la programmation par continuation)"
+category: Blog
+tags:
+  - programmation fonctionelle
+  - continuation
+  - java
+  - option
+  - maybe
+published: true
+comments: true
+excerpt: |
+  
+  C'est là bas que c'est publié: <a href="http://www.arolla.fr/blog/2012/12/option-maybe-continuation/">Il y a peut être une option pour continuer ¡¿ (réflexion sur la programmation par continuation)</a>
+
+---
+
+{{page.excerpt | markdownify }}
