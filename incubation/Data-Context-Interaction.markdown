@@ -28,6 +28,8 @@ Data, Context and Interaction (DCI) est un paradigme utilisé en génie logiciel
 
 Voir aussi
 
+http://rebo.ruhoh.com/why-dci-contexts/
+
 [Data, Context and Interaction](http://en.wikipedia.org/wiki/Data,_context_and_interaction)
 
 [Data, Context and Interaction : A New Architectural Approach by James O. Coplien and Trygve Reenskau - Infoq](http://www.infoq.com/news/2009/05/dci-coplien-reenskau)

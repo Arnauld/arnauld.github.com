@@ -15,6 +15,9 @@ excerpt: |
 
 ---
 
+{{page.excerpt | markdownify }}
+
+
 # Preambule: Javascript ça `function-ne` pas mal!
 
 L'une des richesses de Javascript par rapport à d'autres langages (comme "Java") est que la `function` est un objet de première classe: <b>Une fonction est un objet et il est possible de l'affecter à une variable</b>.
@@ -28,7 +31,7 @@ Il est même possible de définir des fonctions qui renvoient d'autres fonctions
 {% highlight javascript linenos %}
 var adder = function(a) {
   return function(b) {
-    return a + b;
+    return add(a, b);
   }
 };
 
@@ -96,7 +99,7 @@ quizService.create("<question4aChampion>...", function(quiz) {
 });
 {% endhighlight %}
 
-Une fois le quiz créé, il est passé en paramètre à notre fonction qui se contente de demander son affichage. Comme les arguments sont identiques cela pour même se réduire à (n'oubliez pas qu'une fonction est un objet de première classe):
+Une fois le quiz créé, il est passé en paramètre à notre fonction qui se contente de demander son affichage. Comme les arguments sont identiques cela peux même se réduire à (n'oubliez pas qu'une fonction est un objet de première classe):
 
 {% highlight javascript %}
 quizService.create("<question4aChampion>...", displayQuiz);
@@ -153,10 +156,10 @@ QuizService.prototype.create = function(quizContent, callback) {
   });
   {% endhighlight %}
   Ligne 2 le `this` référence l'élément qui a été cliqué. C'est JQuery qui se charge d'invoquer la fonction de rappel en lui associant en `this` l'élément qui vient d'être cliqué. Cette association ce fait par l'intermédiaire des fonctions `apply` et `call` (Eh oui une fonction est un objet à part entière et dispose elle-même de fonctions!).
-  Il existe enfin une petite subtilité, en définissant le `this` on ne définit pas seulement la valeur d'une variable, mais aussi l'objet sur lequel la fonction est invoquée, cela sort du cadre de cet article, les plus curieux pourront donc consulter les articles "8.7.3 The call() and apply() Methods - Javascript: The Definitive Guide", [](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/apply)  pour plus d'informations sur les subtilités de ces fonctions. On pourra aussi consulter (8.3.2 Variable-Length Argument Lists: The Arguments Object - Javascript: The Definitive Guide) sur leur usages conjointement avec la variable spéciale `arguments`, ce qui permet de traiter efficacement les fonctions dont le nombre de paramètres peux varier d'une invocation à l'autre.
+  Il existe enfin une petite subtilité, en définissant le `this` on ne définit pas seulement la valeur d'une variable, mais aussi l'objet sur lequel la fonction est invoquée, cela sort du cadre de cet article, les plus curieux pourront donc consulter les articles "8.7.3 The call() and apply() Methods - Javascript: The Definitive Guide" et [Function.prototype.apply method](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/apply)  pour plus d'informations sur les subtilités de ces fonctions. On pourra aussi consulter (8.3.2 Variable-Length Argument Lists: The Arguments Object - Javascript: The Definitive Guide) sur leur usages conjointement avec la variable spéciale `arguments`, ce qui permet de traiter efficacement les fonctions dont le nombre de paramètres peux varier d'une invocation à l'autre.
 </p>
 
-Qu'avons nous fait? Eh bien notre fonction de rappel peux prendre deux paramètres: le premier s'il est définit désigne une erreur, tandis que le second désigne le résultat en cas de succès. Il s'agit d'une convention de généralement placer l'erreur en tant que premier paramètre.
+Qu'avons nous fait? Eh bien notre fonction de rappel peux prendre deux paramètres: le premier, s'il est non `null` (voir aussi [Falsy values in javascript](http://oreilly.com/javascript/excerpts/javascript-good-parts/awful-parts.html#the_many_falsy_values_of_javascript)) désigne une erreur, tandis que le second désigne le résultat en cas de succès. Il s'agit d'une convention de généralement placer l'erreur comme premier paramètre.
 
 Voyons alors le code appellant:
 
@@ -386,6 +389,9 @@ Eh bien parce qu'il n'est pas toujours question de traitement effectué sur le n
 
 <blockquote><p>A corollary is that client-side JavaScript functions must not run too long: otherwise they will tie up the event loop and the web browser will become unresponsive to user input. <b>This is the reason that Ajax APIs are always asynchronous and the reason that client-side JavaScript cannot have a simple, synchronous load() or require() function for loading JavaScript libraries.</b></p><small>Javascript The Definitive Guide 6th Ed - 22.4 WebWorkers</small></blockquote>
 
+<blockquote><p><b>Everything</b> except network operations happens in a single thread</p><small>
+<a href="https://speakerdeck.com/dmosher/so-you-want-to-be-a-front-end-engineer">So, You Want to Be a Front-End Engineer?</a></small></blockquote>
+
 Les bibliothèques JQuery et Dojo fournissent d'ailleurs des API selon le modèle des `promises` appellé chez eux `deferred` ([Dojo ~ Deferreds](http://dojotoolkit.org/reference-guide/1.7/dojo/Deferred.html) et [JQuery ~ Deferreds](http://api.jquery.com/category/deferred-object/)).
 
 De plus, comme l'auront noté les petits malins, HTML5 définit la notion des `WebWorkers` qui permet d'effectuer des traitements en dehors du fil d'execution Javascript. Il est donc tout à fait possible d'effectuer des traitements asynchrones même sur un navigateur en les déléguant à des WebWorkers (Nous reviendrons sans doute sur eux dans un prochain article).
@@ -394,8 +400,13 @@ Quand à la plateforme NodeJs, et bien, elle intègre par construction la nature
 
 # Webographie
 
+Une très belle présentation
+http://news.humancoders.com/t/prog-fonctionnelle/items/2584-futures-et-promesses-en-scala-2-10
+
 * [Fonction d'ordre supérieur](http://fr.wikipedia.org/wiki/Fonction_d%27ordre_sup%C3%A9rieur)
 * [Curryfication](http://fr.wikipedia.org/wiki/Curryfication)
+
+* [kriskowal / q](https://github.com/kriskowal/q) : A tool for making and composing asynchronous promises in JavaScript 
 
 * ["How to Survive Asynchronous Programming in JavaScript" on InfoQ](http://www.infoq.com/articles/surviving-asynchronous-programming-in-javascript)
 
@@ -404,7 +415,11 @@ Quand à la plateforme NodeJs, et bien, elle intègre par construction la nature
 * [JQuery ~ Deferreds](http://api.jquery.com/category/deferred-object/)
 * [Understanding JQuery.Deferred and Promise](http://joseoncode.com/2011/09/26/a-walkthrough-jquery-deferred-and-promise/)
 * [Node.js and Asynchronous Programming with Promises](http://spin.atomicobject.com/2012/03/14/nodejs-and-asynchronous-programming-with-promises/)
-* [kriskowal / q](https://github.com/kriskowal/q) : A tool for making and composing asynchronous promises in JavaScript 
 
 * [Todo MVC](http://addyosmani.github.com/todomvc/)
+
+Livres
+
+* [JavaScript: The Definitive Guide](http://shop.oreilly.com/product/9780596805531.do)
+* [JavaScript: The Good Parts](http://shop.oreilly.com/product/9780596517748.do)
 
