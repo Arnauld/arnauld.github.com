@@ -11,16 +11,17 @@ comments: true
 excerpt: |
   <span class="label warning">In Progress // Incubation</span><br/>
 
-  Cet article reprend en partie l'article précédent [Programmation par continuation]() à travers l'utilisation de javascript. Nous verons ensuite d'autres techniques afin de rendre notre code plus lisible et plus compréhensible.
+  Cet article se place dans la continuité de l'article précédent [Programmation par continuation]().
+  Avant de présenter de nouvelles techniques - les promises/deferred/future - nous commencerons par transposer les techniques vues précédement en javascript. 
 
 ---
 
 {{page.excerpt | markdownify }}
 
 
-# Preambule: Javascript ça `function-ne` pas mal!
+<h1> Preambule: Javascript ça <code>function-ne</code> pas mal!</h1>
 
-L'une des richesses de Javascript par rapport à d'autres langages (comme "Java") est que la `function` est un objet de première classe: <b>Une fonction est un objet et il est possible de l'affecter à une variable</b>.
+L'une des richesses de Javascript par rapport à d'autres langages (comme "Java") est que la <code>function</code> est un objet de première classe: <b>Une fonction est un objet et il est possible de l'affecter à une variable</b>.
 
 {% highlight javascript linenos %}
 var add = function(a,b) { return a + b; }
@@ -51,10 +52,10 @@ var curry = function(func, a) {
 
 var add7 = curry(add, 7);
 assert(add7(0) === 7);
-assert(add2(35) === 42);
+assert(add7(35) === 42);
 {% endhighlight %}
 
-Un autre exemple en `jquery` que l'on rencontre sans doute plus fréquement:
+Un autre exemple, que l'on rencontre sans doute plus fréquement, en <code>jquery</code> :
 
 {% highlight javascript linenos %}
 $("#login").on('click', function (event) {
@@ -62,13 +63,25 @@ $("#login").on('click', function (event) {
 });
 {% endhighlight %}
 
-Une fonction de rappel est invoquée lorsqu'un clic est détecté sur l'élément `login`; elle affiche alors l'élément `login-pane`.
+Une fonction de rappel est invoquée lorsqu'un clic est détecté sur l'élément <code>login</code>; elle affiche alors l'élément <code>login-pane</code>.
 
 Notes:
-* [Fonction d'ordre supérieur](http://fr.wikipedia.org/wiki/Fonction_d%27ordre_sup%C3%A9rieur)
-* [Curryfication](http://fr.wikipedia.org/wiki/Curryfication)
 
-# Les techniques vu précédemment
+<ul>
+<li> J'invite le lecteur à lire l'excellent article [Les fonctions et les fonctions d'ordres supérieur]() si ce n'est pas déjà fait.</li>
+<li><a href="http://fr.wikipedia.org/wiki/Fonction_d%27ordre_sup%C3%A9rieur">Fonction d'ordre supérieur</a></li>
+<li><a href="http://fr.wikipedia.org/wiki/Curryfication">Curryfication</a></li>
+</ul>
+
+<h1> Les techniques vu précédemment</h1>
+
+
+<blockquote>
+  <span class="label notice">Première technique</span> :
+  <p>
+    <b>Ajouter une fonction supplémentaire comme paramètre lors de l'appel d'une méthode. Cette fonction pourra alors être appellée avec le résultat du calcul lorsque celui sera disponible.</b>
+  </p>
+</blockquote>
 
 Reprenons le code Java de notre première technique et transposons le en <b>un</b> équivalent javascript:
 
@@ -108,6 +121,14 @@ quizService.create("<question4aChampion>...", displayQuiz);
 
 Passons rapidement à la deuxième technique:
 
+<blockquote>
+  <span class="label notice">Deuxième technique</span> :
+  <p>
+   <b>La fonction de rappel est définie comme prenant un résultat dont le type peut varier en fonction du déroulement du calcul...</b>
+  </p>
+</blockquote>
+
+
 {% highlight java linenos %}
 public class QuizService {
   public void create(String quizContent, Effect<Either<Quiz,Failure>> effect) {
@@ -144,22 +165,23 @@ QuizService.prototype.create = function(quizContent, callback) {
 {% endhighlight %}
 
 <p class="sidenote">
-  <h4>Rituel d'invocation: du direct, un peu d'`apply`, un zeste de `call` et une pincée de `this`</h4>
+  <h4>Rituel d'invocation: du direct, un peu d'<code>apply</code>, un zeste de <code>call</code> et une pincée de <code>this</code></h4>
   Il existe plusieurs façon d'invoquer une fonction lorsque l'on dispose d'une reference sur celle-ci.
-  Il est possible de l'invoquer directement lorsque l'on connait les arguments exactes auxquels elles s'attend: `callback(null, quiz)`.
-  Dans ce cas tout se passe bien tant que l'on ne se soucis guère de la notion de `this`. L'instance référencée par `this` au momement de l'execution du callback est alors non maitrisé, ce qui dans la plupart des cas ne pose pas de réel problème tant qu'on ne l'utilise pas.
-  En revanche quand on est amené à utilisé le `this` il devient alors indispensable de connaitre ce qu'il référence. Ce qui est typiquement le cas en JQuery:
+  Il est possible de l'invoquer directement lorsque l'on connait les arguments exactes auxquels elles s'attend: <code>callback(null, quiz)</code>.
+  Dans ce cas tout se passe bien tant que l'on ne se soucis guère de la notion de <code>this</code>. L'instance référencée par <code>this</code> au momement de l'execution du callback est alors non maitrisé, ce qui dans la plupart des cas ne pose pas de réel problème tant qu'on ne l'utilise pas.
+  En revanche quand on est amené à utilisé le <code>this</code> il devient alors indispensable de connaitre ce qu'il référence. Ce qui est typiquement le cas en JQuery:
   {% highlight javascript linenos %}
   $(".button").click(function() {
     var buttonId = $(this).attr("id");
     console.log("Button clicked: " + buttonId);
   });
   {% endhighlight %}
-  Ligne 2 le `this` référence l'élément qui a été cliqué. C'est JQuery qui se charge d'invoquer la fonction de rappel en lui associant en `this` l'élément qui vient d'être cliqué. Cette association ce fait par l'intermédiaire des fonctions `apply` et `call` (Eh oui une fonction est un objet à part entière et dispose elle-même de fonctions!).
-  Il existe enfin une petite subtilité, en définissant le `this` on ne définit pas seulement la valeur d'une variable, mais aussi l'objet sur lequel la fonction est invoquée, cela sort du cadre de cet article, les plus curieux pourront donc consulter les articles "8.7.3 The call() and apply() Methods - Javascript: The Definitive Guide" et [Function.prototype.apply method](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/apply)  pour plus d'informations sur les subtilités de ces fonctions. On pourra aussi consulter (8.3.2 Variable-Length Argument Lists: The Arguments Object - Javascript: The Definitive Guide) sur leur usages conjointement avec la variable spéciale `arguments`, ce qui permet de traiter efficacement les fonctions dont le nombre de paramètres peux varier d'une invocation à l'autre.
+  Ligne 2 le <code>this</code> référence l'élément qui a été cliqué. C'est JQuery qui se charge d'invoquer la fonction de rappel en lui associant en <code>this</code> l'élément qui vient d'être cliqué. Cette association ce fait par l'intermédiaire des fonctions <code>apply</code> et <code>call</code> (Eh oui une fonction est un objet à part entière et dispose elle-même de fonctions!).
+  Il existe enfin une petite subtilité, en définissant le <code>this</code> on ne définit pas seulement la valeur d'une variable, mais aussi l'objet sur lequel la fonction est invoquée, cela sort du cadre de cet article, les plus curieux pourront donc consulter les articles "8.7.3 The call() and apply() Methods - Javascript: The Definitive Guide" et <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/apply">Function.prototype.apply method</a>  pour plus d'informations sur les subtilités de ces fonctions. On pourra aussi consulter (8.3.2 Variable-Length Argument Lists: The Arguments Object - Javascript: The Definitive Guide) sur leur usages conjointement avec la variable spéciale <code>arguments</code>, ce qui permet de traiter efficacement les fonctions dont le nombre de paramètres peux varier d'une invocation à l'autre.
 </p>
 
-Qu'avons nous fait? Eh bien notre fonction de rappel peux prendre deux paramètres: le premier, s'il est non `null` (voir aussi [Falsy values in javascript](http://oreilly.com/javascript/excerpts/javascript-good-parts/awful-parts.html#the_many_falsy_values_of_javascript)) désigne une erreur, tandis que le second désigne le résultat en cas de succès. Il s'agit d'une convention de généralement placer l'erreur comme premier paramètre.
+Qu'avons nous fait? Eh bien notre fonction de rappel peux prendre deux paramètres: le premier, s'il est non <code>null</code> (voir aussi <a href="http://oreilly.com/javascript/excerpts/javascript-good-parts/awful-parts.html#the_many_falsy_values_of_javascript">Falsy values in javascript</a>) désigne une erreur, tandis que le second désigne le résultat en cas de succès. 
+Par convention, on place généralement l'erreur comme premier paramètre.
 
 Voyons alors le code appellant:
 
@@ -176,6 +198,13 @@ quizService("<question4aChampion>...", function(err, quiz) {
 
 
 Allez hop, on enchaine avec la troisième technique:
+
+<blockquote>
+  <span class="label notice">Troisième technique</span> :
+  <p>
+    <b>La fonction de rappel est définie comme prenant un résultat dont le contenu est optionnel</b>
+  </p>
+</blockquote>
 
 Avant:
 
@@ -208,7 +237,7 @@ QuizService.prototype.save = function(quiz, callback) {
 }
 {% endhighlight %}
 
-Bon... en pratique on verra très rarement du code comme ça! mais plutôt:
+Bon... en pratique on verra (ou ecrira) très rarement du code comme ça! mais plutôt:
 
 {% highlight javascript linenos %}
 QuizService.prototype.save = function(quiz, callback) {
@@ -226,16 +255,53 @@ QuizService.prototype.save = function(quiz, callback) {
 }
 {% endhighlight %}
 
-# Et pourquoi parler de Javascript maintenant?
+Illustrons cela par un exemple d'utilisation:
+
+{% highlight javascript linenos %}
+quizService.save(quiz, function(err) {
+  if(typeof err !== "undefined") {
+    displayErrorFeedback(err);
+  }
+  else {
+    displayFlashFeedback(Code.QuizSaved);   
+  }
+}
+});
+{% endhighlight %}
+
+Que pouvons-nous constater? qu'il est possible d'invoquer la même fonction javascript avec, sans ou un nombre variable de paramètres. C'est à la charge de la fonction invoquée de vérifier le nombre de paramètres passés, éventuellement leurs types, afin de choisir le comportement qu'elle doit adopter.
+Dans notre cas, on vérifie l'existance d'un paramètre qui, le cas échéant, sera référencé par la variable <code>err</code>. En l'absence de paramètre, cette variable sera considérée comme indéfinie.
+
+Pourquoi ne pas utiliser <code>if(err)</code> puisque <code>undefined</code> est évaluée comme <code>false</code> (rappel: <a href="http://oreilly.com/javascript/excerpts/javascript-good-parts/awful-parts.html#the_many_falsy_values_of_javascript">Falsy values in javascript</a>)? Uniquement au cas où l'instance décrivant l'erreur serait évaluée à false (se serait maladroit mais bon... sait-on jamais). Les tatillons pourraient dire: "mais pourquoi tout à l'heure on ne s'est pas préoccuper de ça?" hummm... et bien tout simplement parce qu'il faut y aller petit à petit et donner différentes techniques au fur et à mesure.
+
+Passons très vite sur la quatrième technique:
+
+<blockquote>
+  <span class="label notice">Quatrième technique</span> :
+  <p>
+  <b>La fonction de rappel est définit comme une fonction ne prenant aucun paramètre, elle est invoquée pour signaler que l'action désirée est effectuée</b>
+  </p>
+</blockquote>
+
+{% highlight javascript linenos %}
+QuizService.prototype.save = function(quiz, onceSaved) {
+  this.repository.save(quiz, function(err,res) {
+    onceSaved();
+  });
+}
+{% endhighlight %}
 
 
-Eh bien parce qu'il devient difficile de ne pas voir que son utilisation devient de plus en plus présente avec des interfaces utilisateur de plus en plus riche. Il suffit de voir l'approche RIA et son nombre croissant de framework: Backbone.js, AngularJS, Ember.js, KnockoutJS, ... et même Batman.js! (voir [Todo MVC](http://addyosmani.github.com/todomvc/) pour la comparaison d'une TODO liste réalisée avec les différents frameworks).
+<h1> Et pourquoi parler de Javascript maintenant?</h1>
+
+
+Eh bien parce qu'il devient difficile de ne pas voir que son utilisation devient de plus en plus présente avec des interfaces utilisateur de plus en plus riche. Il suffit de voir l'approche RIA et son nombre croissant de framework: Backbone.js, AngularJS, Ember.js, KnockoutJS, ... et même Batman.js! (voir <a href="http://addyosmani.github.com/todomvc/">Todo MVC</a> pour la comparaison d'une TODO liste réalisée avec les différents frameworks).
 Et malgré ce que peuvent en dire certain, sa présence côté serveur - populariser par la plateforme NodeJs - à de quoi nous interpeller. D'ailleurs une grande partie du succès de NodeJs réside dans son approche non bloquante, et toute son API est tournée autour des techniques que nous venons de voir: des appels asynchrones auxquels on passe des fonctions de rappel.
 
 
-# Reveille le Numérobis qui sommeille en toi!
+<h1> Reveille le Numérobis qui sommeille en toi!</h1>
 
-Voyons à quoi ressemblerait une application javascript prenant en compte à chaque appel cette notion de fonction de rappel:
+Voyons à quoi ressemblerait une application prenant en compte à chaque appel cette notion de fonction de rappel:
 
 {% highlight javascript linenos %}
 checkUniqueness(data, function(err) {
@@ -270,15 +336,15 @@ Le code devient difficile à lire, à comprendre et par conséquent à maintenir
 Pour la petite histoire, c'est justement en arrivant à ce constat en écrivant le code implémentant les différents motifs vu dans <a href="http://www.arolla.fr/blog/2012/11/amqp-101-part-1/">AMQP 101 - Part 1</a> que j'ai cherché une alternative plus élégante pour écrire la même fonctionalité. Il me fallait trouver une manière plus lisible d'écrire et donc de comprendre les exemples, tout ça pour toi cher lecteur! (On vous bichone bien non?)
 
 
-# Des promesses, des promesses et encore des promesses
+<h1> Des promesses, des promesses et encore des promesses</h1>
 
-Que ce cache sous ce titre? Et bien une nouvelle technique: les `Promises`
+Que ce cache sous ce titre? Et bien une nouvelle technique: les <code>Promises</code>
 
 Voyons tout d'abord le résultat auquel on souhaite arriver en reprenant l'example précédent:
 
 {% highlight javascript linenos %}
 checkUniqueness(data)
-  .then(displayError, function() {
+  .then(displayError, function(data) {
     return createQuiz(data);
   })
   .then(displayError, function(quiz) {
@@ -290,18 +356,29 @@ checkUniqueness(data)
   .then(displayError, sendQuiz);
 {% endhighlight %}
 
-On retrouve alors notre enchainement d'appel, mais cette fois chaque appel est lié au précédent via la méthode `then`. Cette methode enregistre alors deux fonctions de rappel: une pour le traitement d'erreur et une pour le traitement du résultat.
-Ces fonctions de rappel seront alors appellées lorsque l'appel précédent sera terminé en fonction de son échec ou de son résultat.
+que l'on peux alléger en (souvenez-vous: une fonction est un objet de première classe - hummm je radote là?):
 
-Il s'agit là du principe des `Promises` en gros: tu m'invoques, je te renvoie un accusé de reception sur lequel tu peux t'enregistrer, quand j'aurai fini mon traitement je te promets que je te passe son résultat. 
+{% highlight javascript linenos %}
+checkUniqueness(data)
+  .then(displayError, createQuiz)
+  .then(displayError, saveQuiz)
+  .then(displayError, lookupQuiz)
+  .then(displayError, sendQuiz);
+{% endhighlight %}
 
-Dit de manière plus technique: une fonction basée sur les `Promises` est une fonction qui renvoie une `promise` à son appel. Cette `promise` fournira le résultat dans le futur (plus tard ou tout de suite). L'interêt est alors de pouvoir chainer ces `promises`  et ainsi de décrire tout l'enchainement du traitement qui devra être effectué à mesure que les résultats passent d'une étape à l'autre.
 
-Afin de faire apparaitre les `promises`, le code précédent pourrait être réécrit de la manière suivante (il s'agit strictement du même code, la seule différence est de faire apparaitre explicitement les variables intermédiaires au lieu de chainer les appels directement):
+On retrouve alors notre enchainement d'appels, mais cette fois chaque appel est lié au précédent via la méthode <code>then</code>. Cette methode enregistre alors deux fonctions de rappel: une pour le traitement d'erreur et une pour le traitement du résultat.
+Ces fonctions de rappel seront alors invoquées lorsque l'appel précédent sera terminé en fonction de son échec ou de son résultat. L'erreur ou le résultat est alors automatiquement transmis en paramètre aux fonctions de rappels enregistrées.
+
+Il s'agit là du principe des <code>Promises</code> en gros: tu m'invoques, je te renvoie un accusé de reception sur lequel tu peux t'enregistrer, quand j'aurai fini mon traitement je te promets que je te passe son résultat. 
+
+L'interêt est alors de pouvoir chainer ces <code>promises</code>  et ainsi de décrire tout l'enchainement du traitement qui devra être effectué à mesure que les résultats passent d'une étape à l'autre. Le découplage entre les étapes apparait clairement, et il devient plus facile d'insérer ou de modifier des étapes.
+
+Afin de faire apparaitre les <code>promises</code>, le code précédent pourrait être réécrit de la manière suivante (il s'agit strictement du même code, la seule différence est de faire apparaitre explicitement les variables intermédiaires au lieu de chainer les appels directement):
 
 {% highlight javascript linenos %}
 var promise0 = checkUniqueness(data);
-var promise1 = promise0.then(displayError, function() {
+var promise1 = promise0.then(displayError, function(data) {
                   return createQuiz(data);
                 });
 var promise2 = promise1.then(displayError, function(quiz) {
@@ -313,7 +390,7 @@ var promise3 = promise2.then(displayError, function(quizId) {
 promise3.then(displayError, sendQuiz);
 {% endhighlight %}
 
-A quoi pourrait ressembler une implémentation très <b>simpliste</b> ne permettant pas le chainage (voir le code plus complet de []() pour une implémentation plus complète et beaucoup plus robuste):
+A quoi pourrait ressembler une implémentation très <b>simpliste</b> (voir <a href="https://github.com/kriskowal/q">q</a> pour une implémentation plus complète et beaucoup plus robuste):
 
 {% highlight javascript linenos %}
 var Promise = function () {
@@ -347,13 +424,13 @@ Promise.prototype.then = function(errorCallback, resultCallback) {
 }
 {% endhighlight %}
 
-Ok... et comment on transforme nos méthodes précédentes pour intégrer cela? Et bien cela nécessite d'adapter légèrement nos API afin qu'elles intègrent directement les `Promises`:
+Ok... et comment on transforme nos méthodes précédentes pour intégrer cela? Et bien cela nécessite d'adapter légèrement nos API afin qu'elles intègrent directement les <code>Promises</code>:
 
 {% highlight javascript linenos %}
 var checkUniqueness = function(data) {
   var promise = new Promise();
   db.checkUniqueness(function(error) {
-    promise.resolve(error);
+    promise.resolve(error, data);
   });
   return promise;
 }
@@ -369,15 +446,63 @@ var createQuiz = function(data) {
 ...
 {% endhighlight %}
 
-Biensûr tout cela a encore plus d'interêt lorsque les appels `db.checkUniqueness(...)` et `service.createQuiz(...)` sont asynchrones:
-les deux méthodes précédentes sont invoquées et avant même que le résultat ne soit disponible la `promise` correspondante est retournée afin de continuer à définir le traitement à effectuer. La chaine de traitement est définit en même temps que la base de données ou notre service travaille.
+Biensûr tout cela a encore plus d'interêt lorsque les appels <code>db.checkUniqueness(...)</code> et <code>service.createQuiz(...)</code> sont asynchrones:
+les deux méthodes précédentes sont invoquées et avant même que le résultat ne soit disponible la <code>promise</code> correspondante est retournée afin de continuer à définir le traitement à effectuer. La chaine de traitement est définit en même temps que la base de données ou que notre service travaille.
 
 Quelques explications?
 
-`checkUniqueness` est invoquée avec les données à vérifier `data`. Une `promise` est instancié spécialement pour l'occasion afin d'être notifié lorsque le traitement sera terminé. La vérification d'unicité est alors déléguée à la base de donnée (fallait bien trouver un responsable!) et en attendant son verdict, la `promise`est retournée telle quelle.
-Il est alors possible d'enregistrer plusieurs `callback` dessus en utilisant la méthode `then(cbErr,cbOut)` (exemple: `.then(displayError, function() { return createQuiz(data); })`).
-Les `callback` ainsi enregistrés seront alors notifiés dès que le résultat sera disponible, c'est à dire lorsque la méthode `promise.resolve(err,out)` est invoquée avec le résultat du traitement.
+<code>checkUniqueness</code> est invoquée avec les données à vérifier <code>data</code>. Une <code>promise</code> est instancié spécialement pour l'occasion afin d'être notifiée lorsque le traitement sera terminé. La vérification d'unicité est alors déléguée à la base de donnée (fallait bien trouver un responsable!) et en attendant son verdict, la <code>promise</code>est retournée telle quelle.
+Il est alors possible d'enregistrer plusieurs <code>callback</code> dessus en utilisant la méthode <code>then(cbErr,cbOut)</code> (exemple: <code>.then(displayError, function() { return createQuiz(data); })</code>).
+Les <code>callback</code> ainsi enregistrés seront alors notifiés dès que le résultat sera disponible, c'est à dire lorsque la méthode <code>promise.resolve(err,out)</code> est invoquée avec le résultat du traitement.
 
+Le public averti pourra s'appercevoir qu'une <code>promise</code> est - elle-même - basée sur le mécanisme de callback et se place elle-même en fonction de rappel sur le traitement effectué. 
+
+L'exemple précédent nous a montré comment transformer des appels imbriqués en des déclarations séquentielles. 
+Exploitons désormais quelques possibilités offertes par les librairies autour de ces promises (nous baserons notre discours sur la librairie <a href="https://github.com/kriskowal/q">q</a>).
+
+Voyons comment nous pouvons étendre les mêmes techniques à des traitements effectués en parallèles, et plus particulièrement ceux nécessitant des points de "synchronization": une fois que mes sous tâches sont terminées alors seulement la suite de mon traitement peux continuer. 
+
+Par exemple si nous souhaitons générer tout un recueil de quiz:
+
+Commençons par définir une fonction utilitaire de création de quiz, regroupant ce que nous avons pu voir jusqu'à présent. La fonction retourne une <code>promise</code> sur la création du quiz:
+
+{% highlight javascript linenos %}
+function generateQuiz(errorHandler) {
+  var promise = generateData()
+                  .then(errorHandler, checkUniqueness)
+                  .then(errorHandler, createQuiz)
+                  .then(errorHandler, saveQuiz);
+  return promise;
+}
+{% endhighlight %}
+
+Une fonction utilitaire qui génèrera <code>nbQuiz</code> en invoquant la fonction précédente:
+
+{% highlight javascript linenos %}
+function generateBook(nbQuiz, errorHandler) {
+  var i, 
+      promises = [];
+  for(i=0; i < nbQuiz; i++) {
+    var promise = generateQuiz(errorHandler);
+    promises.push(promise);
+  }
+
+  return return Q.all(promises);  
+}
+{% endhighlight %}
+
+Le retour de notre méthode <code>generateBook</code> est une <code>promise</code>. Les fonctions de rappels qui seront "branchées" dessus seront alors invoquées lorsque les <code>nbQuiz</code> questionnaires auront été générés, créés et enregistrés.
+
+{% highlight javascript linenos %}
+generateBook(25, errorHandler)
+  .then(errorHandler, generateTableOfContent)
+  .then(errorHandler, sendToFrance3)
+  ...;
+{% endhighlight %}
+
+En continuant de creuser, on peux trouver beaucoup d'autres techniques. On s'apperçoit que cela ouvre énormément de possibilités quand à la gestion de tâches asynchrones, éventuellement concurrentes, et ce manière lisible.
+
+<h1> Qui est concerné?</h1>
 
 Suis-je concerné? Je pensais que le Javascript était executé par un seul fil d'execution et là on me parle de traitement asynchrone ?
 
@@ -392,34 +517,54 @@ Eh bien parce qu'il n'est pas toujours question de traitement effectué sur le n
 <blockquote><p><b>Everything</b> except network operations happens in a single thread</p><small>
 <a href="https://speakerdeck.com/dmosher/so-you-want-to-be-a-front-end-engineer">So, You Want to Be a Front-End Engineer?</a></small></blockquote>
 
-Les bibliothèques JQuery et Dojo fournissent d'ailleurs des API selon le modèle des `promises` appellé chez eux `deferred` ([Dojo ~ Deferreds](http://dojotoolkit.org/reference-guide/1.7/dojo/Deferred.html) et [JQuery ~ Deferreds](http://api.jquery.com/category/deferred-object/)).
+Les bibliothèques JQuery et Dojo fournissent d'ailleurs des API selon le modèle des <code>promises</code> appellé chez eux <code>deferred</code> (<a href="http://dojotoolkit.org/reference-guide/1.7/dojo/Deferred.html">Dojo ~ Deferreds</a> et <a href="http://api.jquery.com/category/deferred-object/">JQuery ~ Deferreds</a>).
 
-De plus, comme l'auront noté les petits malins, HTML5 définit la notion des `WebWorkers` qui permet d'effectuer des traitements en dehors du fil d'execution Javascript. Il est donc tout à fait possible d'effectuer des traitements asynchrones même sur un navigateur en les déléguant à des WebWorkers (Nous reviendrons sans doute sur eux dans un prochain article).
+De plus, comme l'auront noté les petits malins, HTML5 définit la notion des <code>WebWorkers</code> qui permet d'effectuer des traitements en dehors du fil d'execution Javascript de la page. Il est donc tout à fait possible d'effectuer des traitements asynchrones même sur un navigateur en les déléguant à des WebWorkers (Nous reviendrons sans doute sur eux dans un prochain article).
 
-Quand à la plateforme NodeJs, et bien, elle intègre par construction la nature asynchrone de chaque appel IO (Input/Output). Les spécifications sur lesquelles s'appuient la plateforme prévoit même une API unifiée et standard pour les promises ([CommonJS ~ Promises/A](http://wiki.commonjs.org/wiki/Promises/A)).
+Quand à la plateforme NodeJs, et bien, elle intègre par construction la nature asynchrone de chaque appel IO (Input/Output). Les spécifications sur lesquelles s'appuient la plateforme prévoit même une API unifiée et standard pour les promises (<a href="http://wiki.commonjs.org/wiki/Promises/A">CommonJS ~ Promises/A</a> pour lequel <a href="https://github.com/kriskowal/q">q</a> est compatible).
 
-# Webographie
+Et pour ceux qui <b>jamais au grand jamais</b> ne toucheront à du javascript!?
+
+Et bien, tout d'abord, vous avez tort ne pas vous y interesser. Ensuite, ces notions non-bloquantes deviennent de plus en plus présentes et l'on retrouve tous ces concepts dans les langages intégrant les notions de <a href="http://savanne.be/articles/concurrency-in-erlang-scala/">process/acteur</a> (erlang et scala dont l'excellente librairie <a href="http://akka.io">akka</a>) et du coup dans les frameworks comme <a href="http://www.playframework.com/documentation/2.1.0/ScalaAsync">Play!</a> ou <a href="http://gpars.codehaus.org/">GPars</a>.
+
+<h1> Webographie</h1>
 
 Une très belle présentation
 http://news.humancoders.com/t/prog-fonctionnelle/items/2584-futures-et-promesses-en-scala-2-10
 
-* [Fonction d'ordre supérieur](http://fr.wikipedia.org/wiki/Fonction_d%27ordre_sup%C3%A9rieur)
-* [Curryfication](http://fr.wikipedia.org/wiki/Curryfication)
+<ul>
+<li> <a href="http://fr.wikipedia.org/wiki/Fonction_d%27ordre_sup%C3%A9rieur">Fonction d'ordre supérieur</a></li>
+<li> <a href="http://fr.wikipedia.org/wiki/Curryfication">Curryfication</a></li>
+</ul>
 
-* [kriskowal / q](https://github.com/kriskowal/q) : A tool for making and composing asynchronous promises in JavaScript 
+<ul>
+<li> <a href="https://github.com/kriskowal/q">kriskowal / q</a> : A tool for making and composing asynchronous promises in JavaScript </li>
+</ul>
 
-* ["How to Survive Asynchronous Programming in JavaScript" on InfoQ](http://www.infoq.com/articles/surviving-asynchronous-programming-in-javascript)
+<ul>
+<li> <a href="http://www.infoq.com/articles/surviving-asynchronous-programming-in-javascript">"How to Survive Asynchronous Programming in JavaScript" on InfoQ</a></li>
+</ul>
 
-* [CommonJS ~ Promises/A](http://wiki.commonjs.org/wiki/Promises/A)
-* [Dojo ~ Deferreds](http://dojotoolkit.org/reference-guide/1.7/dojo/Deferred.html)
-* [JQuery ~ Deferreds](http://api.jquery.com/category/deferred-object/)
-* [Understanding JQuery.Deferred and Promise](http://joseoncode.com/2011/09/26/a-walkthrough-jquery-deferred-and-promise/)
-* [Node.js and Asynchronous Programming with Promises](http://spin.atomicobject.com/2012/03/14/nodejs-and-asynchronous-programming-with-promises/)
+<ul>
+<li> <a href="http://wiki.commonjs.org/wiki/Promises/A">CommonJS ~ Promises/A</a></li>
+<li> <a href="http://dojotoolkit.org/reference-guide/1.7/dojo/Deferred.html">Dojo ~ Deferreds</a></li>
+<li> <a href="http://api.jquery.com/category/deferred-object/">JQuery ~ Deferreds</a></li>
+<li> <a href="http://joseoncode.com/2011/09/26/a-walkthrough-jquery-deferred-and-promise/">Understanding JQuery.Deferred and Promise</a></li>
+<li> <a href="http://spin.atomicobject.com/2012/03/14/nodejs-and-asynchronous-programming-with-promises/">Node.js and Asynchronous Programming with Promises</a></li>
+</ul>
 
-* [Todo MVC](http://addyosmani.github.com/todomvc/)
+<ul>
+<li> <a href="http://addyosmani.github.com/todomvc/">Todo MVC</a></li>
+</ul>
+
+<ul>
+<li> <a href="http://akka.io">Akka</a></li>
+<li> <a href="www.playframework.com/documentation/2.1.0/ScalaAsync">Play!</a></li>
+</ul>
 
 Livres
 
-* [JavaScript: The Definitive Guide](http://shop.oreilly.com/product/9780596805531.do)
-* [JavaScript: The Good Parts](http://shop.oreilly.com/product/9780596517748.do)
-
+<ul>
+<li> <a href="http://shop.oreilly.com/product/9780596805531.do">JavaScript: The Definitive Guide</a></li>
+<li> <a href="http://shop.oreilly.com/product/9780596517748.do">JavaScript: The Good Parts</a></li>
+</ul>

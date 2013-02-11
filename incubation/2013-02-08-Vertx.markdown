@@ -1,0 +1,21 @@
+---
+layout: post
+title: "Vert.x: un environement distribué chez vous"
+category: Blog
+tags:
+  - java
+  - functional-programming
+  - vertx
+  - cluster
+  - distributed
+published: false
+comments: true
+excerpt: |
+  <span class="label warning">In Progress // Incubation</span><br/>
+
+---
+
+{{page.excerpt | markdownify }}
+
+Commençons par définir un concept important: l'Event Loop.
+
