@@ -1,3 +1,20 @@
+---
+layout: post
+title: "Scaling Agile à la Française"
+category: Blog
+tags:
+  - agile
+  - scrum
+  - distributed-scrum
+  - scrum-de-scrum
+published: false
+comments: true
+excerpt: |
+  <span class="label warning">In Progress // Incubation</span><br/>
+
+---
+
+{{page.excerpt | markdownify }}
 
 Grandes étapes:
 
