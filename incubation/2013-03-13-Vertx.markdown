@@ -1,0 +1,10 @@
+C10k pb?
+
+Differences with node
+
+* js vs polyglot programming (cf neal ford for polyglot)
+* interprocess communication
+* single event loop
+
+
+
