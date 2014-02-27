@@ -34,7 +34,7 @@ En revanche, il s'agit d'un site à fort trafic qui nécessite que les données 
 
 Ce qu'il faut savoir, c'est que les gros parieurs attendent généralement le dernier moment pour parier afin que leur impact sur les cotes des chevaux n'ait pas le temps d'être analysées. Tout ça pour dire qu'une des contraintes liées au développement du nouveau site (actuellement en production) était de fournir le plus rapidement possible aux différents clients les dernières informations disponibles: cotes des participants, statut de la course, etc. Il fallait trouver un mécanisme de notification permettant au Backend d'informer le client que les données devaient être mises à jour.
 
-Nous avons opté naturellement pour une approche basée sur les WebSockets. Biensûr compte tenu du parc utilisateur nous nous sommes basée sur une abstraction des WebSockets gérant automatiquement la dégradation du protocole vers des solutions plus traditionnelles comme le long-polling, xhr-streaming, ...
+Nous avons opté naturellement pour une approche basée sur les WebSockets. Biensûr compte tenu du parc utilisateur (IE8, IE9, IE10, Chrome, Safari, Firefox...) nous nous sommes basée sur une abstraction des WebSockets gérant automatiquement la dégradation du protocole vers des solutions plus traditionnelles comme le long-polling, xhr-streaming, ...
 
 Une partie de l'infrastructure tournant alors sur [NodeJs](http://nodejs.org/), nous nous sommes naturellement tourné vers [socket.io](http://socket.io/). Malheureusement nos premiers tests de charges n'ont pas été concluant et ils ne permettaient pas la montée en charge. **C'était la cata!** Un weekend passa, une alternative il nous faudra!
 
