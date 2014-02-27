@@ -1,9 +1,10 @@
-BDD in practice : 
+BDD in practice :
 
 Why-a-feature
 -------------
+
 Critiquons ensemble !
-* Répétition : on a voulu faire du remplissage. intention différente de la faço de le faire
+* Répétition : on a voulu faire du remplissage. intention différente de la façon de le faire
 * Grand classique : afin de X je veux X
 * Peut-on implémenter comme ça ? Oui, mais non. Dans un contexte comptable on favorise la précision, dans un contexte de trading haute fréquence on favorise la vitesse
 * Exprimer une vraie solution : poser des questions à ceux qui savent vraiment. Proposer (parier) des intentions, et vérifier avec ceux qui savent vraiment
@@ -17,7 +18,7 @@ Examples:
  - as a customer, in order to get the status of my order
  - availability and date
  - as a buyer, in order to validate the basket of chosen items, I want to input the bank details
- - in order to pay by credit card, as a connected client, I want the login and email 
+ - in order to pay by credit card, as a connected client, I want the login and email
  - in order to validate the basket, ... I want secure payment
  - stock, inventaire, credit check
 
@@ -29,7 +30,7 @@ Find key examples
 -----------------
 2mn... abstract descriptions... et pourquoi pas des exemples concrets ?
 (prêter le pointeur laser pour montrer du doigt sur le sketch)
-On s'en fout de la bonne réponse. L'important c'est la démarche. Pas le même vocabulaire. 
+On s'en fout de la bonne réponse. L'important c'est la démarche. Pas le même vocabulaire.
 Pas seulement texte, visuel aussi. Penser au visuel.
 
 sketch -> algorithme pour énumérer les cas possibles.

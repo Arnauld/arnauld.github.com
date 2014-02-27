@@ -15,7 +15,7 @@ excerpt: |
 
   <blockquote><p>Il n'y a rien de plus irritant que les choses dont on ne peut saisir la nature. Elles mettent au défi notre manie de tout nommer, de tout ranger par catégories précises.</p><small>Irène de Buisseret - L'homme périphérique</small></blockquote>
 
-  Pourquoi fait-on des tests? Et que doit-on tester et comment? Avant même de se poser ces questions là, la nature humaine et cartésienne nous impose un pré-requis: 
+  Pourquoi fait-on des tests? Et que doit-on tester et comment? Avant même de se poser ces questions là, la nature humaine et cartésienne nous impose un pré-requis:
 
   <a style="display:block;" href="http://www.ina.fr/pub/culture-et-loisirs/video/PUB3784047072/qui-est-ce-mb-milton-bradley-jeu-de-societe.fr.html"><img style="display:block;margin: 5px auto;" src="/incubation/le-test-s-appelle/plateau-du-jeu-qui-est-ce-1.jpg"/></a>
 
@@ -107,6 +107,16 @@ Dans tous les cas, on essaiera le plus possible d'automatiser les tests quels qu
 * une regression a fait son apparition dans le code
 
 Le coup de maintenance et de diagnostic est exponentiellement proportionnel à la granularité de nos tests.
+
+
+
+
+http://www.erlang.org/doc/apps/eunit/chapter.html#Terminology
+http://www.guru99.com/types-of-software-testing.html
+
+"don’t worry too much about what you call a test, as long as you are clear on what it does and it does a single thing." &mdash; [The false dichotomy of tests](http://gojko.net/2011/01/12/the-false-dichotomy-of-tests/)
+
+
 
 Liens
 
