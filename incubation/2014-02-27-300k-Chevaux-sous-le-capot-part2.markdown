@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "300k Chevaux sous le capot grâce à Vert.x et Redis 1/3"
+title: "300k Chevaux sous le capot grâce à Vert.x et Redis 2/4"
 category: Blog
 tags:
   - vert.x
@@ -16,40 +16,104 @@ excerpt: |
 
 {{page.excerpt | markdownify }}
 
-Dans une précédente mission, nous avons été confronté à une demande directement liée aux nouvelles manière de faire une application Web: une Single Page Application. Autrement dit, une fois la page affichée, celle-ci se met à jour automatiquement, ajuste sa mise en page et son contenu par elle-même. Qu'est ce qui change par rapport à avant: ce n'est pas le serveur qui fournit l'ensemble des données à afficher, mais la page elle-même qui se charge de se mettre à jour. Cela nécessite du coup un developpement plus conséquent de la partie cliente (celle qui s'execute sur le navigateur) mais allège grandement la partie serveur. D'autre part cela pousse aussi l'utilisation intensive d'une approche de type REST, et le serveur n'est plus responsable de l'affichage. Ceci nous a permis d'utiliser le même backoffice quelque soit le média d'affichage: Web, Mobile, Télé connectée...
+<img src="/incubation/alerting/vertx-logo-white-big.png" alt="Vertx logo" width="100px" style="float: right;"/>
 
-Bon jusque là rien d'extraordinaire... c'est vrai! En revanche, il s'agit d'un site à fort trafic qui nécessite que les données affichées soit le plus à jour possible. Mouais... celle là on me la fait souvent: le "en temps réel"! eh eh c'est à mon tour de vous la faire, et pour etayer mon propos je vais même jusqu'à vous parler du site en question: [Un site de pari hippique](pmu.fr). Ce qu'il faut savoir, c'est que les gros parieurs attendent généralement le dernier moment pour parier afin que leur impact sur les cotes des chevaux n'ait pas le temps d'être analysées. Tout ça pour dire qu'une des contraintes liées au développement du nouveau site (actuellement en production) était de fournir le plus rapidement possible aux différents clients les dernières informations disponibles: cotes des participants, statut de la course, etc.
-Nous avons opté naturellement pour une approche basée sur les WebSockets. Biensûr compte tenu du parc utilisateur nous nous sommes basée sur une abstraction des WebSockets gérant automatiquement la dégradation du protocole vers des solutions plus traditionnelle comme le long-polling.
+Maintenant que le choix a été fait voyons de plus près [Vert.x](http://vertx.io/)
 
-Une partie de l'infrastructure tournant alors sur NodeJs, nous nous sommes naturellement tourné vers socket.io. Malheureusement nos premiers tests de charges ont été catastrophique et ne permettaient pas la montée en échelle horizontale. C'était la cata! Un weekend passa, un proto émergea! A la recherche d'une solution alternative à socket.io, nous avons trouvé SockJs! il me restait alors à trouver une implémentation séduisante et scalable... en java avec du netty par exemple... duh! Vert.x
-Le prototype fut développé rapidement pendant le weekend, et lundi matin nous le secouâmes avec la même hargne que le précédent, et là: pfiouuuu plus de soucis.
+[Vert.x](http://vertx.io/) est une plateforme polyglote, non-bloquante, orientée évènement et tournant sur la JVM. Euh...?
+Ok, reformulons ça un peu plus précisement:
 
-Comme les benchmarks sont toujours sujet à controverse, ne prenez pas ces chiffres pour acquis, mais servez-vous éventuellement des essais que nous avons réalisé pour vous faire votre propre décision.
+* **Polyglote**: les composants qui peuvent être deployée dans la plateforme peuvent aussi bien être écrit en Java, en Scala, en Python, en Ruby, en Javascript ou en Groovy.
+* **non-bloquante** et **orientée évènement**: [Vert.x](http://vertx.io/) a un modèle similaire à NodeJs, chaque composant déployé tourne dans un Thread unique (pouvant être partagé entre plusieurs composants) géré par la plateforme. Chaque composant est notifié par un évènement auquel il s'est enregistré, effectue le traitement adéquat et retourne sa réponse sous forme d'un nouvel évènement.
 
-Quelques éléments du benchmark de "developpement"
+Avant d'entrer plus en détail sur [Vert.x](http://vertx.io/) il est nécessaire de voir un concept au coeur de son fonctionement: l'**Event Loop**.
 
-* les machines utilisées sont des machines virtuelles (OS Redhat) sur des ESX de développement
-* les limites de file descriptors (ulimit and co) ont été ajusté comme il faut
-* envoi de messages de 290 octets à débit constant de 2 messages/s à l'ensemble des connexions établies
-* les connexions sont établies graduellement et linairement en alternant:
-  * connexions de 1500 clients en 25s
-  * deconnexions de 500 clients en 25s
-  * pause pour souffler de 5min
+Looper 
+------
 
-Nodejs + socket.io:
+<p style="text-align:center;">
+  <img src="/incubation/alerting/EventLoop-Queue-n-Handlers.png" width="530px"/>
+</p>
 
-* La plupart des messages sont reçus en moins de 1s tant que le nombre de connexion est inférieur à 10k
-* Au delà de 10k connexions, une dérive croissante s'installe et le temps de reception moyen ne fait qu'augmenter
-* On constate aussi qu’après déconnexion, la plupart des sockets restent dans l’état `CLOSE_WAIT` côté client, et `FIN_WAIT2` côté serveur (plus de 6500 sockets en `FIN_WAIT2` à la fin des tirs)
+Le principe de l'**Event Loop** est relativement simple. Un thread unique et dédié consomme les évènements (**Event**) qui s'empilent dans une file (**Event Queue**). A chaque évènement, les consomateurs intéressés sont récupérés et l'évènement leur est propagé. Ces consomateurs sont généralement des fonctions de rappels enregistrés sur des types d'évènements particuliers (voir fonction de rappel dans la webographie en fin d'article)
+La file, quant à elle, peut être alimentée par différents thread et de manière concurrente.
 
-Vert.x + SockJS
+Une implementation naïve pourrait se traduire par:
 
-* La limite est repoussée à 20k connexions avant que cela ne commence à dériver
-* On constate aussi que toutes les sockets sont correctement fermées aussi bien côté client que serveur
+{% highlight java %}
+class EventLoop {
+  public void start() {
+    new Thread(new Runnable() {
+      public void run() {
+        while(!thread.isInterrupted())
+          loop();
+      }
+    }).start();
+  }
+  protected void loop() {
+    Event event = queue.poll(timeout);
+    EventHandler handler = lookupHandler(event);
+    handler.handle(event);
+  }
+}
+{% endhighlight %}
 
-Ces chiffres datent de plus d'un an, les différents projets ont pu évolué depuis, mais nous avons alors choisi Vert.x. Dans le prochain article nous presenterons Vert.x avant d'expliquer comment nous l'avons intégrer à la plateforme avec en vrac les problématiques suivantes: loadbalancing de websockets, terminaison ssl pour les websockets, sticky sessions liées aux cas des long-pollings, communication des serveurs en DMZ notifiés par la zone sécurisée, et bien d'autre chose encore...
+Ce qu'il est important de retenir c'est que les évènements sont consommés par un unique Thread, les problématiques d'accès concurrent sont donc complétement écartés. Ceci implique aussi qu'il faut que le traitement de l'évènement soit le plus rapide possible et non bloquant, pour ne pas bloquer les autres traitement en attente.
+
+De plus, il s'avère que cela réduit de manière considérable le **context switch** (voir [wikipedia](http://en.wikipedia.org/wiki/Context_switch)) qui se traduit par de meilleure performance puisque la mémoire n'a pas à être réalignée avec de nouvelles données d'execution. On retrouve ce modèle dans la gestion de l'affichage de la plupart des librairies (AWT/Swing, SWT, ...) et même dans des applications comme NodeJs, Redis, Nginx et le moteur d'éxecution Javascript de votre navigateur.
+Ce mécanisme est même à la base des acteurs en Scala et des processes en Erlang.
+
+<blockquote>
+  <p>The performance of a concurrent language is predicated by three things: the <b>context switching time</b>, the <b> message passing time</b>, and the <b>time to create a process</b>.</p>
+  <small>Mike Williams -- Co-inventor of Erlang</small>
+</blockquote>
+
+Dis Verticle!
+-----------
+
+Maintenant que nous avons définit notre EventLoop voyons le rapport avec [Vert.x](http://vertx.io/). Et bien, le rapport est assez direct: [Vert.x](http://vertx.io/) est entièrement basé sur l'utilisation d'EventLoop. Voyons comment:
+
+Les composants déployés dans [Vert.x](http://vertx.io/) s'appelle des Verticles. Et chaque Verticle "s'execute" par l'intermédiaire d'un EventLoop associé. Autrement dit, les composants deployés (sous forme de Verticle) ne font que réagir à une serie d'évènements dont l'orchestration se fait par l'EventLoop.
+
+<p style="text-align:center;">
+  <img src="/incubation/alerting/Verticle-Classloader-isolation.png" width="400px">
+</p>
+
+Un autre aspect fondamental des Verticles est qu'ils sont complètement isolés les uns des autres. Ils ne peuvent pas communiquer directement les uns avec les autres. En fait chaque Verticle est déployé dans son propre `ClassLoader` et dispose donc de ses propres versions de classes et de ses propres valeurs statiques.
+
+En fait, on peux voir la plateforme [Vert.x](http://vertx.io/) comme un serveur web (e.g. Tomcat) dans lequel les applications (e.g. war) sont remplacés par les Verticles. Une différence notable est que [Vert.x](http://vertx.io/) n'est pas uniquement dédié à des applications Web mais à tout type d'application. Une autre différence notable est que même si un Verticle ne peux accéder à un autre Verticle directement, la plateforme fournit un moyen de communication au travers d'un EventBus. Il est possible pour un Verticle de publier un évènement dans le Bus de la plateforme et qu'un autre Verticle puisse écouter et être informé de cet évènement. Ceci est notament possible car les évènements doivent être construits à partir de structure prédéfinies tel que les String, du Json ou encore tableau de bytes.
+
+<p style="text-align:center;">
+  <img src="/incubation/alerting/EventLoop-with-EventBus.png" width="530px">
+</p>
+
+Chaque Verticle réagit donc à différents évènements et publie à son tour des évènements dans le Bus.
+Une particularité de ce bus d'évènement est qu'il est même possible qu'il soit distribué entre plusieurs plateforme Vert.x. Le comportement vu d'un Verticle est rigoureusement le même que le destinataire du message soit dans la même JVM ou dans une autre JVM, le bus faisant l'abastraction nécessaire pour masquer cela.
+
+<p style="text-align:center;">
+  <img src="/incubation/alerting/DistributedEventBus.png" width="530px">
+</p>
+
+Et on fait quoi avec tout ça?
+
+Un des modèles poussés par la plateforme consiste à déployer des Verticles qui auront chacun un but bien précis, et de les faire communiquer entre eux par le bus. Il existe un certain nombre de Verticle déjà disponible permettant par exemple d'interagir de manière asynchrone avec une base NoSQL comme Redis. Le verticle est configuré pour indiquer l'instance Redis avec laquelle il souhaite intéragir, et réçoit sur un canal de communication du Bus les requêtes attendues. Lorsque le résultat sera disponible, il se charge ensuite de republier les données sur un canal de réponse éventuellement fournit dans la requête.
+
+Comme tout est basé sur la notion d'évènements et de gestion asynchrone, il est nécessaire de disposer de librairies compatibles avec ce modèle. La plateforme fournit un ensemble de fonctionnalité de base comme:
+
+* démarrer, écouter et réagir sur un serveur HTTP (basé sur [Netty](http://netty.io))
+* démarrer, écouter et réagir sur un serveur TCP (basé sur [Netty](http://netty.io))
+* deployer des Verticles permettant de faire des requêtes SQL de manière asynchrone
 
 
+Webographie
+-----------
+
+<h3>Fonctions de rappels / Callback</h3>
+
+* http://www.arolla.fr/blog/2012/12/option-maybe-continuation/
+* http://www.arolla.fr/blog/2013/03/callbacks-strike-back/
 
 
+* [Reactor Pattern](http://en.wikipedia.org/wiki/Reactor_pattern)
+* [Architecture of a Highly Scalable NIO-Based Server (2007)](https://today.java.net/article/2007/02/08/architecture-highly-scalable-nio-based-server)
 

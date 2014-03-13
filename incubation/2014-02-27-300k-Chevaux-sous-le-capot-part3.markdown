@@ -16,38 +16,230 @@ excerpt: |
 
 {{page.excerpt | markdownify }}
 
-Dans une précédente mission, nous avons été confronté à une demande directement liée aux nouvelles manière de faire une application Web: une Single Page Application. Autrement dit, une fois la page affichée, celle-ci se met à jour automatiquement, ajuste sa mise en page et son contenu par elle-même. Qu'est ce qui change par rapport à avant: ce n'est pas le serveur qui fournit l'ensemble des données à afficher, mais la page elle-même qui se charge de se mettre à jour. Cela nécessite du coup un developpement plus conséquent de la partie cliente (celle qui s'execute sur le navigateur) mais allège grandement la partie serveur. D'autre part cela pousse aussi l'utilisation intensive d'une approche de type REST, et le serveur n'est plus responsable de l'affichage. Ceci nous a permis d'utiliser le même backoffice quelque soit le média d'affichage: Web, Mobile, Télé connectée...
+Premier pas avec Vert.x
+---------------------
 
-Bon jusque là rien d'extraordinaire... c'est vrai! En revanche, il s'agit d'un site à fort trafic qui nécessite que les données affichées soit le plus à jour possible. Mouais... celle là on me la fait souvent: le "en temps réel"! eh eh c'est à mon tour de vous la faire, et pour etayer mon propos je vais même jusqu'à vous parler du site en question: [Un site de pari hippique](pmu.fr). Ce qu'il faut savoir, c'est que les gros parieurs attendent généralement le dernier moment pour parier afin que leur impact sur les cotes des chevaux n'ait pas le temps d'être analysées. Tout ça pour dire qu'une des contraintes liées au développement du nouveau site (actuellement en production) était de fournir le plus rapidement possible aux différents clients les dernières informations disponibles: cotes des participants, statut de la course, etc.
-Nous avons opté naturellement pour une approche basée sur les WebSockets. Biensûr compte tenu du parc utilisateur nous nous sommes basée sur une abstraction des WebSockets gérant automatiquement la dégradation du protocole vers des solutions plus traditionnelle comme le long-polling.
+Pour l'installation voir: [Vert.x Install](http://vertx.io/install.html)
 
-Une partie de l'infrastructure tournant alors sur NodeJs, nous nous sommes naturellement tourné vers socket.io. Malheureusement nos premiers tests de charges ont été catastrophique et ne permettaient pas la montée en échelle horizontale. C'était la cata! Un weekend passa, un proto émergea! A la recherche d'une solution alternative à socket.io, nous avons trouvé SockJs! il me restait alors à trouver une implémentation séduisante et scalable... en java avec du netty par exemple... duh! Vert.x
-Le prototype fut développé rapidement pendant le weekend, et lundi matin nous le secouâmes avec la même hargne que le précédent, et là: pfiouuuu plus de soucis.
+    $ mkdir vertx101 && cd vertx101
+    $ wget http://dl.bintray.com/vertx/downloads/vert.x-2.1RC1.tar.gz
+    $ tar -zxf vert.x-2.1RC1.tar.gz
+    $ rm vert.x-2.1RC1.tar.gz
+    $ ln -s vert.x-2.1RC1/bin/vertx vertx
+    $ ./vertx version
+    2.1RC1 (built 2014-02-26 13:51:32)
 
-Comme les benchmarks sont toujours sujet à controverse, ne prenez pas ces chiffres pour acquis, mais servez-vous éventuellement des essais que nous avons réalisé pour vous faire votre propre décision.
+Créer le projet via maven
 
-Quelques éléments du benchmark de "developpement"
+    $ mvn archetype:generate -Dfilter=io.vertx: -DgroupId=org.technbolts -DartifactId=vertx101 -Dversion=0.1
 
-* les machines utilisées sont des machines virtuelles (OS Redhat) sur des ESX de développement
-* les limites de file descriptors (ulimit and co) ont été ajusté comme il faut
-* envoi de messages de 290 octets à débit constant de 2 messages/s à l'ensemble des connexions établies
-* les connexions sont établies graduellement et linairement en alternant:
-  * connexions de 1500 clients en 25s
-  * deconnexions de 500 clients en 25s
-  * pause pour souffler de 5min
+Supprime tout ce qui n'est pas java
 
-Nodejs + socket.io:
+    $ find . -print | egrep '.*((groovy|javascript|python|ruby).*|\.py|\.js|src.*README\.txt)$' | xargs rm -rf
+    $ mvn clean integration-test
 
-* La plupart des messages sont reçus en moins de 1s tant que le nombre de connexion est inférieur à 10k
-* Au delà de 10k connexions, une dérive croissante s'installe et le temps de reception moyen ne fait qu'augmenter
-* On constate aussi qu’après déconnexion, la plupart des sockets restent dans l’état `CLOSE_WAIT` côté client, et `FIN_WAIT2` côté serveur (plus de 6500 sockets en `FIN_WAIT2` à la fin des tirs)
 
-Vert.x + SockJS
+Commençons par écrire un Verticle très simple qui va écouter le Bus et répondre en générant un nouvel identifiant.
 
-* La limite est repoussée à 20k connexions avant que cela ne commence à dériver
-* On constate aussi que toutes les sockets sont correctement fermées aussi bien côté client que serveur
+{% highlight java %}
+public class BootstrapVerticle extends Verticle {
+    
+    @Override
+    public void start() throws Exception {
+        // Application config
+        JsonObject appConfig = container.getConfig();
+        Config config = new Config(appConfig);
+        
+       // Platform EventBus
+       EventBus eventBus = vertx.getEventBus();
 
-Ces chiffres datent de plus d'un an, les différents projets ont pu évolué depuis, mais nous avons alors choisi Vert.x. Dans le prochain article nous presenterons Vert.x avant d'expliquer comment nous l'avons intégrer à la plateforme avec en vrac les problématiques suivantes: loadbalancing de websockets, terminaison ssl pour les websockets, sticky sessions liées aux cas des long-pollings, communication des serveurs en DMZ notifiés par la zone sécurisée, et bien d'autre chose encore...
+       registerGenerateIdHandler(config, eventBus);
+    }
+
+    private void registerGenerateIdHandler(Config config, EventBus eventBus) {
+        String address = config.getGenerateIdAdress();
+        eventBus.registerHandler(address, new GenerateIdHandler());
+    }
+}
+{% endhighlight %}
+
+`eventBus.registerHandler(address, ...)` enregistre un écouteur sur le "canal" `address`. Il suffiera donc de publier un message sur ce canal pour avoir en retour un nouvel identifiant.
+
+{% highlight java %}
+public class GenerateIdHandler implements Handler<Message<String>> {
+    private Map<String,AtomicInteger> counterPerPrefix = new HashMap<>();
+
+    @Override
+    public void handle(Message<String> msg) {
+        String prefix = msg.body;
+        msg.reply(prefix + "-" + getCounter(prefix).incrementAndGet());
+    }
+
+    // no need to synchronize :)
+    private AtomicInteger getCounter(String prefix) {
+        AtomicInteger counter = counterPerPrefix.get(prefix);
+        if(counter == null) {
+            counter = new AtomicInteger();
+            counterPerPrefix.put(prefix, counter);
+        }
+        return counter;
+    }
+}
+{% endhighlight %}
+
+Le `GenerateIdHandler` est quant à lui la classe qui réagira dès qu'un message sera publié sur ce canal; on pourra remarquer que l'on a choisit le format le plus simple pour le message: une chaine de caractère.
+
+Le lecteur avertit aura remarqué qu'il est possible de répondre directement à un message sans avoir à publier sur un canal spécifique. La plateforme supporte en effet un certain nombre de pattern facilitant la communication par ce bus: communication point à point, requête <-> reponse, broacast sur une adresse, etc.
+
+Nous pouvons d'hors et déjà déployé notre Verticle, mais celui-ci ne sera pas d'une grande utilité tout seul. Commençons à préparer le terrain de notre serveur d'Alerting, en utilisant notre Verticle de Bootstrap pour lui faire démarrer plusieurs Verticles pour gérer les requêtes HTTP et les Websockets.
+
+{% highlight java %}
+
+public class BootstrapVerticle extends Verticle {
+    
+    @Override
+    public void start() throws Exception {
+        // Application config
+        JsonObject appConfig = container.getConfig();
+        Config config = new Config(appConfig);
+
+        int nbInstancesHttp = config.getHttpNbInstances();
+        startHttpVerticles(appConfig, nbInstancesHttp);
+
+        ...
+    } 
+
+    ...
+
+    private void startHttpVerticles(JsonObject appConfig, int nbInstanceHttp) {
+      container.deployVerticle(HttpVerticle.class.getName(), appConfig, nbInstancesHttp);
+    }
+}
+{% endhighlight %}
+
+{% highlight java %}
+public class HttpVerticle extends Verticle {
+
+    private String verticleId;
+    private Logger log;
+    private Config config;
+
+    @Override
+    public void start() throws Exception {
+        // Application config
+        JsonObject appConfig = container.getConfig();
+        config = new Config(appConfig);
+
+        queryForIdToStart();
+    }
+
+    private void queryForIdToStart() {
+       // Platform EventBus
+       EventBus eventBus = vertx.getEventBus();
+
+       String generateIdAddress = config.getGenerateIdAdress();
+       String message = "http";
+       eventBus.send(generateIdAdress, message, new Handler<Message<String>> () {
+            @Override
+            public void handle(Message<String> msg) {
+                start(msg.body);
+            }
+       });
+    }
+
+    private void start(String verticleId) {
+       this.verticleId = verticleId;
+       log = container.getLogger();
+        
+       HttpServer server = initializeHttpServer();
+       
+       int port = config.getHttpPort();
+       server.listen(port);
+       log.info("[" + verticleId + "] Starting HTTP server on port " + port);
+    }
+
+    private HttpServer initializeHttpServer() {
+      RouteMatcher routes = new HttpRouteMatcherFactory().create(config);
+      
+      HttpServer server = vertx.createHttpServer();
+      server.requestHandler(routes);
+      return server;
+    }
+
+
+}
+{% endhighlight %}
+
+{% highlight java %}
+public class HttpRouteMatcherFactory {
+  public RouteMatcher create(Config config) {
+    RouteMatcher routes = new RouteMatcher();
+    registerRoutesForHacker(routes);
+    registerRoutesForAssets(routes);
+    registerRoutesNoMatch(routes);
+    return routes;
+  }
+
+  private void registerRoutesForAssets(RouteMatcher routes) {
+     routes.getWithRegEx(".*\\.(js|css|png)$", new Handler<HttpServerRequest>() {
+            public void handle(HttpServerRequest req) {
+                if (allowAssetsAccess) {
+                    String extension = req.params().get("param0");
+                    req.response.putHeader(CONTENT_TYPE, contentTypeForExtension(extension));
+                    writeResource(req.response, "/assets" + req.path, false);
+                } else {
+                    forbiddenAccess(req);
+                }
+            }
+        });
+      }
+
+    private void registerRoutesNoMatch(RouteMatcher routes) {
+        routes.noMatch(new Handler<HttpServerRequest>() {
+            public void handle(HttpServerRequest req) {
+                log.error("[" + verticleId + "] Unhandled request '" + req.path + "'");
+                req.response.statusCode = 404;
+                req.response.putHeader(CONTENT_TYPE, contentTypeForExtension("json"));
+                req.response.end(newJson("status", "Unhandled request '" + req.path + "'").encode());
+            }
+        });
+    }
+
+    private void registerRoutesForHacker(RouteMatcher routes) {
+        // should act as : req.path.contains("..")
+        routes.allWithRegEx(".*\\.\\..*", new Handler<HttpServerRequest>() {
+            public void handle(HttpServerRequest req) {
+                // This is an attempt to escape the directory jail. Deny it.
+                forbiddenAccess(req);
+            }
+        });
+    }
+
+    private void writeResource(HttpServerResponse response, String resourcePath, boolean resolveVariable) {
+        log.info("Sending resource '" + resourcePath + "'");
+
+        byte[] bytes = resources.getResource(resourcePath, resolveVariable);
+        if (bytes == null) {
+            response.statusCode = 404;
+            response.putHeader(CONTENT_TYPE, contentTypeForExtension("json"));
+            response.end(newJson("status", "Resource '" + resourcePath + "' node found").encode());
+        } else {
+            response.statusCode = 200;
+            response.end(new Buffer(bytes));
+        }
+    }s
+
+    private void forbiddenAccess(HttpServerRequest req) {
+        req.response.statusCode = 403;
+        req.response.putHeader(CONTENT_TYPE, contentTypeForExtension("json"));
+        req.response.end(newJson("status", "Access Forbidden '" + req.path + "'").encode());
+    }
+
+    private static JsonObject newJson(String fieldName, String fieldValue) {
+        return new JsonObject().putString(fieldName, fieldValue);
+    }
+}
+{% endhighlight %}
 
 
 
